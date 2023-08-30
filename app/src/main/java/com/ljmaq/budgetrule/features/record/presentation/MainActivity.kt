@@ -1,4 +1,4 @@
-package com.ljmaq.budgetrule
+package com.ljmaq.budgetrule.features.record.presentation
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
