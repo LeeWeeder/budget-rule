@@ -1,0 +1,8 @@
+package com.ljmaq.budgetrule.features.record.presentation.records
+
+import com.ljmaq.budgetrule.features.record.domain.model.Record
+
+sealed class RecordsEvent {
+    data class DeleteRecord(val record: Record): RecordsEvent()
+    data object RestoreRecord: RecordsEvent()
+}
