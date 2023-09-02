@@ -25,6 +25,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.ljmaq.budgetrule.features.record.presentation.records.components.GreetingsAppBar
 import com.ljmaq.budgetrule.features.record.presentation.records.components.RecordItem
 import com.ljmaq.budgetrule.features.record.presentation.util.Screen
 import kotlinx.coroutines.launch
@@ -53,7 +54,10 @@ fun RecordScreen(
                     navController.navigate(Screen.AddEditRecordScreen.route)
                 })
         },
-        snackbarHost = { SnackbarHost(snackbarHostState) }) { paddingValues ->
+        snackbarHost = { SnackbarHost(snackbarHostState) },
+        topBar = {
+            GreetingsAppBar()
+        }) { paddingValues ->
         Column(
             modifier = Modifier
                 .padding(paddingValues)
