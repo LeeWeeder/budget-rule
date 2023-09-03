@@ -7,10 +7,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.MoreVert
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -27,10 +23,13 @@ fun RecordItem(
     modifier: Modifier = Modifier,
     onDeleteClick: () -> Unit
 ) {
-    Box(modifier = modifier.background(MaterialTheme.colorScheme.surface)) {
+    Box(
+        modifier = modifier.background(MaterialTheme.colorScheme.surface)
+    ) {
         Row(
             modifier
-                .fillMaxWidth(),
+                .fillMaxWidth()
+                .padding(vertical = 12.dp),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -48,9 +47,6 @@ fun RecordItem(
                     maxLines = 1
                 )
                 Text(text = Formatter.formatDate(record.timestamp))
-            }
-            IconButton(onClick = onDeleteClick) {
-                Icon(imageVector = Icons.Rounded.MoreVert, contentDescription = "More icon")
             }
         }
     }
