@@ -31,6 +31,11 @@ class AddEditRecordViewModel @Inject constructor(
 
     val recordAmount: State<RecordState.AmountTextFieldState> = _recordAmount
 
+    private val _tabState = mutableStateOf(
+        RecordState.TabState()
+    )
+    val tabState: State<RecordState.TabState> = _tabState
+
     private val _eventFlow = MutableSharedFlow<UiEvent>()
     val eventFlow = _eventFlow.asSharedFlow()
 
@@ -45,6 +50,15 @@ class AddEditRecordViewModel @Inject constructor(
                         _recordAmount.value = recordAmount.value.copy(
                             value = record.amount.removePrefix("-")
                         )
+                        _tabState.value = if (record.isExpenses) {
+                            tabState.value.copy(
+                                index = 1
+                            )
+                        } else {
+                            tabState.value.copy(
+                                index = 0
+                            )
+                        }
                         _typeIsExpenses.value = record.isExpenses
                     }
                 }
@@ -56,6 +70,13 @@ class AddEditRecordViewModel @Inject constructor(
         when (event) {
             is AddEditRecordEvent.ChangeRecordType -> {
                 _typeIsExpenses.value = !typeIsExpenses.value
+                _tabState.value = tabState.value.copy(
+                    index = if (typeIsExpenses.value) {
+                        1
+                    } else {
+                        0
+                    }
+                )
             }
 
             is AddEditRecordEvent.EnteredAmount -> {

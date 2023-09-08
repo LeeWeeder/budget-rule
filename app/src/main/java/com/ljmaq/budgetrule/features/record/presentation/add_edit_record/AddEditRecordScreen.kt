@@ -33,6 +33,7 @@ fun AddEditRecordScreen(
 ) {
     val typeIsExpenses = viewModel.typeIsExpenses.value
     val amountState = viewModel.recordAmount.value
+    val tabState = viewModel.tabState.value
 
     val snackbarHostState = remember {
         SnackbarHostState()
@@ -54,8 +55,6 @@ fun AddEditRecordScreen(
         }
     }
 
-    val tabState = if (typeIsExpenses) 1 else 0
-
     Scaffold(snackbarHost = { SnackbarHost(snackbarHostState) }) { paddingValues ->
         Column(
             modifier = Modifier
@@ -74,19 +73,19 @@ fun AddEditRecordScreen(
                     Icon(imageVector = Icons.Rounded.Close, contentDescription = "Close icon")
                 }
             }
-            TabRow(selectedTabIndex = tabState) {
-                Tab(selected = !typeIsExpenses, onClick = {
-                    viewModel.onEvent(
-                        AddEditRecordEvent.ChangeRecordType
-                    )
-                }) {
+            TabRow(selectedTabIndex = tabState.index) {
+                Tab(
+                    selected = !typeIsExpenses, onClick = {
+                        viewModel.onEvent(
+                            AddEditRecordEvent.ChangeRecordType
+                        )
+                    }) {
                     Text(text = "Income")
                 }
                 Tab(selected = typeIsExpenses, onClick = {
                     viewModel.onEvent(
                         AddEditRecordEvent.ChangeRecordType
                     )
-
                 }) {
                     Text(text = "Expenses")
                 }
