@@ -4,6 +4,7 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.ljmaq.budgetrule.features.record.domain.model.Category
 import com.ljmaq.budgetrule.features.record.domain.model.Record
 import com.ljmaq.budgetrule.features.record.domain.usecase.RecordsUseCases
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -19,6 +20,9 @@ class RecordsViewModel @Inject constructor(
 ) : ViewModel() {
     private val _state = mutableStateOf(RecordState())
     val state: State<RecordState> = _state
+
+    private val _categoryState = mutableStateOf(CategoryState(selectedCategory = 0))
+    val categoryState: State<CategoryState> = _categoryState
 
     private var recentlyDeletedRecord: Record? = null
 
@@ -41,6 +45,11 @@ class RecordsViewModel @Inject constructor(
                     recordsUseCases.addRecord(recentlyDeletedRecord ?: return@launch)
                     recentlyDeletedRecord = null
                 }
+            }
+            is RecordsEvent.ChangeCategory -> {
+                _categoryState.value = categoryState.value.copy(
+                    selectedCategory = Category.categories.indexOf(event.category)
+                )
             }
         }
     }
