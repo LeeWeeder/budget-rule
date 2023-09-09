@@ -40,6 +40,7 @@ class AddEditRecordViewModel @Inject constructor(
     val eventFlow = _eventFlow.asSharedFlow()
 
     private var currentRecordId: Int? = null
+    private var currentTimestamp: Long? = null
 
     init {
         savedStateHandle.get<Int>("recordId")?.let { recordId ->
@@ -47,6 +48,7 @@ class AddEditRecordViewModel @Inject constructor(
                 viewModelScope.launch {
                     recordsUseCases.getRecord(recordId)?.also { record ->
                         currentRecordId = record.id
+                        currentTimestamp = record.timestamp
                         _recordAmount.value = recordAmount.value.copy(
                             value = record.amount.removePrefix("-")
                         )
@@ -88,14 +90,18 @@ class AddEditRecordViewModel @Inject constructor(
             is AddEditRecordEvent.SaveRecord -> {
                 viewModelScope.launch {
                     try {
-                        recordsUseCases.addRecord(
+                        (if (currentTimestamp == null) System.currentTimeMillis() else currentTimestamp)?.let {
                             Record(
-                                timestamp = System.currentTimeMillis(),
+                                timestamp = it,
                                 amount = if (typeIsExpenses.value) "-${recordAmount.value.value}" else recordAmount.value.value,
                                 isExpenses = typeIsExpenses.value,
                                 id = currentRecordId
                             )
-                        )
+                        }?.let {
+                            recordsUseCases.addRecord(
+                                it
+                            )
+                        }
                         _eventFlow.emit(UiEvent.SaveRecord)
                     } catch (e: InvalidRecordException) {
                         _eventFlow.emit(
