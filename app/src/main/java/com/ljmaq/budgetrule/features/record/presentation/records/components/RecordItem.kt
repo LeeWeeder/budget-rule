@@ -14,7 +14,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.ljmaq.budgetrule.features.record.domain.model.Record
 import com.ljmaq.budgetrule.features.record.presentation.records.util.Formatter
@@ -32,7 +32,7 @@ fun RecordItem(
             Row(
                 modifier
                     .fillMaxWidth()
-                    .padding(vertical = 12.dp),
+                    .padding(vertical = 10.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -53,19 +53,6 @@ fun RecordItem(
                 }
             }
         }
-        Divider()
-    }
-}
-
-@Preview
-@Composable
-fun Preview() {
-    Column {
-        RecordItem(record = Record(timestamp = 1L, amount = "100.00", isExpenses = false)) {
-
-        }
-        RecordItem(record = Record(timestamp = 1L, amount = "100.00", isExpenses = false)) {
-
-        }
+        Divider(thickness = Dp.Hairline)
     }
 }

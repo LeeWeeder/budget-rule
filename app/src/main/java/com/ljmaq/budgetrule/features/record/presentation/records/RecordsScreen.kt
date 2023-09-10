@@ -75,7 +75,6 @@ fun RecordScreen(
                 modifier = Modifier
                     .padding(paddingValues)
                     .fillMaxSize()
-                    .padding(horizontal = 12.dp)
             ) {
                 Row(
                     modifier = Modifier.fillMaxWidth(),
@@ -95,7 +94,7 @@ fun RecordScreen(
                     }
                 }
                 Spacer(modifier = Modifier.height(24.dp))
-                Text(text = "Records", style = MaterialTheme.typography.titleMedium)
+                Text(text = "Records", style = MaterialTheme.typography.titleMedium, modifier = Modifier.padding(horizontal = 16.dp))
                 Spacer(modifier = Modifier.height(12.dp))
                 LazyColumn(modifier = Modifier.fillMaxSize()) {
                     items(state.records) { record ->
