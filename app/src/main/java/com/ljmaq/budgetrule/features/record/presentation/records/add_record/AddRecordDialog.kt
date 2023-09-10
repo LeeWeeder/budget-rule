@@ -113,7 +113,7 @@ fun AddRecordDialog(
                                 shape = MaterialTheme.shapes.extraLarge
                             )
                     )
-                }, divider = {}) {
+                }, divider = {}, modifier = Modifier.padding(horizontal = 20.dp)) {
                     TabItem(
                         selected = !typeIsExpenses, onClick = {
                             viewModel.onEvent(
