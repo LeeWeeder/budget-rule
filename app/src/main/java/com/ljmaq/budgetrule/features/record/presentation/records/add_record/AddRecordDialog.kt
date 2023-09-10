@@ -1,25 +1,20 @@
 package com.ljmaq.budgetrule.features.record.presentation.records.add_record
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Check
 import androidx.compose.material.icons.rounded.Close
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.TabRow
-import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
@@ -102,18 +97,7 @@ fun AddRecordDialog(
                     .padding(paddingValues)
                     .fillMaxSize()
             ) {
-                TabRow(selectedTabIndex = tabState.index, indicator = { tabPositions ->
-                    Box(
-                        modifier = Modifier
-                            .tabIndicatorOffset(tabPositions[tabState.index])
-                            .padding(horizontal = 60.dp)
-                            .height(4.dp)
-                            .background(
-                                MaterialTheme.colorScheme.primary,
-                                shape = MaterialTheme.shapes.extraLarge
-                            )
-                    )
-                }, divider = {}, modifier = Modifier.padding(horizontal = 20.dp)) {
+                TabRow(selectedTabIndex = tabState.index, indicator = {}, divider = {}, modifier = Modifier.padding(horizontal = 20.dp)) {
                     TabItem(
                         selected = !typeIsExpenses, onClick = {
                             viewModel.onEvent(
