@@ -120,14 +120,14 @@ fun AddRecordDialog(
                                 AddRecordEvent.ChangeRecordType
                             )
                         }) {
-                        Text(text = "Income")
+                        Text(text = "INCOME")
                     }
                     Tab(selected = typeIsExpenses, onClick = {
                         viewModel.onEvent(
                             AddRecordEvent.ChangeRecordType
                         )
                     }) {
-                        Text(text = "Expenses")
+                        Text(text = "EXPENSES")
                     }
                 }
                 Row(modifier = Modifier.fillMaxWidth()) {
