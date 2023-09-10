@@ -18,7 +18,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
-import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material3.Text
@@ -27,13 +26,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.ljmaq.budgetrule.features.record.presentation.records.RecordsEvent
 import com.ljmaq.budgetrule.features.record.presentation.records.RecordsViewModel
+import com.ljmaq.budgetrule.features.record.presentation.records.add_record.components.TabItem
 import kotlinx.coroutines.flow.collectLatest
 
 @Composable
@@ -115,21 +114,21 @@ fun AddRecordDialog(
                             )
                     )
                 }, divider = {}) {
-                    Tab(
+                    TabItem(
                         selected = !typeIsExpenses, onClick = {
                             viewModel.onEvent(
                                 AddRecordEvent.ChangeRecordType
                             )
-                        }, modifier = Modifier.clip(MaterialTheme.shapes.extraLarge)) {
-                        Text(text = "INCOME")
-                    }
-                    Tab(selected = typeIsExpenses, onClick = {
-                        viewModel.onEvent(
-                            AddRecordEvent.ChangeRecordType
-                        )
-                    }, modifier = Modifier.clip(MaterialTheme.shapes.extraLarge)) {
-                        Text(text = "EXPENSES")
-                    }
+                        }, text = "INCOME"
+                    )
+
+                    TabItem(
+                        selected = typeIsExpenses, onClick = {
+                            viewModel.onEvent(
+                                AddRecordEvent.ChangeRecordType
+                            )
+                        }, text = "EXPENSES"
+                    )
                 }
                 Row(modifier = Modifier.fillMaxWidth()) {
                     TextField(
