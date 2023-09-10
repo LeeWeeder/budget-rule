@@ -10,12 +10,9 @@ data class Category(
 
     companion object {
         val categories = listOf(
-            Category(
-                name = "NEEDS",
-                color = Color.Blue
-            ),
-            Category(name = "WANTS", color = Color.Red),
-            Category(name = "SAVE", color = Color.Green)
+            Category(name = "NEEDS", color = Color(0xFF143A9B)),
+            Category(name = "WANTS", color = Color(0xFFF05929)),
+            Category(name = "SAVE", color = Color(0xFF29AD87))
         )
     }
 }
