@@ -41,14 +41,20 @@ class AddRecordViewModel @Inject constructor(
     fun onEvent(event: AddRecordEvent) {
         when (event) {
             is AddRecordEvent.ChangeRecordType -> {
-                _typeIsExpenses.value = !typeIsExpenses.value
-                _tabState.value = tabState.value.copy(
-                    index = if (typeIsExpenses.value) {
-                        1
-                    } else {
-                        0
+                when (event.index) {
+                    0 -> {
+                        _typeIsExpenses.value = false
+                        _tabState.value = tabState.value.copy(
+                            index = 1
+                        )
                     }
-                )
+                    1 -> {
+                        _typeIsExpenses.value = true
+                        _tabState.value = tabState.value.copy(
+                            index = 1
+                        )
+                    }
+                }
             }
 
             is AddRecordEvent.EnteredAmount -> {

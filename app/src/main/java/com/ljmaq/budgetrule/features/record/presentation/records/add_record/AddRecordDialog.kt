@@ -112,15 +112,14 @@ fun AddRecordDialog(
                     TabItem(
                         selected = !typeIsExpenses, onClick = {
                             viewModel.onEvent(
-                                AddRecordEvent.ChangeRecordType
+                                AddRecordEvent.ChangeRecordType(0)
                             )
                         }, text = "INCOME"
                     )
-
                     TabItem(
                         selected = typeIsExpenses, onClick = {
                             viewModel.onEvent(
-                                AddRecordEvent.ChangeRecordType
+                                AddRecordEvent.ChangeRecordType(1)
                             )
                         }, text = "EXPENSES"
                     )
