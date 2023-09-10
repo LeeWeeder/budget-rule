@@ -27,6 +27,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
@@ -119,14 +120,14 @@ fun AddRecordDialog(
                             viewModel.onEvent(
                                 AddRecordEvent.ChangeRecordType
                             )
-                        }) {
+                        }, modifier = Modifier.clip(MaterialTheme.shapes.extraLarge)) {
                         Text(text = "INCOME")
                     }
                     Tab(selected = typeIsExpenses, onClick = {
                         viewModel.onEvent(
                             AddRecordEvent.ChangeRecordType
                         )
-                    }) {
+                    }, modifier = Modifier.clip(MaterialTheme.shapes.extraLarge)) {
                         Text(text = "EXPENSES")
                     }
                 }
