@@ -1,5 +1,7 @@
 package com.ljmaq.budgetrule.features.record.presentation.records.add_record
 
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -11,6 +13,7 @@ import androidx.compose.material.icons.rounded.Check
 import androidx.compose.material.icons.rounded.Close
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -97,7 +100,9 @@ fun AddRecordDialog(
                     .padding(paddingValues)
                     .fillMaxSize()
             ) {
-                TabRow(selectedTabIndex = tabState.index, indicator = {}, divider = {}, modifier = Modifier.padding(horizontal = 20.dp)) {
+                TabRow(selectedTabIndex = tabState.index, indicator = {}, divider = {}, modifier = Modifier.padding(horizontal = 20.dp).border(
+                    BorderStroke(1.dp, MaterialTheme.colorScheme.secondary), shape = MaterialTheme.shapes.extraLarge
+                )) {
                     TabItem(
                         selected = !typeIsExpenses, onClick = {
                             viewModel.onEvent(
