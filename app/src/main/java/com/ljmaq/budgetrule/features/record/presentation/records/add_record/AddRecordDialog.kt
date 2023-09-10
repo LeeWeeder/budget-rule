@@ -113,7 +113,7 @@ fun AddRecordDialog(
                                 shape = MaterialTheme.shapes.extraLarge
                             )
                     )
-                }) {
+                }, divider = {}) {
                     Tab(
                         selected = !typeIsExpenses, onClick = {
                             viewModel.onEvent(
