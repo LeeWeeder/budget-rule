@@ -19,7 +19,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.ljmaq.budgetrule.features.record.presentation.add_edit_record.AddEditRecordScreen
+import com.ljmaq.budgetrule.features.record.presentation.edit_record.EditRecordScreen
 import com.ljmaq.budgetrule.features.record.presentation.records.RecordScreen
 import com.ljmaq.budgetrule.features.record.presentation.util.Screen
 import com.ljmaq.budgetrule.ui.theme.BudgetRuleTheme
@@ -56,10 +56,10 @@ class MainActivity : ComponentActivity() {
                             enterTransition = enterTransition,
                             exitTransition = exitTransition
                         ) {
-                            RecordScreen(navController = navController)
+                            RecordScreen(navController)
                         }
 
-                        composable(route = Screen.AddEditRecordScreen.route + "?recordId={recordId}",
+                        composable(route = Screen.EditRecordScreen.route + "?recordId={recordId}",
                             arguments = listOf(
                                 navArgument(name = "recordId") {
                                     type = NavType.IntType
@@ -68,7 +68,7 @@ class MainActivity : ComponentActivity() {
                             ),
                             enterTransition = enterTransition,
                             exitTransition = exitTransition) {
-                            AddEditRecordScreen(navController = navController)
+                            EditRecordScreen(navController)
                         }
                     }
                 }

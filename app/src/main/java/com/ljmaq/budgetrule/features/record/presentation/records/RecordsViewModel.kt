@@ -24,6 +24,9 @@ class RecordsViewModel @Inject constructor(
     private val _categoryState = mutableStateOf(CategoryState(selectedCategory = 0))
     val categoryState: State<CategoryState> = _categoryState
 
+    private val _isDialogShowing = mutableStateOf(false)
+    val isDialogShowing: State<Boolean> = _isDialogShowing
+
     private var recentlyDeletedRecord: Record? = null
 
     private var getRecordsJob: Job? = null
@@ -50,6 +53,12 @@ class RecordsViewModel @Inject constructor(
                 _categoryState.value = categoryState.value.copy(
                     selectedCategory = Category.categories.indexOf(event.category)
                 )
+            }
+            is RecordsEvent.CreateRecord -> {
+                _isDialogShowing.value = !isDialogShowing.value
+            }
+            is RecordsEvent.CancelCreateRecord -> {
+                _isDialogShowing.value = false
             }
         }
     }

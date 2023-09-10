@@ -1,4 +1,4 @@
-package com.ljmaq.budgetrule.features.record.presentation.add_edit_record
+package com.ljmaq.budgetrule.features.record.presentation.edit_record
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -27,9 +27,9 @@ import androidx.navigation.NavController
 import kotlinx.coroutines.flow.collectLatest
 
 @Composable
-fun AddEditRecordScreen(
+fun EditRecordScreen(
     navController: NavController,
-    viewModel: AddEditRecordViewModel = hiltViewModel()
+    viewModel: EditRecordViewModel = hiltViewModel()
 ) {
     val typeIsExpenses = viewModel.typeIsExpenses.value
     val amountState = viewModel.recordAmount.value
@@ -42,20 +42,21 @@ fun AddEditRecordScreen(
     LaunchedEffect(key1 = true) {
         viewModel.eventFlow.collectLatest { event ->
             when (event) {
-                is AddEditRecordViewModel.UiEvent.ShowSnackbar -> {
+                is EditRecordViewModel.UiEvent.ShowSnackbar -> {
                     snackbarHostState.showSnackbar(
                         message = event.message
                     )
                 }
 
-                is AddEditRecordViewModel.UiEvent.SaveRecord -> {
-                    navController.navigateUp()
+                is EditRecordViewModel.UiEvent.SaveRecord -> {
+
                 }
             }
         }
     }
 
-    Scaffold(snackbarHost = { SnackbarHost(snackbarHostState) }) { paddingValues ->
+    Scaffold(snackbarHost = { SnackbarHost(snackbarHostState) }, topBar = {
+    }) { paddingValues ->
         Column(
             modifier = Modifier
                 .padding(paddingValues)
@@ -63,28 +64,35 @@ fun AddEditRecordScreen(
         ) {
             Row(horizontalArrangement = Arrangement.SpaceBetween) {
                 IconButton(onClick = {
-                    viewModel.onEvent(AddEditRecordEvent.SaveRecord)
+                    viewModel.onEvent(EditRecordEvent.SaveRecord)
+                    navController.navigateUp()
                 }) {
-                    Icon(imageVector = Icons.Rounded.Check, contentDescription = "Save icon")
+                    Icon(
+                        imageVector = Icons.Rounded.Check,
+                        contentDescription = "Save icon"
+                    )
                 }
                 IconButton(onClick = {
                     navController.navigateUp()
                 }) {
-                    Icon(imageVector = Icons.Rounded.Close, contentDescription = "Close icon")
+                    Icon(
+                        imageVector = Icons.Rounded.Close,
+                        contentDescription = "Close icon"
+                    )
                 }
             }
             TabRow(selectedTabIndex = tabState.index) {
                 Tab(
                     selected = !typeIsExpenses, onClick = {
                         viewModel.onEvent(
-                            AddEditRecordEvent.ChangeRecordType
+                            EditRecordEvent.ChangeRecordType
                         )
                     }) {
                     Text(text = "Income")
                 }
                 Tab(selected = typeIsExpenses, onClick = {
                     viewModel.onEvent(
-                        AddEditRecordEvent.ChangeRecordType
+                        EditRecordEvent.ChangeRecordType
                     )
                 }) {
                     Text(text = "Expenses")
@@ -95,7 +103,7 @@ fun AddEditRecordScreen(
                     value = amountState.value,
                     placeholder = { Text(text = "0") },
                     onValueChange = {
-                        viewModel.onEvent(AddEditRecordEvent.EnteredAmount(it))
+                        viewModel.onEvent(EditRecordEvent.EnteredAmount(it))
                     },
                     prefix = {
                         Text(text = if (typeIsExpenses) "-" else "+")

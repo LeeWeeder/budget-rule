@@ -2,6 +2,7 @@ package com.ljmaq.budgetrule.features.record.presentation.records
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -31,6 +32,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.ljmaq.budgetrule.features.record.domain.model.Category
+import com.ljmaq.budgetrule.features.record.presentation.records.add_record.AddRecordDialog
 import com.ljmaq.budgetrule.features.record.presentation.records.components.CategoryItem
 import com.ljmaq.budgetrule.features.record.presentation.records.components.GreetingsAppBar
 import com.ljmaq.budgetrule.features.record.presentation.records.components.RecordItem
@@ -49,70 +51,77 @@ fun RecordScreen(
     }
     val scope = rememberCoroutineScope()
 
-    Scaffold(
-        floatingActionButton = {
-            ExtendedFloatingActionButton(
-                text = {
-                    Text(text = "Create record")
-                },
-                icon = {
-                    Icon(imageVector = Icons.Rounded.Create, contentDescription = "Create icon")
-                },
-                onClick = {
-                    navController.navigate(Screen.AddEditRecordScreen.route)
-                })
-        },
-        snackbarHost = { SnackbarHost(snackbarHostState) },
-        topBar = {
-            GreetingsAppBar()
-        }) { paddingValues ->
-        Column(
-            modifier = Modifier
-                .padding(paddingValues)
-                .fillMaxSize()
-                .padding(horizontal = 12.dp)
-        ) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceAround,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Category.categories.forEach { category ->
-                    CategoryItem(
-                        category = category,
-                        modifier = Modifier.width(100.dp),
-                        isSelected = categoryState.selectedCategory == Category.categories.indexOf(category),
-                        onCategoryItemClick = {
-                            viewModel.onEvent(RecordsEvent.ChangeCategory(category))
-                        })
-                }
-            }
-            Spacer(modifier = Modifier.height(24.dp))
-            Text(text = "Records", style = MaterialTheme.typography.titleMedium)
-            Spacer(modifier = Modifier.height(12.dp))
-            LazyColumn(modifier = Modifier.fillMaxSize()) {
-                items(state.records) { record ->
-                    RecordItem(record = record, modifier = Modifier
-                        .fillMaxWidth()
-                        .clickable {
-                            navController.navigate(
-                                Screen.AddEditRecordScreen.route + "?recordId=${record.id}"
-                            )
-                        }, onDeleteClick = {
-                        viewModel.onEvent(RecordsEvent.DeleteRecord(record))
-                        scope.launch {
-                            val result = snackbarHostState.showSnackbar(
-                                message = "Record deleted",
-                                actionLabel = "Undo"
-                            )
+    val dialogState = viewModel.isDialogShowing.value
 
-                            if (result == SnackbarResult.ActionPerformed) {
-                                viewModel.onEvent(RecordsEvent.RestoreRecord)
-                            }
-                        }
+    Box {
+        Scaffold(
+            floatingActionButton = {
+                ExtendedFloatingActionButton(
+                    text = {
+                        Text(text = "Create record")
+                    },
+                    icon = {
+                        Icon(imageVector = Icons.Rounded.Create, contentDescription = "Create icon")
+                    },
+                    onClick = {
+                        viewModel.onEvent(RecordsEvent.CreateRecord)
                     })
+            },
+            snackbarHost = { SnackbarHost(snackbarHostState) },
+            topBar = {
+                GreetingsAppBar()
+            }) { paddingValues ->
+            Column(
+                modifier = Modifier
+                    .padding(paddingValues)
+                    .fillMaxSize()
+                    .padding(horizontal = 12.dp)
+            ) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceAround,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Category.categories.forEach { category ->
+                        CategoryItem(
+                            category = category,
+                            modifier = Modifier.width(100.dp),
+                            isSelected = categoryState.selectedCategory == Category.categories.indexOf(
+                                category
+                            ),
+                            onCategoryItemClick = {
+                                viewModel.onEvent(RecordsEvent.ChangeCategory(category))
+                            })
+                    }
+                }
+                Spacer(modifier = Modifier.height(24.dp))
+                Text(text = "Records", style = MaterialTheme.typography.titleMedium)
+                Spacer(modifier = Modifier.height(12.dp))
+                LazyColumn(modifier = Modifier.fillMaxSize()) {
+                    items(state.records) { record ->
+                        RecordItem(record = record, modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable {
+                                navController.navigate(
+                                    Screen.EditRecordScreen.route + "?recordId=${record.id}"
+                                )
+                            }, onDeleteClick = {
+                            viewModel.onEvent(RecordsEvent.DeleteRecord(record))
+                            scope.launch {
+                                val result = snackbarHostState.showSnackbar(
+                                    message = "Record deleted",
+                                    actionLabel = "Undo"
+                                )
+
+                                if (result == SnackbarResult.ActionPerformed) {
+                                    viewModel.onEvent(RecordsEvent.RestoreRecord)
+                                }
+                            }
+                        })
+                    }
                 }
             }
         }
+        if (dialogState) AddRecordDialog()
     }
 }
