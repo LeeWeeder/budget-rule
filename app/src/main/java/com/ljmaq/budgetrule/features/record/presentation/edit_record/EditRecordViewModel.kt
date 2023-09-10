@@ -1,4 +1,4 @@
-package com.ljmaq.budgetrule.features.record.presentation.add_edit_record
+package com.ljmaq.budgetrule.features.record.presentation.edit_record
 
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
@@ -15,7 +15,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class AddEditRecordViewModel @Inject constructor(
+class EditRecordViewModel @Inject constructor(
     private val recordsUseCases: RecordsUseCases,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
@@ -26,15 +26,15 @@ class AddEditRecordViewModel @Inject constructor(
     val typeIsExpenses: State<Boolean> = _typeIsExpenses
 
     private val _recordAmount = mutableStateOf(
-        RecordState.AmountTextFieldState()
+        EditRecordState.AmountTextFieldState()
     )
 
-    val recordAmount: State<RecordState.AmountTextFieldState> = _recordAmount
+    val recordAmount: State<EditRecordState.AmountTextFieldState> = _recordAmount
 
     private val _tabState = mutableStateOf(
-        RecordState.TabState()
+        EditRecordState.TabState()
     )
-    val tabState: State<RecordState.TabState> = _tabState
+    val tabState: State<EditRecordState.TabState> = _tabState
 
     private val _eventFlow = MutableSharedFlow<UiEvent>()
     val eventFlow = _eventFlow.asSharedFlow()
@@ -68,9 +68,9 @@ class AddEditRecordViewModel @Inject constructor(
         }
     }
 
-    fun onEvent(event: AddEditRecordEvent) {
+    fun onEvent(event: EditRecordEvent) {
         when (event) {
-            is AddEditRecordEvent.ChangeRecordType -> {
+            is EditRecordEvent.ChangeRecordType -> {
                 _typeIsExpenses.value = !typeIsExpenses.value
                 _tabState.value = tabState.value.copy(
                     index = if (typeIsExpenses.value) {
@@ -81,16 +81,16 @@ class AddEditRecordViewModel @Inject constructor(
                 )
             }
 
-            is AddEditRecordEvent.EnteredAmount -> {
+            is EditRecordEvent.EnteredAmount -> {
                 _recordAmount.value = recordAmount.value.copy(
                     value = event.value
                 )
             }
 
-            is AddEditRecordEvent.SaveRecord -> {
+            is EditRecordEvent.SaveRecord -> {
                 viewModelScope.launch {
                     try {
-                        (if (currentTimestamp == null) System.currentTimeMillis() else currentTimestamp)?.let {
+                        currentTimestamp?.let {
                             Record(
                                 timestamp = it,
                                 amount = if (typeIsExpenses.value) "-${recordAmount.value.value}" else recordAmount.value.value,
