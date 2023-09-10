@@ -1,22 +1,16 @@
 package com.ljmaq.budgetrule.features.record.presentation.records.add_record
 
-import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Check
 import androidx.compose.material.icons.rounded.Close
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -28,9 +22,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
@@ -78,12 +69,7 @@ fun AddRecordDialog(
         )
     ) {
         Scaffold(snackbarHost = { SnackbarHost(snackbarHostState) }, topBar = {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 8.dp),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
+            Row(modifier = Modifier.fillMaxWidth().padding(horizontal = 12.dp), horizontalArrangement = Arrangement.SpaceBetween) {
                 IconButton(onClick = {
                     recordsViewModel.onEvent(RecordsEvent.CancelCreateRecord)
                 }) {
@@ -107,35 +93,21 @@ fun AddRecordDialog(
                     .padding(paddingValues)
                     .fillMaxSize()
             ) {
-                Spacer(modifier = Modifier.height(12.dp))
-                TabRow(selectedTabIndex = tabState.index,
-                    modifier = Modifier
-                        .padding(vertical = 4.dp, horizontal = 8.dp)
-                        .clip(MaterialTheme.shapes.extraLarge)
-                        .border(
-                            BorderStroke(Dp.Hairline, MaterialTheme.colorScheme.outline),
-                            MaterialTheme.shapes.extraLarge
-                        ),
-                    indicator = {}, divider = {}) {
-                    val secondaryColor = MaterialTheme.colorScheme.secondary
-                    val onSecondaryColor = MaterialTheme.colorScheme.onSecondary
-
-                    val modifier = Modifier.padding(15.dp)
+                TabRow(selectedTabIndex = tabState.index) {
                     Tab(
                         selected = !typeIsExpenses, onClick = {
                             viewModel.onEvent(
                                 AddRecordEvent.ChangeRecordType
                             )
-                        }, modifier = Modifier.background(if (!typeIsExpenses) secondaryColor else Color.Transparent)
-                    ) {
-                        Text(text = "INCOME", modifier = modifier, color = if (!typeIsExpenses) onSecondaryColor else secondaryColor)
+                        }) {
+                        Text(text = "Income")
                     }
                     Tab(selected = typeIsExpenses, onClick = {
                         viewModel.onEvent(
                             AddRecordEvent.ChangeRecordType
                         )
-                    }, modifier = Modifier.background(if (typeIsExpenses) secondaryColor else Color.Transparent)) {
-                        Text(text = "EXPENSES", modifier = modifier, color = if (typeIsExpenses) onSecondaryColor else secondaryColor)
+                    }) {
+                        Text(text = "Expenses")
                     }
                 }
                 Row(modifier = Modifier.fillMaxWidth()) {
