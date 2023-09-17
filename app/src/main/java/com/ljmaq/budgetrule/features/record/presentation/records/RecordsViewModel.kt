@@ -55,6 +55,7 @@ class RecordsViewModel @Inject constructor(
                 )
             }
             is RecordsEvent.CreateRecord -> {
+
                 _isDialogShowing.value = !isDialogShowing.value
             }
             is RecordsEvent.CancelCreateRecord -> {

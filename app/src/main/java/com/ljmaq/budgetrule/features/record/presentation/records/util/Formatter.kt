@@ -36,9 +36,36 @@ class Formatter {
 
         fun formatCurrency(amount: String): String {
             val currency = NumberFormat.getCurrencyInstance()
-            currency.maximumFractionDigits = 2
+            currency.maximumFractionDigits = 16
+            currency.maximumIntegerDigits = 12
             currency.currency = Currency.getInstance("PHP")
             return currency.format(amount.toDouble())
+        }
+
+        fun formatNumber(amount: String): String {
+            val integer: String
+            var decimal = ""
+            if (amount.contains('.')) {
+                decimal = amount.substringAfter('.')
+                if (amount.substringBefore('.').length > 3) {
+                    integer = amount.substringBefore('.')
+                } else {
+                    return amount
+                }
+            } else {
+                if (amount.length > 3) integer = amount else return amount
+            }
+
+            var formatted = ""
+
+            integer.reversed().chunked(3).forEachIndexed { index, s ->
+                if (index == 0)
+                    formatted += s
+                else
+                    formatted += ",$s"
+            }
+
+            return if (amount.contains('.')) "${formatted.reversed()}.$decimal" else formatted.reversed()
         }
     }
 }

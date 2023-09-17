@@ -33,6 +33,12 @@ class AddRecordViewModel @Inject constructor(
     )
     val tabState: State<AddRecordState.TabState> = _tabState
 
+    private val _amountTextFieldFontSizeState = mutableStateOf(
+        AddRecordState.AmountTextFieldFontSizeState()
+    )
+    val amountTextFieldFontSizeState: State<AddRecordState.AmountTextFieldFontSizeState> =
+        _amountTextFieldFontSizeState
+
     private val _eventFlow = MutableSharedFlow<UiEvent>()
     val eventFlow = _eventFlow.asSharedFlow()
 
@@ -48,6 +54,7 @@ class AddRecordViewModel @Inject constructor(
                             index = 1
                         )
                     }
+
                     1 -> {
                         _typeIsExpenses.value = true
                         _tabState.value = tabState.value.copy(
@@ -59,7 +66,20 @@ class AddRecordViewModel @Inject constructor(
 
             is AddRecordEvent.EnteredAmount -> {
                 _recordAmount.value = recordAmount.value.copy(
-                    value = event.value
+                    value = if ((recordAmount.value.value.contains('.') && event.value.endsWith('.')) || event.value.length > 28) {
+                        event.value.dropLast(1)
+                    } else if (recordAmount.value.value.startsWith('0')) {
+                        if (event.value.contains('.'))
+                            event.value
+                        else if (event.value.isEmpty())
+                            AddRecordState.AmountTextFieldState().value
+                        else
+                            event.value.removePrefix("0")
+                    } else if (event.value.isEmpty()) {
+                        AddRecordState.AmountTextFieldState().value
+                    } else {
+                        event.value
+                    }
                 )
             }
 
@@ -76,6 +96,7 @@ class AddRecordViewModel @Inject constructor(
                         )
                         _eventFlow.emit(UiEvent.SaveRecord)
                         _recordAmount.value = AddRecordState.AmountTextFieldState()
+                        _amountTextFieldFontSizeState.value = AddRecordState.AmountTextFieldFontSizeState()
                     } catch (e: InvalidRecordException) {
                         _eventFlow.emit(
                             UiEvent.ShowSnackbar(
@@ -84,6 +105,21 @@ class AddRecordViewModel @Inject constructor(
                         )
                     }
                 }
+            }
+
+            is AddRecordEvent.BackSpace -> {
+                _amountTextFieldFontSizeState.value = amountTextFieldFontSizeState.value.copy(
+                    value = if (amountTextFieldFontSizeState.value.value < 100 && recordAmount.value.value.length > 7)
+                        amountTextFieldFontSizeState.value.value + 5
+                    else
+                        100
+                )
+            }
+
+            is AddRecordEvent.OverflowAmountTextField -> {
+                _amountTextFieldFontSizeState.value = amountTextFieldFontSizeState.value.copy(
+                    value = amountTextFieldFontSizeState.value.value - 5
+                )
             }
         }
     }
