@@ -31,7 +31,7 @@ fun KeyButton(
     contentDescription: String?,
     onClick: () -> Unit
 ) {
-    Button(onClick = onClick, colors = ButtonDefaults.outlinedButtonColors(), modifier = Modifier
+    Button(onClick = onClick, colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colorScheme.tertiary), modifier = Modifier
         .width(85.dp)
         .height(70.dp), shape = MaterialTheme.shapes.extraLarge) {
         Icon(imageVector = icon, contentDescription = contentDescription)
@@ -43,7 +43,7 @@ fun KeyButton(
     operation: Char,
     onClick: () -> Unit
 ) {
-    Button(onClick = onClick, colors = ButtonDefaults.filledTonalButtonColors(), modifier = Modifier
+    Button(onClick = onClick, colors = if (operation == '=') ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.secondary, contentColor = MaterialTheme.colorScheme.onSecondary) else ButtonDefaults.filledTonalButtonColors(), modifier = Modifier
         .width(85.dp)
         .height(55.dp), shape = MaterialTheme.shapes.extraLarge) {
         Text(text = operation.toString(), style = MaterialTheme.typography.displaySmall, textAlign = TextAlign.Center)

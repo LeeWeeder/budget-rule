@@ -9,8 +9,7 @@ import androidx.compose.ui.Modifier
 
 @Composable
 fun ButtonRow(content: @Composable (RowScope.() -> Unit)) {
-    Row(horizontalArrangement = Arrangement.SpaceBetween, modifier = Modifier.fillMaxWidth(0.75f)) {
+    Row(horizontalArrangement = Arrangement.SpaceBetween, modifier = Modifier.fillMaxWidth(0.74f)) {
         content.invoke(this)
     }
 }
-
