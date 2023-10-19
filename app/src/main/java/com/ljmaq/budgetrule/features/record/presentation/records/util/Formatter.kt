@@ -45,6 +45,7 @@ class Formatter {
         fun formatNumber(amount: String): String {
             val integer: String
             var decimal = ""
+            if (amount == "Error") return amount
             if (amount.contains('.')) {
                 decimal = amount.substringAfter('.')
                 if (amount.substringBefore('.').length > 3) {
@@ -59,10 +60,10 @@ class Formatter {
             var formatted = ""
 
             integer.reversed().chunked(3).forEachIndexed { index, s ->
-                if (index == 0)
-                    formatted += s
+                formatted += if (index == 0)
+                    s
                 else
-                    formatted += ",$s"
+                    ",$s"
             }
 
             return if (amount.contains('.')) "${formatted.reversed()}.$decimal" else formatted.reversed()

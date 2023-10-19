@@ -200,55 +200,48 @@ fun AddRecordDialog(
                     ) {
                         ButtonRow {
                             KeyButton(number = "7") {
-                                viewModel.onEvent(AddRecordEvent.EnteredAmount(amountState.value + "7"))
+                                viewModel.onEvent(AddRecordEvent.EnteredAmount("7"))
                             }
                             KeyButton(number = "8") {
-                                viewModel.onEvent(AddRecordEvent.EnteredAmount(amountState.value + "8"))
+                                viewModel.onEvent(AddRecordEvent.EnteredAmount("8"))
                             }
                             KeyButton(number = "9") {
-                                viewModel.onEvent(AddRecordEvent.EnteredAmount(amountState.value + "9"))
+                                viewModel.onEvent(AddRecordEvent.EnteredAmount("9"))
                             }
                         }
                         ButtonRow {
                             KeyButton(number = "4") {
-                                viewModel.onEvent(AddRecordEvent.EnteredAmount(amountState.value + "4"))
+                                viewModel.onEvent(AddRecordEvent.EnteredAmount("4"))
                             }
                             KeyButton(number = "5") {
-                                viewModel.onEvent(AddRecordEvent.EnteredAmount(amountState.value + "5"))
+                                viewModel.onEvent(AddRecordEvent.EnteredAmount("5"))
                             }
                             KeyButton(number = "6") {
-                                viewModel.onEvent(AddRecordEvent.EnteredAmount(amountState.value + "6"))
+                                viewModel.onEvent(AddRecordEvent.EnteredAmount("6"))
                             }
                         }
                         ButtonRow {
                             KeyButton(number = "1") {
-                                viewModel.onEvent(AddRecordEvent.EnteredAmount(amountState.value + "1"))
+                                viewModel.onEvent(AddRecordEvent.EnteredAmount("1"))
                             }
                             KeyButton(number = "2") {
-                                viewModel.onEvent(AddRecordEvent.EnteredAmount(amountState.value + "2"))
+                                viewModel.onEvent(AddRecordEvent.EnteredAmount("2"))
                             }
                             KeyButton(number = "3") {
-                                viewModel.onEvent(AddRecordEvent.EnteredAmount(amountState.value + "3"))
+                                viewModel.onEvent(AddRecordEvent.EnteredAmount("3"))
                             }
                         }
                         ButtonRow {
-                            KeyButton(number = ".") {
-                                viewModel.onEvent(AddRecordEvent.EnteredAmount(amountState.value + "."))
+                            KeyButton {
+                                viewModel.onEvent(AddRecordEvent.EnteredDecimal)
                             }
                             KeyButton(number = "0") {
-                                viewModel.onEvent(AddRecordEvent.EnteredAmount(amountState.value + "0"))
+                                viewModel.onEvent(AddRecordEvent.EnteredAmount("0"))
                             }
                             KeyButton(
                                 icon = Icons.Default.Backspace,
                                 contentDescription = "Backspace icon"
                             ) {
-                                viewModel.onEvent(
-                                    AddRecordEvent.EnteredAmount(
-                                        amountState.value.dropLast(
-                                            1
-                                        )
-                                    )
-                                )
                                 viewModel.onEvent(AddRecordEvent.BackSpace)
                             }
                         }
@@ -258,31 +251,22 @@ fun AddRecordDialog(
                         modifier = Modifier.fillMaxHeight()
                     ) {
                         KeyButton(operation = '/') {
-                            viewModel.onEvent(AddRecordEvent.EnteredAmount("/"))
+                            viewModel.onEvent(AddRecordEvent.EnteredOperation('/'))
                         }
                         KeyButton(operation = '*') {
-                            viewModel.onEvent(AddRecordEvent.EnteredAmount("*"))
+                            viewModel.onEvent(AddRecordEvent.EnteredOperation('*'))
                         }
                         KeyButton(operation = '-') {
-                            viewModel.onEvent(AddRecordEvent.EnteredAmount("-"))
+                            viewModel.onEvent(AddRecordEvent.EnteredOperation('-'))
                         }
                         KeyButton(operation = '+') {
-                            viewModel.onEvent(AddRecordEvent.EnteredAmount("+"))
+                            viewModel.onEvent(AddRecordEvent.EnteredOperation('+'))
                         }
                         KeyButton(operation = '=') {
-                            viewModel.onEvent(AddRecordEvent.EnteredAmount("="))
+                            viewModel.onEvent(AddRecordEvent.Equals)
                         }
                     }
                 }
-                /*Row(modifier = Modifier.fillMaxWidth()) {
-                    AmountTextField(
-                        value = amountState.value,
-                        onValueChange = {
-                            viewModel.onEvent(AddRecordEvent.EnteredAmount(it))
-                        },
-                        isExpenses = typeIsExpenses
-                    )
-                }*/
             }
         }
     }

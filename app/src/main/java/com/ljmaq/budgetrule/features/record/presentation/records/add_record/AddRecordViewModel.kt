@@ -66,20 +66,7 @@ class AddRecordViewModel @Inject constructor(
 
             is AddRecordEvent.EnteredAmount -> {
                 _recordAmount.value = recordAmount.value.copy(
-                    value = if ((recordAmount.value.value.contains('.') && event.value.endsWith('.')) || event.value.length > 28) {
-                        event.value.dropLast(1)
-                    } else if (recordAmount.value.value.startsWith('0')) {
-                        if (event.value.contains('.'))
-                            event.value
-                        else if (event.value.isEmpty())
-                            AddRecordState.AmountTextFieldState().value
-                        else
-                            event.value.removePrefix("0")
-                    } else if (event.value.isEmpty()) {
-                        AddRecordState.AmountTextFieldState().value
-                    } else {
-                        event.value
-                    }
+                    value = recordAmount.value.value + event.value
                 )
             }
 
@@ -96,7 +83,8 @@ class AddRecordViewModel @Inject constructor(
                         )
                         _eventFlow.emit(UiEvent.SaveRecord)
                         _recordAmount.value = AddRecordState.AmountTextFieldState()
-                        _amountTextFieldFontSizeState.value = AddRecordState.AmountTextFieldFontSizeState()
+                        _amountTextFieldFontSizeState.value =
+                            AddRecordState.AmountTextFieldFontSizeState()
                     } catch (e: InvalidRecordException) {
                         _eventFlow.emit(
                             UiEvent.ShowSnackbar(
@@ -112,7 +100,13 @@ class AddRecordViewModel @Inject constructor(
                     value = if (amountTextFieldFontSizeState.value.value < 100 && recordAmount.value.value.length > 7)
                         amountTextFieldFontSizeState.value.value + 5
                     else
-                        100
+                        AddRecordState.AmountTextFieldFontSizeState().value
+                )
+                _recordAmount.value = recordAmount.value.copy(
+                    value = if (recordAmount.value.value.length > 1)
+                        recordAmount.value.value.dropLast(1)
+                    else
+                        AddRecordState.AmountTextFieldState().value
                 )
             }
 
@@ -120,6 +114,22 @@ class AddRecordViewModel @Inject constructor(
                 _amountTextFieldFontSizeState.value = amountTextFieldFontSizeState.value.copy(
                     value = amountTextFieldFontSizeState.value.value - 5
                 )
+            }
+
+            is AddRecordEvent.EnteredOperation -> {
+
+            }
+
+            is AddRecordEvent.Equals -> {
+
+            }
+
+            is AddRecordEvent.EnteredDecimal -> {
+                if (!recordAmount.value.value.contains(".")) {
+                    _recordAmount.value = recordAmount.value.copy(
+                        value = recordAmount.value.value + "."
+                    )
+                }
             }
         }
     }

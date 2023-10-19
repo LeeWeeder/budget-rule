@@ -13,14 +13,14 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 
+val modifier = Modifier.width(85.dp).height(70.dp)
+
 @Composable
 fun KeyButton(
     number: String,
     onClick: () -> Unit
 ) {
-    Button(onClick = onClick, colors = ButtonDefaults.outlinedButtonColors(), modifier = Modifier
-        .width(85.dp)
-        .height(70.dp), shape = MaterialTheme.shapes.extraLarge) {
+    Button(onClick = onClick, colors = ButtonDefaults.outlinedButtonColors(), modifier = modifier, shape = MaterialTheme.shapes.extraLarge) {
         Text(text = number, style = MaterialTheme.typography.displaySmall, textAlign = TextAlign.Center)
     }
 }
@@ -31,9 +31,7 @@ fun KeyButton(
     contentDescription: String?,
     onClick: () -> Unit
 ) {
-    Button(onClick = onClick, colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colorScheme.tertiary), modifier = Modifier
-        .width(85.dp)
-        .height(70.dp), shape = MaterialTheme.shapes.extraLarge) {
+    Button(onClick = onClick, colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colorScheme.tertiary), modifier = modifier, shape = MaterialTheme.shapes.extraLarge) {
         Icon(imageVector = icon, contentDescription = contentDescription)
     }
 }
@@ -47,5 +45,14 @@ fun KeyButton(
         .width(85.dp)
         .height(55.dp), shape = MaterialTheme.shapes.extraLarge) {
         Text(text = operation.toString(), style = MaterialTheme.typography.displaySmall, textAlign = TextAlign.Center)
+    }
+}
+
+@Composable
+fun KeyButton(
+    onClick: () -> Unit
+) {
+    Button(onClick = onClick, colors = ButtonDefaults.outlinedButtonColors(), modifier = modifier, shape = MaterialTheme.shapes.extraLarge) {
+        Text(text = ".", style = MaterialTheme.typography.displaySmall, textAlign = TextAlign.Center)
     }
 }
