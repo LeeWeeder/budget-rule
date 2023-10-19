@@ -66,7 +66,7 @@ class AddRecordViewModel @Inject constructor(
 
             is AddRecordEvent.EnteredAmount -> {
                 _recordAmount.value = recordAmount.value.copy(
-                    value = recordAmount.value.value + event.value
+                    value = if (recordAmount.value.value == "0") event.value else recordAmount.value.value + event.value
                 )
             }
 
