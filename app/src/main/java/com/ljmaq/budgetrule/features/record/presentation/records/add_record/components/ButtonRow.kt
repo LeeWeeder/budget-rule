@@ -8,8 +8,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 
 @Composable
-fun ButtonRow(content: @Composable (RowScope.() -> Unit)) {
-    Row(horizontalArrangement = Arrangement.SpaceBetween, modifier = Modifier.fillMaxWidth(0.74f)) {
+fun ButtonRow(modifier: Modifier = Modifier, content: @Composable (RowScope.() -> Unit)) {
+    Row(horizontalArrangement = Arrangement.SpaceEvenly, modifier = modifier.fillMaxWidth()) {
         content.invoke(this)
     }
 }

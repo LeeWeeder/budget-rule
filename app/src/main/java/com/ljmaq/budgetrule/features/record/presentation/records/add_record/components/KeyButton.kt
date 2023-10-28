@@ -1,6 +1,6 @@
 package com.ljmaq.budgetrule.features.record.presentation.records.add_record.components
 
-import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -13,14 +13,13 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 
-val modifier = Modifier.width(85.dp).height(70.dp)
-
+val modifier = Modifier.width(120.dp)
 @Composable
 fun KeyButton(
     number: String,
     onClick: () -> Unit
 ) {
-    Button(onClick = onClick, colors = ButtonDefaults.outlinedButtonColors(), modifier = modifier, shape = MaterialTheme.shapes.extraLarge) {
+    Button(onClick = onClick, colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.65f), contentColor = MaterialTheme.colorScheme.onSurfaceVariant), shape = MaterialTheme.shapes.extraLarge, modifier = modifier) {
         Text(text = number, style = MaterialTheme.typography.displaySmall, textAlign = TextAlign.Center)
     }
 }
@@ -31,28 +30,16 @@ fun KeyButton(
     contentDescription: String?,
     onClick: () -> Unit
 ) {
-    Button(onClick = onClick, colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colorScheme.tertiary), modifier = modifier, shape = MaterialTheme.shapes.extraLarge) {
+    Button(onClick = onClick, colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.tertiary, contentColor = MaterialTheme.colorScheme.onTertiary), shape = MaterialTheme.shapes.extraLarge, modifier = modifier.fillMaxHeight(0.75f)) {
         Icon(imageVector = icon, contentDescription = contentDescription)
     }
 }
 
 @Composable
 fun KeyButton(
-    operation: Char,
     onClick: () -> Unit
 ) {
-    Button(onClick = onClick, colors = if (operation == '=') ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.secondary, contentColor = MaterialTheme.colorScheme.onSecondary) else ButtonDefaults.filledTonalButtonColors(), modifier = Modifier
-        .width(85.dp)
-        .height(55.dp), shape = MaterialTheme.shapes.extraLarge) {
-        Text(text = operation.toString(), style = MaterialTheme.typography.displaySmall, textAlign = TextAlign.Center)
-    }
-}
-
-@Composable
-fun KeyButton(
-    onClick: () -> Unit
-) {
-    Button(onClick = onClick, colors = ButtonDefaults.outlinedButtonColors(), modifier = modifier, shape = MaterialTheme.shapes.extraLarge) {
+    Button(onClick = onClick, colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.65f), contentColor = MaterialTheme.colorScheme.onSurfaceVariant), shape = MaterialTheme.shapes.extraLarge, modifier = modifier) {
         Text(text = ".", style = MaterialTheme.typography.displaySmall, textAlign = TextAlign.Center)
     }
 }

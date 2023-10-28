@@ -66,7 +66,7 @@ class AddRecordViewModel @Inject constructor(
 
             is AddRecordEvent.EnteredAmount -> {
                 _recordAmount.value = recordAmount.value.copy(
-                    value = if (recordAmount.value.value == "0") event.value else recordAmount.value.value + event.value
+                        value = if (recordAmount.value.value == "0") event.value else recordAmount.value.value + event.value
                 )
             }
 
@@ -86,11 +86,16 @@ class AddRecordViewModel @Inject constructor(
                         _amountTextFieldFontSizeState.value =
                             AddRecordState.AmountTextFieldFontSizeState()
                     } catch (e: InvalidRecordException) {
-                        _eventFlow.emit(
-                            UiEvent.ShowSnackbar(
-                                message = e.message ?: "Couldn't save record"
+                        if (e.message == "The amount can't be empty") {
+                            println(e.message)
+                            _eventFlow.emit(
+                                UiEvent.ShowAmountWarningDialog
                             )
-                        )
+                        } else {
+                            _eventFlow.emit(
+                                UiEvent.ShowSnackbar(e.message ?: "Couldn't save record")
+                            )
+                        }
                     }
                 }
             }
@@ -116,16 +121,8 @@ class AddRecordViewModel @Inject constructor(
                 )
             }
 
-            is AddRecordEvent.EnteredOperation -> {
-
-            }
-
-            is AddRecordEvent.Equals -> {
-
-            }
-
             is AddRecordEvent.EnteredDecimal -> {
-                if (!recordAmount.value.value.contains(".")) {
+                if (!recordAmount.value.value.contains('.')) {
                     _recordAmount.value = recordAmount.value.copy(
                         value = recordAmount.value.value + "."
                     )
@@ -137,5 +134,6 @@ class AddRecordViewModel @Inject constructor(
     sealed class UiEvent {
         data class ShowSnackbar(val message: String) : UiEvent()
         data object SaveRecord : UiEvent()
+        data object ShowAmountWarningDialog : UiEvent()
     }
 }

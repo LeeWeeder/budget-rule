@@ -121,6 +121,6 @@ fun RecordScreen(
                 }
             }
         }
-        if (dialogState) AddRecordDialog()
+        if (dialogState) AddRecordDialog(snackbarHostState = snackbarHostState, scope = scope)
     }
 }
