@@ -78,7 +78,8 @@ class RecordsViewModel @Inject constructor(
                     _selectedRecords.add(event.record)
                 }
             }
-            RecordsEvent.ChangeSelectionMode -> {
+
+            is RecordsEvent.ChangeSelectionMode -> {
                 if (isOnSelectionMode.value) {
                     _selectedRecords.clear()
                 }
@@ -87,6 +88,18 @@ class RecordsViewModel @Inject constructor(
 
             is RecordsEvent.ResetRecentlyDeletedRecord -> {
                 recentlyDeletedRecord.clear()
+            }
+
+            is RecordsEvent.AddAllToSelection -> {
+                state.value.records.forEach { record ->
+                    if (!selectedRecords.contains(record)) {
+                        _selectedRecords.add(record)
+                    }
+                }
+            }
+
+            is RecordsEvent.RemoveAllFromSelection -> {
+                _selectedRecords.removeAll(state.value.records)
             }
         }
     }
