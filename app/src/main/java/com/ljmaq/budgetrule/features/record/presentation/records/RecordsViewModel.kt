@@ -72,10 +72,14 @@ class RecordsViewModel @Inject constructor(
             }
 
             is RecordsEvent.AddToSelection -> {
+                if (!selectedRecords.contains(event.record)) {
+                    _selectedRecords.add(event.record)
+                }
+            }
+
+            is RecordsEvent.RemoveFromSelection -> {
                 if (selectedRecords.contains(event.record)) {
                     _selectedRecords.remove(event.record)
-                } else {
-                    _selectedRecords.add(event.record)
                 }
             }
 

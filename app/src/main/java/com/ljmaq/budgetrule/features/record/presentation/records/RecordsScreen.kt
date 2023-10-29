@@ -215,7 +215,11 @@ fun RecordScreen(
                             .combinedClickable(
                                 onClick = {
                                     if (isOnSelectionMode) {
-                                        viewModel.onEvent(RecordsEvent.AddToSelection(record))
+                                        if (selectedRecords.contains(record)) {
+                                            viewModel.onEvent(RecordsEvent.RemoveFromSelection(record))
+                                        } else {
+                                            viewModel.onEvent(RecordsEvent.AddToSelection(record))
+                                        }
                                         if (selectedRecords.size < 1) {
                                             viewModel.onEvent(RecordsEvent.ChangeSelectionMode)
                                         }
@@ -226,8 +230,49 @@ fun RecordScreen(
                                     }
                                 },
                                 onLongClick = {
-                                    viewModel.onEvent(RecordsEvent.ChangeSelectionMode)
-                                    viewModel.onEvent(RecordsEvent.AddToSelection(record))
+                                    if (isOnSelectionMode) {
+                                        if (selectedRecords.contains(record)) {
+                                            return@combinedClickable
+                                        }
+                                        viewModel.onEvent(RecordsEvent.AddToSelection(record))
+                                        var first = -1
+                                        var last = -1
+                                        state.records.forEachIndexed { index, record ->
+                                            if (selectedRecords.contains(record)) {
+                                                if (first == -1 || index < first) {
+                                                    first = index
+                                                }
+                                                if (last == -1 || index > last) {
+                                                    last = index
+                                                }
+                                            }
+                                        }
+
+                                        if (first < last) {
+                                            val temp = mutableListOf(selectedRecords.first())
+                                            temp.addAll(state.records.subList(first, last))
+                                            temp.forEach { record ->
+                                                viewModel.onEvent(
+                                                    RecordsEvent.AddToSelection(
+                                                        record
+                                                    )
+                                                )
+                                            }
+                                        } else {
+                                            val temp = mutableListOf(selectedRecords.last())
+                                            temp.addAll(state.records.subList(last, first))
+                                            temp.forEach { record ->
+                                                viewModel.onEvent(
+                                                    RecordsEvent.AddToSelection(
+                                                        record
+                                                    )
+                                                )
+                                            }
+                                        }
+                                    } else {
+                                        viewModel.onEvent(RecordsEvent.ChangeSelectionMode)
+                                        viewModel.onEvent(RecordsEvent.AddToSelection(record))
+                                    }
                                 }
                             )
                             .background(if (selectedRecords.contains(record)) MaterialTheme.colorScheme.surfaceVariant else MaterialTheme.colorScheme.surface)

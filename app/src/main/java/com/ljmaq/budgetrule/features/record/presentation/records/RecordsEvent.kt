@@ -11,6 +11,7 @@ sealed class RecordsEvent {
     data object CancelCreateRecord: RecordsEvent()
     data object ChangeSelectionMode: RecordsEvent()
     data class AddToSelection(val record: Record): RecordsEvent()
+    data class RemoveFromSelection(val record: Record): RecordsEvent()
     data object ResetRecentlyDeletedRecord: RecordsEvent()
     data object AddAllToSelection: RecordsEvent()
     data object RemoveAllFromSelection: RecordsEvent()
