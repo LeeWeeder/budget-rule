@@ -95,8 +95,8 @@ fun RecordScreen(
                             isDeleteConfirmationOpen.value = false
                             selectedRecords.forEach { record ->
                                 viewModel.onEvent(RecordsEvent.DeleteRecord(record))
-                                viewModel.onEvent(RecordsEvent.ChangeSelectionMode)
                             }
+                            viewModel.onEvent(RecordsEvent.ChangeSelectionMode)
                             scope.launch {
                                 val result = snackbarHostState.showSnackbar(
                                     message = "${if (selectedRecords.size > 1) "Records" else "Record"} deleted",
@@ -106,7 +106,6 @@ fun RecordScreen(
 
                                 if (result == SnackbarResult.ActionPerformed) {
                                     viewModel.onEvent(RecordsEvent.RestoreRecord)
-                                    viewModel.onEvent(RecordsEvent.ChangeSelectionMode)
                                     snackbarHostState.showSnackbar(
                                         message = "${if (selectedRecords.size > 1) "Records" else "Record"} restored",
                                         withDismissAction = true
