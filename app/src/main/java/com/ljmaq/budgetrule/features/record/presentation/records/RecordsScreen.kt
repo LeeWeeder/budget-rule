@@ -1,5 +1,6 @@
 package com.ljmaq.budgetrule.features.record.presentation.records
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.combinedClickable
@@ -66,6 +67,10 @@ fun RecordScreen(
     val addRecordDialogState = viewModel.isAddRecordDialogShowing.value
     val isDeleteConfirmationOpen = remember {
         mutableStateOf(false)
+    }
+
+    BackHandler(enabled = isOnSelectionMode) {
+        viewModel.onEvent(RecordsEvent.ChangeSelectionMode)
     }
 
     Box {
