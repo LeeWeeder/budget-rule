@@ -4,6 +4,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.SelectAll
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -19,7 +20,10 @@ fun OnSelectionModeTopAppBar(
     selectedRecords: SnapshotStateList<Record>,
     onNavigationIconButtonClick: () -> Unit,
     onEditIconButtonClick: () -> Unit,
-    onDeleteIconButtonClick: () -> Unit
+    onDeleteIconButtonClick: () -> Unit,
+    onSelectAllIconButtonClick: () -> Unit,
+    onUnselectAllIconButtonClick: () -> Unit,
+    isAllRecordsSelected: Boolean
 ) {
     val numberOfItemSelected = selectedRecords.size.toString()
     TopAppBar(
@@ -34,6 +38,12 @@ fun OnSelectionModeTopAppBar(
                 IconButton(onClick = onEditIconButtonClick) {
                     Icon(imageVector = Icons.Default.Edit, contentDescription = "Edit icon")
                 }
+            }
+            IconButton(onClick = if (isAllRecordsSelected) onUnselectAllIconButtonClick else onSelectAllIconButtonClick) {
+                Icon(
+                    imageVector = Icons.Default.SelectAll,
+                    contentDescription = "Select all icon"
+                )
             }
             IconButton(onClick = onDeleteIconButtonClick) {
                 Icon(imageVector = Icons.Default.Delete, contentDescription = "Delete icon")

@@ -70,7 +70,8 @@ fun RecordScreen(
 
     Box {
         if (isDeleteConfirmationOpen.value) {
-            AlertDialog(onDismissRequest = { isDeleteConfirmationOpen.value = false },
+            AlertDialog(
+                onDismissRequest = { isDeleteConfirmationOpen.value = false },
                 modifier = Modifier
                     .background(
                         color = MaterialTheme.colorScheme.surface,
@@ -83,9 +84,15 @@ fun RecordScreen(
                     )
             ) {
                 Column(modifier = Modifier.fillMaxWidth()) {
-                    Text(text = "Delete selected records?", color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    Text(
+                        text = "Delete selected records?",
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
                     Spacer(modifier = Modifier.height(24.dp))
-                    Row(horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.End), modifier = Modifier.fillMaxWidth()) {
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.End),
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
                         TextButton(onClick = {
                             isDeleteConfirmationOpen.value = false
                         }) {
@@ -134,6 +141,7 @@ fun RecordScreen(
                     },
                     onClick = {
                         viewModel.onEvent(RecordsEvent.CreateRecord)
+                        if (isOnSelectionMode) viewModel.onEvent(RecordsEvent.ChangeSelectionMode)
                     })
             },
             snackbarHost = { SnackbarHost(snackbarHostState) },
@@ -151,7 +159,15 @@ fun RecordScreen(
                         },
                         onDeleteIconButtonClick = {
                             isDeleteConfirmationOpen.value = true
-                        }
+                        },
+                        onSelectAllIconButtonClick = {
+                            viewModel.onEvent(RecordsEvent.AddAllToSelection)
+                        },
+                        onUnselectAllIconButtonClick = {
+                            viewModel.onEvent(RecordsEvent.RemoveAllFromSelection)
+                            viewModel.onEvent(RecordsEvent.ChangeSelectionMode)
+                        },
+                        isAllRecordsSelected = state.records.size == selectedRecords.size
                     )
                 } else {
                     GreetingsAppBar()
@@ -210,7 +226,7 @@ fun RecordScreen(
                                 }
                             )
                             .background(if (selectedRecords.contains(record)) MaterialTheme.colorScheme.surfaceVariant else MaterialTheme.colorScheme.surface)
-                            )
+                        )
                     }
                 }
             }
