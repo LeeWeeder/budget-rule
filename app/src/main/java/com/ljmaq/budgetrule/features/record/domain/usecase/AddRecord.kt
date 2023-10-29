@@ -9,7 +9,7 @@ class AddRecord(
 ) {
     @Throws(InvalidRecordException::class)
     suspend operator fun invoke(record: Record) {
-        if (record.amount == "0") {
+        if (record.amount == "0" || record.amount == "-0") {
             throw InvalidRecordException("The amount can't be empty")
         }
 

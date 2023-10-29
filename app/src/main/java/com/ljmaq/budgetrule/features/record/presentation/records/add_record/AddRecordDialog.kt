@@ -15,7 +15,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Remove
 import androidx.compose.material.icons.outlined.Backspace
-import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.rounded.Check
 import androidx.compose.material.icons.rounded.Close
 import androidx.compose.material3.AlertDialog
@@ -118,11 +117,6 @@ fun AddRecordDialog(
                 ) {
                     Column(horizontalAlignment = Alignment.End) {
                         Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                            Icon(
-                                imageVector = Icons.Outlined.Info,
-                                contentDescription = "Warning icon"
-                            )
-                            Spacer(modifier = Modifier.height(20.dp))
                             Text(text = "Amount can't be empty. Please enter some value")
                         }
                         TextButton(onClick = { isAlertDialogOpen.value = false }) {

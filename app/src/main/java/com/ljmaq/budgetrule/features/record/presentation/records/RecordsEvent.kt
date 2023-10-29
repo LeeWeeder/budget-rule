@@ -9,4 +9,7 @@ sealed class RecordsEvent {
     data class ChangeCategory(val category: Category): RecordsEvent()
     data object CreateRecord: RecordsEvent()
     data object CancelCreateRecord: RecordsEvent()
+    data object ChangeSelectionMode: RecordsEvent()
+    data class AddToSelection(val record: Record): RecordsEvent()
+    data object ResetRecentlyDeletedRecord: RecordsEvent()
 }

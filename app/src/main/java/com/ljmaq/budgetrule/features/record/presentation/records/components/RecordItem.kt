@@ -23,7 +23,6 @@ import com.ljmaq.budgetrule.features.record.presentation.records.util.Formatter
 fun RecordItem(
     record: Record,
     modifier: Modifier = Modifier,
-    onDeleteClick: () -> Unit
 ) {
     Column {
         Box(

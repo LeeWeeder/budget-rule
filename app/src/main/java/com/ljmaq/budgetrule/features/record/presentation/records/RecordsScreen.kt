@@ -1,6 +1,8 @@
 package com.ljmaq.budgetrule.features.record.presentation.records
 
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -13,17 +15,23 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.AbsoluteRoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Create
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
@@ -35,10 +43,12 @@ import com.ljmaq.budgetrule.features.record.domain.model.Category
 import com.ljmaq.budgetrule.features.record.presentation.records.add_record.AddRecordDialog
 import com.ljmaq.budgetrule.features.record.presentation.records.components.CategoryItem
 import com.ljmaq.budgetrule.features.record.presentation.records.components.GreetingsAppBar
+import com.ljmaq.budgetrule.features.record.presentation.records.components.OnSelectionModeTopAppBar
 import com.ljmaq.budgetrule.features.record.presentation.records.components.RecordItem
 import com.ljmaq.budgetrule.features.record.presentation.util.Screen
 import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun RecordScreen(
     navController: NavController,
@@ -46,14 +56,74 @@ fun RecordScreen(
 ) {
     val state = viewModel.state.value
     val categoryState = viewModel.categoryState.value
+    val isOnSelectionMode = viewModel.isOnSelectionMode.value
+    val selectedRecords = viewModel.selectedRecords
     val snackbarHostState = remember {
         SnackbarHostState()
     }
     val scope = rememberCoroutineScope()
 
-    val dialogState = viewModel.isDialogShowing.value
+    val addRecordDialogState = viewModel.isAddRecordDialogShowing.value
+    val isDeleteConfirmationOpen = remember {
+        mutableStateOf(false)
+    }
 
     Box {
+        if (isDeleteConfirmationOpen.value) {
+            AlertDialog(onDismissRequest = { isDeleteConfirmationOpen.value = false },
+                modifier = Modifier
+                    .background(
+                        color = MaterialTheme.colorScheme.surface,
+                        shape = MaterialTheme.shapes.extraLarge
+                    )
+                    .padding(top = 24.dp, end = 20.dp, bottom = 10.dp, start = 24.dp)
+                    .background(
+                        color = MaterialTheme.colorScheme.surface,
+                        shape = AbsoluteRoundedCornerShape(28.dp)
+                    )
+            ) {
+                Column(modifier = Modifier.fillMaxWidth()) {
+                    Text(text = "Delete selected records?", color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    Spacer(modifier = Modifier.height(24.dp))
+                    Row(horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.End), modifier = Modifier.fillMaxWidth()) {
+                        TextButton(onClick = {
+                            isDeleteConfirmationOpen.value = false
+                        }) {
+                            Text(text = "Cancel")
+                        }
+                        TextButton(onClick = {
+                            isDeleteConfirmationOpen.value = false
+                            selectedRecords.forEach { record ->
+                                viewModel.onEvent(RecordsEvent.DeleteRecord(record))
+                                viewModel.onEvent(RecordsEvent.ChangeSelectionMode)
+                            }
+                            scope.launch {
+                                val result = snackbarHostState.showSnackbar(
+                                    message = "${if (selectedRecords.size > 1) "Records" else "Record"} deleted",
+                                    actionLabel = "Undo",
+                                    duration = SnackbarDuration.Long
+                                )
+
+                                if (result == SnackbarResult.ActionPerformed) {
+                                    viewModel.onEvent(RecordsEvent.RestoreRecord)
+                                    viewModel.onEvent(RecordsEvent.ChangeSelectionMode)
+                                    snackbarHostState.showSnackbar(
+                                        message = "${if (selectedRecords.size > 1) "Records" else "Record"} restored",
+                                        withDismissAction = true
+                                    )
+                                }
+
+                                if (result == SnackbarResult.Dismissed) {
+                                    viewModel.onEvent(RecordsEvent.ResetRecentlyDeletedRecord)
+                                }
+                            }
+                        }) {
+                            Text(text = "Delete")
+                        }
+                    }
+                }
+            }
+        }
         Scaffold(
             floatingActionButton = {
                 ExtendedFloatingActionButton(
@@ -69,11 +139,29 @@ fun RecordScreen(
             },
             snackbarHost = { SnackbarHost(snackbarHostState) },
             topBar = {
-                GreetingsAppBar()
+                if (isOnSelectionMode) {
+                    OnSelectionModeTopAppBar(
+                        selectedRecords = selectedRecords,
+                        onNavigationIconButtonClick = {
+                            viewModel.onEvent(RecordsEvent.ChangeSelectionMode)
+                        },
+                        onEditIconButtonClick = {
+                            navController.navigate(
+                                Screen.EditRecordScreen.route + "?recordId=${selectedRecords[0].id}"
+                            )
+                        },
+                        onDeleteIconButtonClick = {
+                            isDeleteConfirmationOpen.value = true
+                        }
+                    )
+                } else {
+                    GreetingsAppBar()
+                }
             }) { paddingValues ->
             Column(
                 modifier = Modifier
                     .padding(paddingValues)
+                    .padding(top = 12.dp)
                     .fillMaxSize()
             ) {
                 Row(
@@ -94,33 +182,40 @@ fun RecordScreen(
                     }
                 }
                 Spacer(modifier = Modifier.height(24.dp))
-                Text(text = "Records", style = MaterialTheme.typography.titleMedium, modifier = Modifier.padding(horizontal = 16.dp))
+                Text(
+                    text = "Records",
+                    style = MaterialTheme.typography.titleMedium,
+                    modifier = Modifier.padding(horizontal = 16.dp)
+                )
                 Spacer(modifier = Modifier.height(12.dp))
                 LazyColumn(modifier = Modifier.fillMaxSize()) {
                     items(state.records) { record ->
                         RecordItem(record = record, modifier = Modifier
                             .fillMaxWidth()
-                            .clickable {
-                                navController.navigate(
-                                    Screen.EditRecordScreen.route + "?recordId=${record.id}"
-                                )
-                            }, onDeleteClick = {
-                            viewModel.onEvent(RecordsEvent.DeleteRecord(record))
-                            scope.launch {
-                                val result = snackbarHostState.showSnackbar(
-                                    message = "Record deleted",
-                                    actionLabel = "Undo"
-                                )
-
-                                if (result == SnackbarResult.ActionPerformed) {
-                                    viewModel.onEvent(RecordsEvent.RestoreRecord)
+                            .combinedClickable(
+                                onClick = {
+                                    if (isOnSelectionMode) {
+                                        viewModel.onEvent(RecordsEvent.AddToSelection(record))
+                                        if (selectedRecords.size < 1) {
+                                            viewModel.onEvent(RecordsEvent.ChangeSelectionMode)
+                                        }
+                                    } else {
+                                        navController.navigate(
+                                            Screen.EditRecordScreen.route + "?recordId=${record.id}"
+                                        )
+                                    }
+                                },
+                                onLongClick = {
+                                    viewModel.onEvent(RecordsEvent.ChangeSelectionMode)
+                                    viewModel.onEvent(RecordsEvent.AddToSelection(record))
                                 }
-                            }
-                        })
+                            )
+                            .background(if (selectedRecords.contains(record)) MaterialTheme.colorScheme.surfaceVariant else MaterialTheme.colorScheme.surface)
+                            )
                     }
                 }
             }
         }
-        if (dialogState) AddRecordDialog(snackbarHostState = snackbarHostState, scope = scope)
     }
+    if (addRecordDialogState) AddRecordDialog(snackbarHostState = snackbarHostState, scope = scope)
 }

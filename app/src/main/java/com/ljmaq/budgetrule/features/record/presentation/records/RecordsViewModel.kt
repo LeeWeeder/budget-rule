@@ -1,7 +1,9 @@
 package com.ljmaq.budgetrule.features.record.presentation.records
 
 import androidx.compose.runtime.State
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ljmaq.budgetrule.features.record.domain.model.Category
@@ -24,10 +26,16 @@ class RecordsViewModel @Inject constructor(
     private val _categoryState = mutableStateOf(CategoryState(selectedCategory = 0))
     val categoryState: State<CategoryState> = _categoryState
 
-    private val _isDialogShowing = mutableStateOf(false)
-    val isDialogShowing: State<Boolean> = _isDialogShowing
+    private val _isAddRecordDialogShowing = mutableStateOf(false)
+    val isAddRecordDialogShowing: State<Boolean> = _isAddRecordDialogShowing
 
-    private var recentlyDeletedRecord: Record? = null
+    private val _isOnSelectionMode = mutableStateOf(false)
+    val isOnSelectionMode: State<Boolean> = _isOnSelectionMode
+
+    private val _selectedRecords = mutableStateListOf<Record>()
+    val selectedRecords: SnapshotStateList<Record> = _selectedRecords
+
+    private var recentlyDeletedRecord: SnapshotStateList<Record> = mutableStateListOf()
 
     private var getRecordsJob: Job? = null
 
@@ -40,13 +48,15 @@ class RecordsViewModel @Inject constructor(
             is RecordsEvent.DeleteRecord -> {
                 viewModelScope.launch {
                     recordsUseCases.deleteRecord(event.record)
-                    recentlyDeletedRecord = event.record
+                    recentlyDeletedRecord.add(event.record)
                 }
             }
             is RecordsEvent.RestoreRecord -> {
                 viewModelScope.launch {
-                    recordsUseCases.addRecord(recentlyDeletedRecord ?: return@launch)
-                    recentlyDeletedRecord = null
+                    recentlyDeletedRecord.forEach { record ->
+                        recordsUseCases.addRecord(record)
+                    }
+                    recentlyDeletedRecord.clear()
                 }
             }
             is RecordsEvent.ChangeCategory -> {
@@ -55,11 +65,28 @@ class RecordsViewModel @Inject constructor(
                 )
             }
             is RecordsEvent.CreateRecord -> {
-
-                _isDialogShowing.value = !isDialogShowing.value
+                _isAddRecordDialogShowing.value = !isAddRecordDialogShowing.value
             }
             is RecordsEvent.CancelCreateRecord -> {
-                _isDialogShowing.value = false
+                _isAddRecordDialogShowing.value = false
+            }
+
+            is RecordsEvent.AddToSelection -> {
+                if (selectedRecords.contains(event.record)) {
+                    _selectedRecords.remove(event.record)
+                } else {
+                    _selectedRecords.add(event.record)
+                }
+            }
+            RecordsEvent.ChangeSelectionMode -> {
+                if (isOnSelectionMode.value) {
+                    _selectedRecords.clear()
+                }
+                _isOnSelectionMode.value = !isOnSelectionMode.value
+            }
+
+            is RecordsEvent.ResetRecentlyDeletedRecord -> {
+                recentlyDeletedRecord.clear()
             }
         }
     }
