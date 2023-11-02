@@ -155,7 +155,9 @@ fun RecordScreen(
                 Spacer(modifier = Modifier.height(12.dp))
                 LazyColumn(modifier = Modifier.fillMaxSize()) {
                     items(state.records) { record ->
-                        RecordItem(record = record, isSelected = selectedRecords.contains(record),
+                        RecordItem(
+                            record = record,
+                            isSelected = selectedRecords.contains(record),
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .combinedClickable(
@@ -222,7 +224,14 @@ fun RecordScreen(
                                             viewModel.onEvent(RecordsEvent.AddToSelection(record))
                                         }
                                     }
-                                )
+                                ),
+                            onIconClick = {
+                                if (!selectedRecords.contains(record)) {
+                                    viewModel.onEvent(RecordsEvent.AddToSelection(record))
+                                } else {
+                                    viewModel.onEvent(RecordsEvent.RemoveFromSelection(record))
+                                }
+                            }
                         )
                     }
                 }

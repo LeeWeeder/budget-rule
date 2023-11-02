@@ -34,6 +34,7 @@ import com.ljmaq.budgetrule.features.record.presentation.records.util.Formatter
 fun RecordItem(
     record: Record,
     isSelected: Boolean,
+    onIconClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val scale by animateFloatAsState(targetValue = if (isSelected) 1f else 0.2f, label = "scale", animationSpec = tween(durationMillis = 300, delayMillis = if (isSelected) 200 else 0, easing = CubicBezierEasing(0.16f, 1f, 0.3f, 1f)))
@@ -112,7 +113,8 @@ fun RecordItem(
                             tint = MaterialTheme.colorScheme.onPrimaryContainer
                         )
                     }
-                }
+                },
+                onClick = onIconClick
             )
         },
         trailingContent = {
