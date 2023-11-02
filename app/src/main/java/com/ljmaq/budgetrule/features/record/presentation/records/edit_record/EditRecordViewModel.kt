@@ -1,4 +1,4 @@
-package com.ljmaq.budgetrule.features.record.presentation.edit_record
+package com.ljmaq.budgetrule.features.record.presentation.records.edit_record
 
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
@@ -22,7 +22,6 @@ class EditRecordViewModel @Inject constructor(
     private val _typeIsExpenses = mutableStateOf(
         false
     )
-
     val typeIsExpenses: State<Boolean> = _typeIsExpenses
 
     private val _recordAmount = mutableStateOf(
@@ -40,6 +39,7 @@ class EditRecordViewModel @Inject constructor(
     val eventFlow = _eventFlow.asSharedFlow()
 
     private var currentRecordId: Int? = null
+    var currentRecord: Record? = null
     private var currentTimestamp: Long? = null
 
     init {
@@ -47,6 +47,7 @@ class EditRecordViewModel @Inject constructor(
             if (recordId != -1) {
                 viewModelScope.launch {
                     recordsUseCases.getRecord(recordId)?.also { record ->
+                        currentRecord = record
                         currentRecordId = record.id
                         currentTimestamp = record.timestamp
                         _recordAmount.value = recordAmount.value.copy(
@@ -118,5 +119,6 @@ class EditRecordViewModel @Inject constructor(
     sealed class UiEvent {
         data class ShowSnackbar(val message: String) : UiEvent()
         data object SaveRecord : UiEvent()
+        data object ShowAmountWarningDialog : UiEvent()
     }
 }

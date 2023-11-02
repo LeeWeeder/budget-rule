@@ -26,8 +26,8 @@ class RecordsViewModel @Inject constructor(
     private val _categoryState = mutableStateOf(CategoryState(selectedCategory = 0))
     val categoryState: State<CategoryState> = _categoryState
 
-    private val _isAddRecordDialogShowing = mutableStateOf(false)
-    val isAddRecordDialogShowing: State<Boolean> = _isAddRecordDialogShowing
+    private val _dialogState = mutableStateOf(DialogState())
+    val dialogState: State<DialogState> = _dialogState
 
     private val _isOnSelectionMode = mutableStateOf(false)
     val isOnSelectionMode: State<Boolean> = _isOnSelectionMode
@@ -39,18 +39,22 @@ class RecordsViewModel @Inject constructor(
 
     private var getRecordsJob: Job? = null
 
+    var currentRecord: Record? = null
+
     init {
         getRecords()
+
     }
 
     fun onEvent(event: RecordsEvent) {
-        when(event) {
+        when (event) {
             is RecordsEvent.DeleteRecord -> {
                 viewModelScope.launch {
                     recordsUseCases.deleteRecord(event.record)
                     recentlyDeletedRecord.add(event.record)
                 }
             }
+            
             is RecordsEvent.RestoreRecord -> {
                 viewModelScope.launch {
                     recentlyDeletedRecord.forEach { record ->
@@ -59,16 +63,23 @@ class RecordsViewModel @Inject constructor(
                     recentlyDeletedRecord.clear()
                 }
             }
+
             is RecordsEvent.ChangeCategory -> {
                 _categoryState.value = categoryState.value.copy(
                     selectedCategory = Category.categories.indexOf(event.category)
                 )
             }
+
             is RecordsEvent.CreateRecord -> {
-                _isAddRecordDialogShowing.value = !isAddRecordDialogShowing.value
+                _dialogState.value = dialogState.value.copy(
+                    isAddRecordDialogOpen = true
+                )
             }
+
             is RecordsEvent.CancelCreateRecord -> {
-                _isAddRecordDialogShowing.value = false
+                _dialogState.value = dialogState.value.copy(
+                    isAddRecordDialogOpen = false
+                )
             }
 
             is RecordsEvent.AddToSelection -> {
@@ -104,6 +115,19 @@ class RecordsViewModel @Inject constructor(
 
             is RecordsEvent.RemoveAllFromSelection -> {
                 _selectedRecords.removeAll(state.value.records)
+            }
+
+            is RecordsEvent.CancelEditRecord -> {
+                _dialogState.value = dialogState.value.copy(
+                    isEditRecordDialogOpen = false
+                )
+            }
+
+            is RecordsEvent.EditRecord -> {
+                _dialogState.value = dialogState.value.copy(
+                    isEditRecordDialogOpen = true
+                )
+                currentRecord = event.record
             }
         }
     }

@@ -8,6 +8,8 @@ sealed class RecordsEvent {
     data object RestoreRecord: RecordsEvent()
     data class ChangeCategory(val category: Category): RecordsEvent()
     data object CreateRecord: RecordsEvent()
+    data class EditRecord(val record: Record): RecordsEvent()
+    data object CancelEditRecord: RecordsEvent()
     data object CancelCreateRecord: RecordsEvent()
     data object ChangeSelectionMode: RecordsEvent()
     data class AddToSelection(val record: Record): RecordsEvent()

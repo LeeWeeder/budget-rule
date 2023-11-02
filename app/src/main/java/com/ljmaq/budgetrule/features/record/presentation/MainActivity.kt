@@ -6,9 +6,6 @@ import androidx.activity.compose.setContent
 import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
-import androidx.compose.animation.core.spring
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -19,7 +16,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.ljmaq.budgetrule.features.record.presentation.edit_record.EditRecordScreen
 import com.ljmaq.budgetrule.features.record.presentation.records.RecordScreen
 import com.ljmaq.budgetrule.features.record.presentation.util.Screen
 import com.ljmaq.budgetrule.ui.theme.BudgetRuleTheme
@@ -42,24 +38,16 @@ class MainActivity : ComponentActivity() {
                     ) {
                         val enterTransition: AnimatedContentTransitionScope<NavBackStackEntry>.() -> EnterTransition? =
                             {
-                                fadeIn(spring())
+                                EnterTransition.None
                             }
-
 
                         val exitTransition: AnimatedContentTransitionScope<NavBackStackEntry>.() -> ExitTransition? =
                             {
-                                fadeOut(spring())
+                                ExitTransition.None
                             }
 
                         composable(
-                            route = Screen.RecordScreen.route,
-                            enterTransition = enterTransition,
-                            exitTransition = exitTransition
-                        ) {
-                            RecordScreen(navController)
-                        }
-
-                        composable(route = Screen.EditRecordScreen.route + "?recordId={recordId}",
+                            route = Screen.RecordScreen.route + "?recordId={recordId}",
                             arguments = listOf(
                                 navArgument(name = "recordId") {
                                     type = NavType.IntType
@@ -67,8 +55,9 @@ class MainActivity : ComponentActivity() {
                                 }
                             ),
                             enterTransition = enterTransition,
-                            exitTransition = exitTransition) {
-                            EditRecordScreen(navController)
+                            exitTransition = exitTransition
+                        ) {
+                            RecordScreen(navController)
                         }
                     }
                 }

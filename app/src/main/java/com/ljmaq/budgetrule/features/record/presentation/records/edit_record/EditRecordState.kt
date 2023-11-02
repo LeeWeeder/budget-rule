@@ -1,4 +1,4 @@
-package com.ljmaq.budgetrule.features.record.presentation.edit_record
+package com.ljmaq.budgetrule.features.record.presentation.records.edit_record
 
 sealed class EditRecordState {
     data class AmountTextFieldState(
