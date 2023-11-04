@@ -9,7 +9,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 
@@ -26,12 +26,12 @@ fun KeyButton(
 
 @Composable
 fun KeyButton(
-    icon: ImageVector,
+    icon: Painter,
     contentDescription: String?,
     onClick: () -> Unit
 ) {
     Button(onClick = onClick, colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.tertiary, contentColor = MaterialTheme.colorScheme.onTertiary), shape = MaterialTheme.shapes.extraLarge, modifier = modifier.fillMaxHeight(0.75f)) {
-        Icon(imageVector = icon, contentDescription = contentDescription)
+        Icon(painter = icon, contentDescription = contentDescription)
     }
 }
 

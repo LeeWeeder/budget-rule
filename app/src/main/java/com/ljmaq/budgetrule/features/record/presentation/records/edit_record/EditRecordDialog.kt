@@ -10,12 +10,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.Remove
-import androidx.compose.material.icons.rounded.Check
-import androidx.compose.material.icons.rounded.Close
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -35,11 +29,13 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.ljmaq.budgetrule.R
 import com.ljmaq.budgetrule.features.record.domain.model.Record
 import com.ljmaq.budgetrule.features.record.presentation.records.RecordsEvent
 import com.ljmaq.budgetrule.features.record.presentation.records.RecordsViewModel
@@ -210,7 +206,7 @@ fun EditRecordDialog(
                             recordsViewModel.onEvent(RecordsEvent.CancelEditRecord)
                         }) {
                             Icon(
-                                imageVector = Icons.Rounded.Close,
+                                painter = painterResource(id = R.drawable.close),
                                 contentDescription = "Close icon"
                             )
                         }
@@ -218,13 +214,13 @@ fun EditRecordDialog(
                         IconButton(onClick = {
                             isDeleteConfirmationOpen.value = true
                         }) {
-                            Icon(imageVector = Icons.Default.Delete, contentDescription = "Delete icon")
+                            Icon(painter = painterResource(id = R.drawable.delete), contentDescription = "Delete icon")
                         }
                         IconButton(onClick = {
                             editRecordViewModel.onEvent(EditRecordEvent.SaveRecord)
                         }) {
                             Icon(
-                                imageVector = Icons.Rounded.Check,
+                                painter = painterResource(id = R.drawable.done),
                                 contentDescription = "Save icon"
                             )
                         }
@@ -268,7 +264,7 @@ fun EditRecordDialog(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Icon(
-                            imageVector = if (typeIsExpenses) Icons.Default.Remove else Icons.Default.Add,
+                            painter = painterResource(id = if (typeIsExpenses) R.drawable.remove else R.drawable.add),
                             contentDescription = "Value indicator"
                         )
 
