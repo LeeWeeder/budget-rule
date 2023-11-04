@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AttachMoney
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ListItem
@@ -26,7 +25,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import com.ljmaq.budgetrule.R
 import com.ljmaq.budgetrule.features.record.domain.model.Record
 import com.ljmaq.budgetrule.features.record.presentation.records.util.Formatter
 
@@ -108,7 +109,7 @@ fun RecordItem(
                         contentAlignment = Alignment.Center
                     ) {
                         Icon(
-                            imageVector = Icons.Default.AttachMoney,
+                            painter = painterResource(R.drawable.attach_money),
                             contentDescription = "Cash icon",
                             tint = MaterialTheme.colorScheme.onPrimaryContainer
                         )
