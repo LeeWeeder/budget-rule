@@ -5,6 +5,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.res.painterResource
@@ -20,7 +21,8 @@ fun OnSelectionModeTopAppBar(
     onDeleteIconButtonClick: () -> Unit,
     onSelectAllIconButtonClick: () -> Unit,
     onUnselectAllIconButtonClick: () -> Unit,
-    isAllRecordsSelected: Boolean
+    isAllRecordsSelected: Boolean,
+    scrollBehavior: TopAppBarScrollBehavior
 ) {
     val numberOfItemSelected = selectedRecords.size.toString()
     TopAppBar(
@@ -45,6 +47,7 @@ fun OnSelectionModeTopAppBar(
             IconButton(onClick = onDeleteIconButtonClick) {
                 Icon(painter = painterResource(id = R.drawable.delete), contentDescription = "Delete icon")
             }
-        }
+        },
+        scrollBehavior = scrollBehavior
     )
 }

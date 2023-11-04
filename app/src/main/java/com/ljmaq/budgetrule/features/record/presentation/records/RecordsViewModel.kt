@@ -6,7 +6,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.ljmaq.budgetrule.features.record.domain.model.Category
 import com.ljmaq.budgetrule.features.record.domain.model.Record
 import com.ljmaq.budgetrule.features.record.domain.usecase.RecordsUseCases
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -23,9 +22,6 @@ class RecordsViewModel @Inject constructor(
     private val _state = mutableStateOf(RecordState())
     val state: State<RecordState> = _state
 
-    private val _categoryState = mutableStateOf(CategoryState(selectedCategory = 0))
-    val categoryState: State<CategoryState> = _categoryState
-
     private val _dialogState = mutableStateOf(DialogState())
     val dialogState: State<DialogState> = _dialogState
 
@@ -34,6 +30,9 @@ class RecordsViewModel @Inject constructor(
 
     private val _selectedRecords = mutableStateListOf<Record>()
     val selectedRecords: SnapshotStateList<Record> = _selectedRecords
+
+    private val _selectedCategory = mutableStateOf(CategoryState())
+    val selectedCategory: State<CategoryState> = _selectedCategory
 
     private var recentlyDeletedRecord: SnapshotStateList<Record> = mutableStateListOf()
 
@@ -64,9 +63,12 @@ class RecordsViewModel @Inject constructor(
                 }
             }
 
-            is RecordsEvent.ChangeCategory -> {
-                _categoryState.value = categoryState.value.copy(
-                    selectedCategory = Category.categories.indexOf(event.category)
+            is RecordsEvent.CategoryClick -> {
+                _dialogState.value = dialogState.value.copy(
+                    isAddExpenseRecordDialogOpen = true
+                )
+                _selectedCategory.value = selectedCategory.value.copy(
+                    selectedCategory = event.category
                 )
             }
 
@@ -128,6 +130,12 @@ class RecordsViewModel @Inject constructor(
                     isEditRecordDialogOpen = true
                 )
                 currentRecord = event.record
+            }
+
+            RecordsEvent.CategoryDialogDismiss -> {
+                _dialogState.value = dialogState.value.copy(
+                    isAddExpenseRecordDialogOpen = false
+                )
             }
         }
     }

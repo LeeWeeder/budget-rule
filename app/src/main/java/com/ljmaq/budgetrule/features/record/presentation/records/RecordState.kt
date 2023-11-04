@@ -8,5 +8,6 @@ data class RecordState(
 
 data class DialogState(
     val isEditRecordDialogOpen: Boolean = false,
-    val isAddRecordDialogOpen: Boolean = false
+    val isAddRecordDialogOpen: Boolean = false,
+    val isAddExpenseRecordDialogOpen: Boolean = false
 )
