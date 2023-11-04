@@ -83,7 +83,7 @@ fun RecordScreen(
             floatingActionButton = {
                 ExtendedFloatingActionButton(
                     text = {
-                        Text(text = "Create record")
+                        Text(text = "Create")
                     },
                     icon = {
                         Icon(imageVector = Icons.Rounded.Create, contentDescription = "Create icon")
@@ -238,6 +238,15 @@ fun RecordScreen(
             }
         }
     }
-    if (dialogState.value.isAddRecordDialogOpen) AddRecordDialog(snackbarHostState = snackbarHostState, scope = scope)
-    if (dialogState.value.isEditRecordDialogOpen) viewModel.currentRecord?.let { EditRecordDialog(snackbarHostState = snackbarHostState, scope = scope, record = it) }
+    if (dialogState.value.isAddRecordDialogOpen) AddRecordDialog(
+        snackbarHostState = snackbarHostState,
+        scope = scope
+    )
+    if (dialogState.value.isEditRecordDialogOpen) viewModel.currentRecord?.let {
+        EditRecordDialog(
+            snackbarHostState = snackbarHostState,
+            scope = scope,
+            record = it
+        )
+    }
 }
