@@ -15,8 +15,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Create
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -30,9 +28,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.ljmaq.budgetrule.R
 import com.ljmaq.budgetrule.core.presentation.components.DeleteWarningAlertDialog
 import com.ljmaq.budgetrule.features.record.domain.model.Category
 import com.ljmaq.budgetrule.features.record.presentation.records.add_record.AddRecordDialog
@@ -86,7 +86,7 @@ fun RecordScreen(
                         Text(text = "Create")
                     },
                     icon = {
-                        Icon(imageVector = Icons.Rounded.Create, contentDescription = "Create icon")
+                        Icon(painter = painterResource(R.drawable.edit), contentDescription = "Create icon")
                     },
                     onClick = {
                         viewModel.onEvent(RecordsEvent.CreateRecord)
