@@ -15,6 +15,7 @@
         tools:targetApi="s">
         <activity
             android:name=".features.record.presentation.MainActivity"
+            android:windowSoftInputMode="adjustResize"
             android:exported="true"
             android:theme="@style/Theme.BudgetRule">
             <intent-filter>

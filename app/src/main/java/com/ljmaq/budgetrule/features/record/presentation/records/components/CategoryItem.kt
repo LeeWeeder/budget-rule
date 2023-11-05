@@ -32,7 +32,7 @@ fun CategoryItem(
     modifier: Modifier = Modifier
 ) {
     ElevatedCard(
-        onClick = onClick,
+        onClick = {  },
         colors = CardDefaults.cardColors(
             contentColor = category.contentColor
         ),
@@ -40,12 +40,12 @@ fun CategoryItem(
         elevation = CardDefaults.cardElevation(defaultElevation = 20.dp),
         modifier = modifier
     ) {
-        CategoryItemContent(category = category)
+        CategoryItemContent(category = category, onClick = onClick)
     }
 }
 
 @Composable
-private fun CategoryItemContent(category: Category) {
+private fun CategoryItemContent(category: Category, onClick: () -> Unit) {
     Column(
         modifier = Modifier
             .padding(start = 8.dp, bottom = 10.dp)
@@ -56,8 +56,10 @@ private fun CategoryItemContent(category: Category) {
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Text(text = category.name, style = MaterialTheme.typography.labelMedium)
-            Box(modifier = Modifier.size(36.dp).padding(top = 6.dp, end = 6.dp)) {
-                IconButton(onClick = { /*TODO*/ }) {
+            Box(modifier = Modifier
+                .size(36.dp)
+                .padding(top = 6.dp, end = 6.dp)) {
+                IconButton(onClick = onClick) {
                     Icon(
                         painter = painterResource(id = R.drawable.add_circle),
                         contentDescription = "Add icon"
@@ -77,10 +79,12 @@ private fun CategoryItemContent(category: Category) {
                 .padding(end = 12.dp)
         ) {
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Icon(
-                    painter = painterResource(id = R.drawable.history),
-                    contentDescription = "Transaction history icon"
-                )
+                Box(modifier = Modifier.size(12.dp), contentAlignment = Alignment.Center) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.history),
+                        contentDescription = "Transaction history icon"
+                    )
+                }
                 Text(
                     text = "12/12/2023",
                     style = MaterialTheme.typography.labelSmall.copy(fontSize = 10.sp),
