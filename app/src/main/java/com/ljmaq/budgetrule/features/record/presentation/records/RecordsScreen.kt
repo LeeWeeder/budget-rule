@@ -83,10 +83,10 @@ fun RecordScreen(
             floatingActionButton = {
                 ExtendedFloatingActionButton(
                     text = {
-                        Text(text = "Create")
+                        Text(text = "Add income")
                     },
                     icon = {
-                        Icon(painter = painterResource(R.drawable.edit), contentDescription = "Create icon")
+                        Icon(painter = painterResource(R.drawable.add), contentDescription = "Create icon")
                     },
                     onClick = {
                         viewModel.onEvent(RecordsEvent.CreateRecord)
