@@ -103,10 +103,9 @@ fun RecordScreen(
             floatingActionButton = {
                 ExtendedFloatingActionButton(
                     text = {
-                        Text(text = "Add income")
+                        Text(text = "Create record")
                     },
                     icon = {
-                        Icon(painter = painterResource(R.drawable.add), contentDescription = "Create icon")
                         Icon(
                             painter = painterResource(R.drawable.edit),
                             contentDescription = "Create icon"
