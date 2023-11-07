@@ -33,19 +33,19 @@ fun CategoryItem(
     modifier: Modifier = Modifier
 ) {
     ElevatedCard(
-        onClick = { },
+        onClick = onClick,
         colors = CardDefaults.cardColors(
             contentColor = category.contentColor
         ),
         shape = MaterialTheme.shapes.extraSmall,
         modifier = modifier
     ) {
-        CategoryItemContent(category = category, onClick = onClick)
+        CategoryItemContent(category = category)
     }
 }
 
 @Composable
-private fun CategoryItemContent(category: Category, onClick: () -> Unit) {
+private fun CategoryItemContent(category: Category) {
     Column(
         modifier = Modifier
             .padding(10.dp)
