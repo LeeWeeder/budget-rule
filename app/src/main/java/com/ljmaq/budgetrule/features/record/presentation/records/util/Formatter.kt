@@ -36,8 +36,6 @@ class Formatter {
 
         fun formatCurrency(amount: String): String {
             val currency = NumberFormat.getCurrencyInstance()
-            currency.maximumFractionDigits = 16
-            currency.maximumIntegerDigits = 12
             currency.currency = Currency.getInstance("PHP")
             return currency.format(amount.toDouble())
         }
