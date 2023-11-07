@@ -4,14 +4,15 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -32,12 +33,11 @@ fun CategoryItem(
     modifier: Modifier = Modifier
 ) {
     ElevatedCard(
-        onClick = {  },
+        onClick = { },
         colors = CardDefaults.cardColors(
             contentColor = category.contentColor
         ),
         shape = MaterialTheme.shapes.extraSmall,
-        elevation = CardDefaults.cardElevation(defaultElevation = 20.dp),
         modifier = modifier
     ) {
         CategoryItemContent(category = category, onClick = onClick)
@@ -48,25 +48,10 @@ fun CategoryItem(
 private fun CategoryItemContent(category: Category, onClick: () -> Unit) {
     Column(
         modifier = Modifier
-            .padding(start = 8.dp, bottom = 10.dp)
+            .padding(10.dp)
     ) {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            Text(text = category.name, style = MaterialTheme.typography.labelMedium)
-            Box(modifier = Modifier
-                .size(36.dp)
-                .padding(top = 6.dp, end = 6.dp)) {
-                IconButton(onClick = onClick) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.add_circle),
-                        contentDescription = "Add icon"
-                    )
-                }
-            }
-        }
+        Text(text = category.name, style = MaterialTheme.typography.labelMedium)
+        Spacer(modifier = Modifier.height(2.dp))
         Text(
             text = Formatter.formatCurrency(category.amount.toString()),
             style = MaterialTheme.typography.titleMedium
@@ -76,7 +61,6 @@ private fun CategoryItemContent(category: Category, onClick: () -> Unit) {
             horizontalArrangement = Arrangement.SpaceBetween,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(end = 12.dp)
         ) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Box(modifier = Modifier.size(12.dp), contentAlignment = Alignment.Center) {
@@ -91,7 +75,10 @@ private fun CategoryItemContent(category: Category, onClick: () -> Unit) {
                     color = MaterialTheme.colorScheme.onSecondaryContainer
                 )
             }
-            Text(text = (category.percentage * 100).toInt().toString())
+            Text(
+                text = (category.percentage * 100).toInt().toString(),
+                style = MaterialTheme.typography.labelSmall
+            )
         }
     }
 }

@@ -24,7 +24,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
@@ -94,6 +93,7 @@ fun RecordScreen(
         val sheetState = rememberModalBottomSheetState(
             skipPartiallyExpanded = true
         )
+
         val greetingsTopAppBarScrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
         val onSelectionModeTopAppBarScrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
         Scaffold(
@@ -155,7 +155,7 @@ fun RecordScreen(
                     },
                     sheetState = sheetState,
                     category = category.selectedCategory!!,
-                    modifier = Modifier.consumeWindowInsets(paddingValues).padding(paddingValues)
+                    paddingValues = paddingValues
                 )
             }
             if (dialogState.value.isAddRecordDialogOpen) AddRecordDialog(
@@ -214,9 +214,13 @@ fun RecordScreen(
                                 },
                                 modifier = Modifier.weight(0.5f)
                             )
-                            TextButton(onClick = { }, modifier = Modifier.weight(0.5f)) {
-                                Text(text = "View expenses record")
-                            }
+                            CategoryItem(
+                                category = Category.Investments,
+                                onClick = {
+                                    onClick(Category.Investments)
+                                },
+                                modifier = Modifier.weight(0.5f)
+                            )
                         }
                     }
                     Spacer(modifier = Modifier.height(24.dp))
