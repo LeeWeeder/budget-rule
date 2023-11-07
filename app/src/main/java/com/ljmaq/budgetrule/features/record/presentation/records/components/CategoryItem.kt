@@ -4,20 +4,23 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.ljmaq.budgetrule.R
@@ -37,7 +40,6 @@ fun CategoryItem(
             contentColor = category.contentColor
         ),
         shape = MaterialTheme.shapes.extraSmall,
-        elevation = CardDefaults.cardElevation(defaultElevation = 20.dp),
         modifier = modifier
     ) {
         CategoryItemContent(category = category)
@@ -48,46 +50,40 @@ fun CategoryItem(
 private fun CategoryItemContent(category: Category) {
     Column(
         modifier = Modifier
-            .padding(start = 8.dp, bottom = 10.dp)
+            .padding(10.dp)
     ) {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            Text(text = category.name, style = MaterialTheme.typography.labelMedium)
-            Box(modifier = Modifier.size(36.dp).padding(top = 6.dp, end = 6.dp)) {
-                IconButton(onClick = { /*TODO*/ }) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.add_circle),
-                        contentDescription = "Add icon"
-                    )
-                }
-            }
-        }
+        Text(text = category.name, style = MaterialTheme.typography.labelMedium)
+        Spacer(modifier = Modifier.height(2.dp))
         Text(
             text = Formatter.formatCurrency(category.amount.toString()),
-            style = MaterialTheme.typography.titleMedium
+            style = MaterialTheme.typography.titleMedium,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
+            textAlign = TextAlign.Right
         )
         Row(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(end = 12.dp)
         ) {
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Icon(
-                    painter = painterResource(id = R.drawable.history),
-                    contentDescription = "Transaction history icon"
-                )
+                Box(modifier = Modifier.size(12.dp), contentAlignment = Alignment.Center) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.history),
+                        contentDescription = "Transaction history icon"
+                    )
+                }
                 Text(
                     text = "12/12/2023",
                     style = MaterialTheme.typography.labelSmall.copy(fontSize = 10.sp),
                     color = MaterialTheme.colorScheme.onSecondaryContainer
                 )
             }
-            Text(text = (category.percentage * 100).toInt().toString())
+            Text(
+                text = (category.percentage * 100).toInt().toString(),
+                style = MaterialTheme.typography.labelSmall
+            )
         }
     }
 }

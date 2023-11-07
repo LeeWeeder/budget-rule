@@ -6,8 +6,10 @@ import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -22,7 +24,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
@@ -48,7 +49,10 @@ import com.ljmaq.budgetrule.features.record.presentation.records.components.Reco
 import com.ljmaq.budgetrule.features.record.presentation.records.edit_record.EditRecordDialog
 import com.ljmaq.budgetrule.features.record.presentation.util.Screen
 
-@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
+@OptIn(
+    ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class,
+    ExperimentalLayoutApi::class
+)
 @Composable
 fun RecordScreen(
     navController: NavController,
@@ -86,7 +90,10 @@ fun RecordScreen(
             )
         }
 
-        val sheetState = rememberModalBottomSheetState()
+        val sheetState = rememberModalBottomSheetState(
+            skipPartiallyExpanded = true
+        )
+
         val greetingsTopAppBarScrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
         val onSelectionModeTopAppBarScrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
         Scaffold(
@@ -140,14 +147,16 @@ fun RecordScreen(
                 } else {
                     GreetingsAppBar(greetingsTopAppBarScrollBehavior)
                 }
-            }) { paddingValues ->
+            }
+        ) { paddingValues ->
             if (dialogState.value.isAddExpenseRecordDialogOpen) {
                 AddExpensesRecordSheet(
                     onDismissRequest = {
                         viewModel.onEvent(RecordsEvent.CategoryDialogDismiss)
                     },
                     sheetState = sheetState,
-                    category = category.selectedCategory!!
+                    category = category.selectedCategory!!,
+                    paddingValues = paddingValues
                 )
             }
             if (dialogState.value.isAddRecordDialogOpen) AddRecordDialog(
@@ -164,8 +173,9 @@ fun RecordScreen(
             val padding = 10.dp
             LazyColumn(
                 modifier = Modifier
-                    .padding(paddingValues)
                     .fillMaxSize()
+                    .consumeWindowInsets(paddingValues),
+                contentPadding = paddingValues
             ) {
                 item {
                     Column(
@@ -205,9 +215,13 @@ fun RecordScreen(
                                 },
                                 modifier = Modifier.weight(0.5f)
                             )
-                            TextButton(onClick = {  }, modifier = Modifier.weight(0.5f)) {
-                                Text(text = "View expenses record")
-                            }
+                            CategoryItem(
+                                category = Category.Investments,
+                                onClick = {
+                                    onClick(Category.Investments)
+                                },
+                                modifier = Modifier.weight(0.5f)
+                            )
                         }
                     }
                     Spacer(modifier = Modifier.height(24.dp))
