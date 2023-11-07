@@ -19,6 +19,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.ljmaq.budgetrule.R
@@ -54,7 +56,10 @@ private fun CategoryItemContent(category: Category) {
         Spacer(modifier = Modifier.height(2.dp))
         Text(
             text = Formatter.formatCurrency(category.amount.toString()),
-            style = MaterialTheme.typography.titleMedium
+            style = MaterialTheme.typography.titleMedium,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
+            textAlign = TextAlign.Right
         )
         Row(
             verticalAlignment = Alignment.CenterVertically,
