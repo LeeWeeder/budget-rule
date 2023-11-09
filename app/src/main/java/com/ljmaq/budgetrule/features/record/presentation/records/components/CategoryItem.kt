@@ -1,29 +1,25 @@
 package com.ljmaq.budgetrule.features.record.presentation.records.components
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.ljmaq.budgetrule.R
 import com.ljmaq.budgetrule.features.record.domain.model.Category
 import com.ljmaq.budgetrule.features.record.presentation.records.util.Formatter
 
@@ -34,15 +30,19 @@ fun CategoryItem(
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    ElevatedCard(
-        onClick = onClick,
-        colors = CardDefaults.cardColors(
-            contentColor = category.contentColor
-        ),
-        shape = MaterialTheme.shapes.extraSmall,
-        modifier = modifier
-    ) {
-        CategoryItemContent(category = category)
+    Row {
+        Spacer(modifier = Modifier.width(4.dp))
+        ElevatedCard(
+            onClick = onClick,
+            colors = CardDefaults.cardColors(
+                contentColor = category.contentColor,
+                containerColor = MaterialTheme.colorScheme.tertiaryContainer
+            ),
+            modifier = modifier.width(130.dp)
+        ) {
+            CategoryItemContent(category = category)
+        }
+        Spacer(modifier = Modifier.width(4.dp))
     }
 }
 
@@ -50,40 +50,22 @@ fun CategoryItem(
 private fun CategoryItemContent(category: Category) {
     Column(
         modifier = Modifier
-            .padding(10.dp)
+            .padding(16.dp)
     ) {
-        Text(text = category.name, style = MaterialTheme.typography.labelMedium)
-        Spacer(modifier = Modifier.height(2.dp))
+        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
+            Text(text = category.name, style = MaterialTheme.typography.labelSmall)
+            Text(
+                text = "${(category.percentage * 100).toInt()}%",
+                style = MaterialTheme.typography.labelSmall
+            )
+        }
+        Spacer(modifier = Modifier.height(6.dp))
         Text(
             text = Formatter.formatCurrency(category.amount.toString()),
-            style = MaterialTheme.typography.titleMedium,
+            style = MaterialTheme.typography.titleLarge.copy(fontSize = 16.sp),
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
             textAlign = TextAlign.Right
         )
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween,
-            modifier = Modifier
-                .fillMaxWidth()
-        ) {
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Box(modifier = Modifier.size(12.dp), contentAlignment = Alignment.Center) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.history),
-                        contentDescription = "Transaction history icon"
-                    )
-                }
-                Text(
-                    text = "12/12/2023",
-                    style = MaterialTheme.typography.labelSmall.copy(fontSize = 10.sp),
-                    color = MaterialTheme.colorScheme.onSecondaryContainer
-                )
-            }
-            Text(
-                text = (category.percentage * 100).toInt().toString(),
-                style = MaterialTheme.typography.labelSmall
-            )
-        }
     }
 }

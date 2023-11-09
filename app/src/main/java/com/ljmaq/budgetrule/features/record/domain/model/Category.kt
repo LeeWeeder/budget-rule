@@ -12,4 +12,8 @@ sealed class Category(
     data object Wants: Category(name = "Wants", contentColor = Color(0xffffdbd1), percentage = 0.3f)
     data object Savings: Category(name = "Savings", contentColor = Color(0xff80f8ce), percentage = 0.2f)
     data object Investments: Category(name = "Investments", contentColor = Color.Cyan, percentage = 0.1f)
+
+    companion object {
+        val categories = listOf(Needs, Wants, Savings, Investments)
+    }
 }
