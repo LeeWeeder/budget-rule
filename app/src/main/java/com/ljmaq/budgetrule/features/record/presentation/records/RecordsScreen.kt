@@ -181,7 +181,7 @@ fun RecordScreen(
                                     Spacer(modifier = Modifier.width(12.dp))
                                 }
                                 CategoryItem(category = category, onClick = {
-                                    TODO("Implement on click, navigate to category screen")
+                                    // TODO: Implement on click, navigate to category screen
                                 })
                                 if (index == Category.categories.lastIndex) {
                                     Spacer(modifier = Modifier.width(12.dp))
