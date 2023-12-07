@@ -12,12 +12,11 @@ import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
 import androidx.core.view.WindowCompat
 import androidx.navigation.NavBackStackEntry
-import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.navArgument
 import com.ljmaq.budgetrule.features.record.presentation.home.HomeScreen
+import com.ljmaq.budgetrule.features.record.presentation.settings.SettingsScreen
 import com.ljmaq.budgetrule.features.record.presentation.util.Screen
 import com.ljmaq.budgetrule.ui.theme.BudgetRuleTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -37,7 +36,7 @@ class MainActivity : ComponentActivity() {
                     val navController = rememberNavController()
                     NavHost(
                         navController = navController,
-                        startDestination = Screen.RecordScreen.route
+                        startDestination = Screen.HomeScreen.route
                     ) {
                         val enterTransition: AnimatedContentTransitionScope<NavBackStackEntry>.() -> EnterTransition? =
                             {
@@ -49,8 +48,8 @@ class MainActivity : ComponentActivity() {
                                 ExitTransition.None
                             }
 
-                        composable(
-                            route = Screen.RecordScreen.route + "?recordId={recordId}",
+                        /* composable(
+                            route = Screen.HomeScreen.route + "?recordId={recordId}",
                             arguments = listOf(
                                 navArgument(name = "recordId") {
                                     type = NavType.IntType
@@ -61,6 +60,20 @@ class MainActivity : ComponentActivity() {
                             exitTransition = exitTransition
                         ) {
                             HomeScreen(navController)
+                        }*/
+
+                        composable(
+                            route = Screen.HomeScreen.route,
+                            enterTransition = enterTransition,
+                            exitTransition = exitTransition
+                        ) {
+                            HomeScreen(navController)
+                        }
+
+                        composable(
+                            route = Screen.SettingsScreen.route
+                        ) {
+                            SettingsScreen(navController = navController)
                         }
                     }
                 }

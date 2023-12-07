@@ -135,7 +135,7 @@ fun HomeScreen(
                         },
                         onEditIconButtonClick = {
                             navController.navigate(
-                                Screen.EditRecordScreen.route + "?recordId=${selectedRecords[0].id}"
+                                Screen.SettingsScreen.route + "?recordId=${selectedRecords[0].id}"
                             )
                             viewModel.onEvent(HomeEvent.ChangeSelectionMode)
                         },
@@ -153,7 +153,10 @@ fun HomeScreen(
                         scrollBehavior = onSelectionModeTopAppBarScrollBehavior
                     )
                 } else {
-                    GreetingsAppBar(greetingsTopAppBarScrollBehavior)
+                    GreetingsAppBar(
+                        scrollBehavior = greetingsTopAppBarScrollBehavior,
+                        navController = navController
+                    )
                 }
             }
         ) { paddingValues ->
