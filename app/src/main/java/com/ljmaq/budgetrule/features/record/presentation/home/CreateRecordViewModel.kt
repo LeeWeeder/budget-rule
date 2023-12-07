@@ -78,12 +78,84 @@ class CreateRecordViewModel @Inject constructor(
                         RecordType.Expense -> {
                             when (state.value.selectedPartition!!) {
                                 is Partition.Investments -> {
-
+                                    try {
+                                        val timestamp = System.currentTimeMillis()
+                                        val amount = state.value.amount
+                                        investmentsUseCases.insertInvestments(
+                                            Investments(
+                                                timestamp = timestamp,
+                                                amount = (amount.toDouble() * -1).toString()
+                                            )
+                                        )
+                                        _eventFlow.emit(UiEvent.SaveRecord)
+                                    } catch (e: Exception) {
+                                        _eventFlow.emit(
+                                            UiEvent.ShowSnackbar(
+                                                e.message ?: "Couldn't save record"
+                                            )
+                                        )
+                                    }
                                 }
 
-                                is Partition.Needs -> TODO()
-                                is Partition.Savings -> TODO()
-                                is Partition.Wants -> TODO()
+                                is Partition.Needs -> {
+                                    try {
+                                        val timestamp = System.currentTimeMillis()
+                                        val amount = state.value.amount
+                                        needsUseCases.insertNeeds(
+                                            Needs(
+                                                timestamp = timestamp,
+                                                amount = (amount.toDouble() * -1).toString()
+                                            )
+                                        )
+                                        _eventFlow.emit(UiEvent.SaveRecord)
+                                    } catch (e: Exception) {
+                                        _eventFlow.emit(
+                                            UiEvent.ShowSnackbar(
+                                                e.message ?: "Couldn't save record"
+                                            )
+                                        )
+                                    }
+                                }
+
+                                is Partition.Savings -> {
+                                    try {
+                                        val timestamp = System.currentTimeMillis()
+                                        val amount = state.value.amount
+                                        savingsUseCases.insertSavings(
+                                            Savings(
+                                                timestamp = timestamp,
+                                                amount = (amount.toDouble() * -1).toString()
+                                            )
+                                        )
+                                        _eventFlow.emit(UiEvent.SaveRecord)
+                                    } catch (e: Exception) {
+                                        _eventFlow.emit(
+                                            UiEvent.ShowSnackbar(
+                                                e.message ?: "Couldn't save record"
+                                            )
+                                        )
+                                    }
+                                }
+
+                                is Partition.Wants -> {
+                                    try {
+                                        val timestamp = System.currentTimeMillis()
+                                        val amount = state.value.amount
+                                        wantsUseCases.insertWants(
+                                            Wants(
+                                                timestamp = timestamp,
+                                                amount = (amount.toDouble() * -1).toString()
+                                            )
+                                        )
+                                        _eventFlow.emit(UiEvent.SaveRecord)
+                                    } catch (e: Exception) {
+                                        _eventFlow.emit(
+                                            UiEvent.ShowSnackbar(
+                                                e.message ?: "Couldn't save record"
+                                            )
+                                        )
+                                    }
+                                }
                             }
                         }
 
