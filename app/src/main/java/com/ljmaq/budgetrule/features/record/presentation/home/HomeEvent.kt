@@ -1,7 +1,7 @@
 package com.ljmaq.budgetrule.features.record.presentation.home
 
-import com.ljmaq.budgetrule.features.record.domain.model.Partition
 import com.ljmaq.budgetrule.features.record.domain.model.Income
+import com.ljmaq.budgetrule.features.record.domain.model.Partition
 
 sealed class HomeEvent {
 
@@ -16,7 +16,7 @@ sealed class HomeEvent {
     // Main events
     data object CreateRecord: HomeEvent()
     data class EditIncome(val income: Income): HomeEvent()
-    data object CancelCreateRecord: HomeEvent()
+    data object CloseCreateRecordModalBottomSheet : HomeEvent()
     data class AddToSelection(val income: Income): HomeEvent()
     data class RemoveFromSelection(val income: Income): HomeEvent()
     data object AddAllToSelection: HomeEvent()

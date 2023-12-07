@@ -96,7 +96,7 @@ class HomeViewModel @Inject constructor(
                 _createRecordSheetState.value = true
             }
 
-            is HomeEvent.CancelCreateRecord -> {
+            is HomeEvent.CloseCreateRecordModalBottomSheet -> {
                 _createRecordSheetState.value = false
             }
 

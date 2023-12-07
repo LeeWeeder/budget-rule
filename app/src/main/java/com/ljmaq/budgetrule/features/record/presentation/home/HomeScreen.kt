@@ -161,7 +161,7 @@ fun HomeScreen(
             }
         ) { paddingValues ->
             val cancelCreateRecord = {
-                viewModel.onEvent(HomeEvent.CancelCreateRecord)
+                viewModel.onEvent(HomeEvent.CloseCreateRecordModalBottomSheet)
                 createRecordViewModel.onEvent(CreateRecordEvent.ResetState)
             }
             if (createRecordSheetVisibilityState) {
