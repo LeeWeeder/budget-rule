@@ -401,25 +401,25 @@ fun HomeScreen(
                     Spacer(modifier = Modifier.height(12.dp))
                 }
 
-                items(state.incomes) { record ->
+                items(state.incomes) { income ->
                     IncomeItem(
-                        income = record,
-                        isSelected = selectedRecords.contains(record),
+                        income = income,
+                        isSelected = selectedRecords.contains(income),
                         modifier = Modifier
                             .fillMaxWidth()
                             .combinedClickable(
                                 onClick = {
                                     if (!isOnSelectionMode) {
-                                        viewModel.onEvent(HomeEvent.EditIncome(income = record))
+                                        viewModel.onEvent(HomeEvent.EditIncome(income = income))
                                     } else {
-                                        if (selectedRecords.contains(record)) {
+                                        if (selectedRecords.contains(income)) {
                                             viewModel.onEvent(
                                                 HomeEvent.RemoveFromSelection(
-                                                    record
+                                                    income
                                                 )
                                             )
                                         } else {
-                                            viewModel.onEvent(HomeEvent.AddToSelection(record))
+                                            viewModel.onEvent(HomeEvent.AddToSelection(income))
                                         }
                                         if (selectedRecords.size < 1) {
                                             viewModel.onEvent(HomeEvent.ChangeSelectionMode)
@@ -428,10 +428,10 @@ fun HomeScreen(
                                 },
                                 onLongClick = {
                                     if (isOnSelectionMode) {
-                                        if (selectedRecords.contains(record)) {
+                                        if (selectedRecords.contains(income)) {
                                             return@combinedClickable
                                         }
-                                        viewModel.onEvent(HomeEvent.AddToSelection(record))
+                                        viewModel.onEvent(HomeEvent.AddToSelection(income))
                                         var first = -1
                                         var last = -1
                                         state.incomes.forEachIndexed { index, record ->
@@ -468,18 +468,19 @@ fun HomeScreen(
                                         }
                                     } else {
                                         viewModel.onEvent(HomeEvent.ChangeSelectionMode)
-                                        viewModel.onEvent(HomeEvent.AddToSelection(record))
+                                        viewModel.onEvent(HomeEvent.AddToSelection(income))
                                     }
                                 }
                             ),
                         onIconClick = {
-                            if (!selectedRecords.contains(record)) {
-                                viewModel.onEvent(HomeEvent.AddToSelection(record))
+                            if (!selectedRecords.contains(income)) {
+                                viewModel.onEvent(HomeEvent.AddToSelection(income))
                             } else {
-                                viewModel.onEvent(HomeEvent.RemoveFromSelection(record))
+                                viewModel.onEvent(HomeEvent.RemoveFromSelection(income))
                             }
                         }
                     )
+                    Spacer(modifier = Modifier.height(4.dp))
                 }
             }
         }
