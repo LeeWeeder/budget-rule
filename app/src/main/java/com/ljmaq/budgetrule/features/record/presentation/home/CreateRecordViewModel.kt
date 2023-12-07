@@ -74,6 +74,10 @@ class CreateRecordViewModel @Inject constructor(
 
             CreateRecordEvent.InsertRecord -> {
                 viewModelScope.launch {
+                    /* TODO:
+                        Refactor code
+                        Let the try block the root instead of when
+                    **/
                     when (state.value.selectedRecordType) {
                         RecordType.Expense -> {
                             when (state.value.selectedPartition!!) {
