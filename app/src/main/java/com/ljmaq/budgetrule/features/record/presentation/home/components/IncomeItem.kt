@@ -34,6 +34,7 @@ fun IncomeItem(
     onIconClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    // TODO: Add ripple effect on icon click during highlighting of item
     val roundCorner = 18.dp
     val roundedStartCornerShape =
         RoundedCornerShape(topStart = roundCorner, bottomStart = roundCorner)
