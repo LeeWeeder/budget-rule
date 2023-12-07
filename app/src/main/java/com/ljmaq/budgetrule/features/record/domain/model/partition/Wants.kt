@@ -8,8 +8,4 @@ data class Wants(
     val timestamp: Long,
     val amount: String,
     @PrimaryKey val id: Int? = null
-) {
-    companion object {
-        val partitionValue = 0.3
-    }
-}
+)

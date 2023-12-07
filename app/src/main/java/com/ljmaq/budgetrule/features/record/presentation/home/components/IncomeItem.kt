@@ -4,13 +4,10 @@ import androidx.compose.animation.core.CubicBezierEasing
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Icon
@@ -21,14 +18,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.ljmaq.budgetrule.R
 import com.ljmaq.budgetrule.features.record.domain.model.Income
-import com.ljmaq.budgetrule.features.record.domain.model.Partition
 import com.ljmaq.budgetrule.features.record.presentation.home.util.Formatter
 
 @Composable
@@ -49,9 +44,9 @@ fun IncomeItem(
         },
         supportingContent = {
             Row {
-                Partition.partitions.onEach { partition ->
-                    PartitionChip(onClick = { /*TODO*/ }, partition = partition)
-                }
+                /*partitions.onEach { partition ->
+                    PartitionChip(onClick = { *//*TODO*//* }, partition = partition)
+                }*/
             }
         },
         modifier = modifier,

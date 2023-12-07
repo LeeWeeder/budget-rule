@@ -74,6 +74,7 @@ fun HomeScreen(
     createRecordViewModel: CreateRecordViewModel = hiltViewModel()
 ) {
     val state = viewModel.state.value
+    val partitionState = viewModel.partitionState.value
     val isOnSelectionMode = viewModel.isOnSelectionMode.value
     val selectedRecords = viewModel.selectedRecords
     val dialogState = viewModel.dialogState.value
@@ -218,54 +219,54 @@ fun HomeScreen(
                             ) {
                                 item {
                                     BudgetRuleFilterChip(
-                                        selected = createRecordState.selectedPartition == Partition.Needs,
+                                        selected = createRecordState.selectedPartition == Partition.Needs(),
                                         onClick = {
                                             createRecordViewModel.onEvent(
                                                 CreateRecordEvent.ChangePartition(
-                                                    Partition.Needs
+                                                    Partition.Needs()
                                                 )
                                             )
                                         },
-                                        text = Partition.Needs.name
+                                        text = Partition.Needs().name
                                     )
                                 }
                                 item {
                                     BudgetRuleFilterChip(
-                                        selected = createRecordState.selectedPartition == Partition.Wants,
+                                        selected = createRecordState.selectedPartition == Partition.Wants(),
                                         onClick = {
                                             createRecordViewModel.onEvent(
                                                 CreateRecordEvent.ChangePartition(
-                                                    Partition.Wants
+                                                    Partition.Wants()
                                                 )
                                             )
                                         },
-                                        text = Partition.Wants.name
+                                        text = Partition.Wants().name
                                     )
                                 }
                                 item {
                                     BudgetRuleFilterChip(
-                                        selected = createRecordState.selectedPartition == Partition.Savings,
+                                        selected = createRecordState.selectedPartition == Partition.Savings(),
                                         onClick = {
                                             createRecordViewModel.onEvent(
                                                 CreateRecordEvent.ChangePartition(
-                                                    Partition.Savings
+                                                    Partition.Savings()
                                                 )
                                             )
                                         },
-                                        text = Partition.Savings.name
+                                        text = Partition.Savings().name
                                     )
                                 }
                                 item {
                                     BudgetRuleFilterChip(
-                                        selected = createRecordState.selectedPartition == Partition.Investments,
+                                        selected = createRecordState.selectedPartition == Partition.Investments(),
                                         onClick = {
                                             createRecordViewModel.onEvent(
                                                 CreateRecordEvent.ChangePartition(
-                                                    Partition.Investments
+                                                    Partition.Investments()
                                                 )
                                             )
                                         },
-                                        text = Partition.Investments.name
+                                        text = Partition.Investments().name
                                     )
                                 }
                             }
@@ -318,7 +319,9 @@ fun HomeScreen(
                             Text(text = "Cancel")
                         }
                         Button(
-                            onClick = { /*TODO*/ },
+                            onClick = {
+                                createRecordViewModel.onEvent(CreateRecordEvent.InsertRecord)
+                            },
                             leadingIcon = {
                                 Icon(
                                     painter = painterResource(id = R.drawable.note_add),
@@ -363,19 +366,26 @@ fun HomeScreen(
                 item {
                     LazyRow {
                         item {
-                            Partition.partitions.forEachIndexed { index, category ->
+                            val partitions = listOf(
+                                partitionState.needs,
+                                partitionState.wants,
+                                partitionState.savings,
+                                partitionState.investments
+                            )
+                            partitions.forEachIndexed { index, partition ->
                                 if (index == 0) {
                                     Spacer(modifier = Modifier.width(12.dp))
                                 }
-                                CategoryItem(category = category, onClick = {
+                                CategoryItem(partition = partition, onClick = {
                                     // TODO: Implement on click, navigate to category screen
                                 })
-                                if (index == Partition.partitions.lastIndex) {
+                                if (index == partitions.lastIndex) {
                                     Spacer(modifier = Modifier.width(12.dp))
                                 }
                             }
                         }
                     }
+
                 }
 
                 item {

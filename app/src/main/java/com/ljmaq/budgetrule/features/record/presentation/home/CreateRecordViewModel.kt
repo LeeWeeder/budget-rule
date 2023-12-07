@@ -1,27 +1,42 @@
 package com.ljmaq.budgetrule.features.record.presentation.home
 
 import androidx.compose.runtime.State
-import androidx.compose.runtime.mutableDoubleStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.ljmaq.budgetrule.features.record.domain.model.Income
 import com.ljmaq.budgetrule.features.record.domain.model.Partition
+import com.ljmaq.budgetrule.features.record.domain.model.partition.Investments
+import com.ljmaq.budgetrule.features.record.domain.model.partition.Needs
+import com.ljmaq.budgetrule.features.record.domain.model.partition.Savings
+import com.ljmaq.budgetrule.features.record.domain.model.partition.Wants
 import com.ljmaq.budgetrule.features.record.domain.usecase.income.IncomesUseCases
+import com.ljmaq.budgetrule.features.record.domain.usecase.partition.investments.InvestmentsUseCases
+import com.ljmaq.budgetrule.features.record.domain.usecase.partition.needs.NeedsUseCases
+import com.ljmaq.budgetrule.features.record.domain.usecase.partition.savings.SavingsUseCases
+import com.ljmaq.budgetrule.features.record.domain.usecase.partition.wants.WantsUseCases
 import com.ljmaq.budgetrule.features.record.domain.util.isDigitsOnly
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class CreateRecordViewModel @Inject constructor(
     private val incomesUseCases: IncomesUseCases,
-
-    ) : ViewModel() {
+    private val needsUseCases: NeedsUseCases,
+    private val wantsUseCases: WantsUseCases,
+    private val investmentsUseCases: InvestmentsUseCases,
+    private val savingsUseCases: SavingsUseCases
+) : ViewModel() {
     private val _state = mutableStateOf(CreateRecordState())
     val state: State<CreateRecordState> = _state
 
-    private val _amount = mutableDoubleStateOf(0.0)
-    val amount: State<Double> = _amount
-
     private var lastPartitionSelected: Partition? = null
+
+    private val _eventFlow = MutableSharedFlow<UiEvent>()
+    val eventFlow = _eventFlow.asSharedFlow()
 
     fun onEvent(event: CreateRecordEvent) {
         when (event) {
@@ -29,7 +44,7 @@ class CreateRecordViewModel @Inject constructor(
                 _state.value = state.value.copy(
                     selectedRecordType = event.recordType,
                     selectedPartition = if (event.recordType == RecordType.Expense) {
-                        if (lastPartitionSelected == null) Partition.Needs else lastPartitionSelected
+                        if (lastPartitionSelected == null) Partition.Needs() else lastPartitionSelected
                     } else {
                         lastPartitionSelected = state.value.selectedPartition
                         null
@@ -56,6 +71,72 @@ class CreateRecordViewModel @Inject constructor(
                     }
                 )
             }
+
+            CreateRecordEvent.InsertRecord -> {
+                viewModelScope.launch {
+                    when (state.value.selectedRecordType) {
+                        RecordType.Expense -> {
+                            when (state.value.selectedPartition!!) {
+                                is Partition.Investments -> {
+
+                                }
+
+                                is Partition.Needs -> TODO()
+                                is Partition.Savings -> TODO()
+                                is Partition.Wants -> TODO()
+                            }
+                        }
+
+                        RecordType.Income -> {
+                            try {
+                                val timestamp = System.currentTimeMillis()
+                                val amount = state.value.amount
+                                incomesUseCases.insertIncome(
+                                    Income(
+                                        timestamp = timestamp,
+                                        amount = amount
+                                    )
+                                )
+                                _eventFlow.emit(UiEvent.SaveRecord)
+                                needsUseCases.insertNeeds(
+                                    Needs(
+                                        timestamp = timestamp,
+                                        amount = (Partition.Needs().partitionValue * amount.toDouble()).toString()
+                                    )
+                                )
+                                wantsUseCases.insertWants(
+                                    Wants(
+                                        timestamp = timestamp,
+                                        amount = (Partition.Wants().partitionValue * amount.toDouble()).toString()
+                                    )
+                                )
+                                savingsUseCases.insertSavings(
+                                    Savings(
+                                        timestamp = timestamp,
+                                        amount = (Partition.Savings().partitionValue * amount.toDouble()).toString()
+                                    )
+                                )
+                                investmentsUseCases.insertInvestments(
+                                    Investments(
+                                        timestamp = timestamp,
+                                        amount = (Partition.Investments().partitionValue * amount.toDouble()).toString()
+                                    )
+                                )
+                            } catch (e: Exception) {
+                                _eventFlow.emit(
+                                    UiEvent.ShowSnackbar(e.message ?: "Couldn't save record")
+                                )
+                            }
+
+                        }
+                    }
+                }
+            }
         }
+    }
+
+    sealed class UiEvent {
+        data class ShowSnackbar(val message: String) : UiEvent()
+        data object SaveRecord : UiEvent()
     }
 }
