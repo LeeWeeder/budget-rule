@@ -17,7 +17,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.ljmaq.budgetrule.features.record.presentation.records.RecordScreen
+import com.ljmaq.budgetrule.features.record.presentation.home.HomeScreen
 import com.ljmaq.budgetrule.features.record.presentation.util.Screen
 import com.ljmaq.budgetrule.ui.theme.BudgetRuleTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -60,7 +60,7 @@ class MainActivity : ComponentActivity() {
                             enterTransition = enterTransition,
                             exitTransition = exitTransition
                         ) {
-                            RecordScreen(navController)
+                            HomeScreen(navController)
                         }
                     }
                 }

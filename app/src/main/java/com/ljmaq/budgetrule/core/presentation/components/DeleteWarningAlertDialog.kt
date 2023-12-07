@@ -9,23 +9,22 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.AbsoluteRoundedCornerShape
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SnackbarResult
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.ljmaq.budgetrule.features.record.domain.model.Record
-import com.ljmaq.budgetrule.features.record.presentation.records.RecordsEvent
-import com.ljmaq.budgetrule.features.record.presentation.records.RecordsViewModel
+import com.ljmaq.budgetrule.features.record.domain.model.Income
+import com.ljmaq.budgetrule.features.record.presentation.home.HomeEvent
+import com.ljmaq.budgetrule.features.record.presentation.home.HomeViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
@@ -70,47 +69,41 @@ private fun AlertDialog(
 
 @Composable
 fun DeleteWarningAlertDialog(
-    isDeleteConfirmationOpen: MutableState<Boolean>,
-    selectedRecords: SnapshotStateList<Record>,
-    viewModel: RecordsViewModel,
+    onDismissRequest: () -> Unit,
+    selectedRecords: SnapshotStateList<Income>,
+    viewModel: HomeViewModel,
     scope: CoroutineScope,
     snackbarHostState: SnackbarHostState,
     supportingText: String
 ) {
     AlertDialog(
-        onDismissRequest = { isDeleteConfirmationOpen.value = false },
+        onDismissRequest = onDismissRequest,
         supportingText = supportingText,
         dismissButton = {
-            TextButton(onClick = {
-                isDeleteConfirmationOpen.value = false
-            }) {
+            TextButton(onClick = onDismissRequest) {
                 Text(text = "Cancel")
             }
         },
         confirmButton = {
             TextButton(onClick = {
-                isDeleteConfirmationOpen.value = false
-                selectedRecords.forEach { record ->
-                    viewModel.onEvent(
-                        RecordsEvent.DeleteRecord(record)
+                onDismissRequest.invoke()
+                viewModel.onEvent(HomeEvent.DeleteIncome(selectedRecords.toList()))
+                scope.launch {
+                    val result = snackbarHostState.showSnackbar(
+                        message = "Record deleted",
+                        actionLabel = "Undo",
+                        duration = SnackbarDuration.Long
                     )
-                    scope.launch {
-                        val result = snackbarHostState.showSnackbar(
-                            message = "Record deleted",
-                            actionLabel = "Undo",
-                            duration = SnackbarDuration.Long
-                        )
 
-                        if (result == SnackbarResult.ActionPerformed) {
-                            viewModel.onEvent(RecordsEvent.RestoreRecord)
-                            snackbarHostState.showSnackbar(
-                                message = "Record restored",
-                                withDismissAction = true
-                            )
-                        }
+                    if (result == SnackbarResult.ActionPerformed) {
+                        viewModel.onEvent(HomeEvent.RestoreIncome)
+                        snackbarHostState.showSnackbar(
+                            message = "Record restored",
+                            withDismissAction = true
+                        )
                     }
                 }
-                viewModel.onEvent(RecordsEvent.ChangeSelectionMode)
+                viewModel.onEvent(HomeEvent.ChangeSelectionMode)
             }) {
                 Text(text = "Delete")
             }
