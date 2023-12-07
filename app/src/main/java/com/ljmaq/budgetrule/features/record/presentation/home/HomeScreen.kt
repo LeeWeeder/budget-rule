@@ -63,6 +63,8 @@ import com.ljmaq.budgetrule.features.record.presentation.home.components.Outline
 import com.ljmaq.budgetrule.features.record.presentation.home.components.SegmentedButtonValues
 import com.ljmaq.budgetrule.features.record.presentation.home.components.SingleChoiceSegmentedButton
 import com.ljmaq.budgetrule.features.record.presentation.util.Screen
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 @OptIn(
     ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class
@@ -87,6 +89,26 @@ fun HomeScreen(
 
     BackHandler(enabled = isOnSelectionMode) {
         viewModel.onEvent(HomeEvent.ChangeSelectionMode)
+    }
+
+    LaunchedEffect(key1 = true) {
+        createRecordViewModel.eventFlow.collectLatest { event ->
+            when (event) {
+                CreateRecordViewModel.UiEvent.SaveRecord -> {
+                    viewModel.onEvent(HomeEvent.CloseCreateRecordModalBottomSheet)
+                    scope.launch {
+                        snackbarHostState.showSnackbar(
+                            message = "Record saved",
+                            withDismissAction = true
+                        )
+                    }
+                }
+
+                is CreateRecordViewModel.UiEvent.ShowSnackbar -> {
+                    snackbarHostState.showSnackbar(event.message)
+                }
+            }
+        }
     }
 
     Box {
