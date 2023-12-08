@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -22,6 +23,7 @@ import androidx.compose.ui.unit.sp
 import com.ljmaq.budgetrule.features.record.domain.model.Partition
 import com.ljmaq.budgetrule.features.record.presentation.home.util.Formatter
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CategoryItem(
     partition: Partition,

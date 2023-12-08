@@ -75,7 +75,26 @@ class HomeViewModel @Inject constructor(
                     event.incomes.forEach { income ->
                         incomesUseCases.deleteIncome(income)
                         recentlyDeletedIncome.add(income)
+                        val needs = income.id?.let { needsUseCases.getNeedsById(it) }
+                        val wants = income.id?.let { wantsUseCases.getWantsById(it) }
+                        val savings = income.id?.let { savingsUseCases.getSavingsById(it) }
+                        val investments =
+                            income.id?.let { investmentsUseCases.getInvestmentsById(it) }
+
+                        if (needs != null) {
+                            needsUseCases.deleteNeeds(needs)
+                        }
+                        if (wants != null) {
+                            wantsUseCases.deleteWants(wants)
+                        }
+                        if (savings != null) {
+                            savingsUseCases.deleteSavings(savings)
+                        }
+                        if (investments != null) {
+                            investmentsUseCases.deleteInvestments(investments)
+                        }
                     }
+
                 }
             }
 
