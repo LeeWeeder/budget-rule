@@ -443,9 +443,6 @@ fun HomeScreen(
                                         } else {
                                             viewModel.onEvent(HomeEvent.AddToSelection(income))
                                         }
-                                        if (selectedRecords.size < 1) {
-                                            viewModel.onEvent(HomeEvent.ChangeSelectionMode)
-                                        }
                                     }
                                 },
                                 onLongClick = {
@@ -495,10 +492,15 @@ fun HomeScreen(
                                 }
                             ),
                         onIconClick = {
-                            if (!selectedRecords.contains(income)) {
+                            if (!isOnSelectionMode) {
+                                viewModel.onEvent(HomeEvent.ChangeSelectionMode)
                                 viewModel.onEvent(HomeEvent.AddToSelection(income))
                             } else {
-                                viewModel.onEvent(HomeEvent.RemoveFromSelection(income))
+                                if (!selectedRecords.contains(income)) {
+                                    viewModel.onEvent(HomeEvent.AddToSelection(income))
+                                } else {
+                                    viewModel.onEvent(HomeEvent.RemoveFromSelection(income))
+                                }
                             }
                         }
                     )

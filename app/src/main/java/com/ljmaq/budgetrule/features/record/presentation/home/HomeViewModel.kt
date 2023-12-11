@@ -129,12 +129,17 @@ class HomeViewModel @Inject constructor(
                 if (selectedRecords.contains(event.income)) {
                     _selectedRecords.remove(event.income)
                 }
+
+                if (_selectedRecords.size == 0) {
+                    onEvent(HomeEvent.ChangeSelectionMode)
+                }
             }
 
             is HomeEvent.ChangeSelectionMode -> {
                 if (isOnSelectionMode.value) {
                     _selectedRecords.clear()
                 }
+
                 _isOnSelectionMode.value = !isOnSelectionMode.value
             }
 
