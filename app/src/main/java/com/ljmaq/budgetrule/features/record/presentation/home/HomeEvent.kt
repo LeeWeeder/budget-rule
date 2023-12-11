@@ -6,7 +6,7 @@ import com.ljmaq.budgetrule.features.record.domain.model.Partition
 sealed class HomeEvent {
 
     // Records events
-    data class DeleteIncome(val incomes: List<Income>): HomeEvent()
+    data class DeleteIncome(val income: Income) : HomeEvent()
     data object RestoreIncome: HomeEvent()
     data object ChangeSelectionMode: HomeEvent()
 

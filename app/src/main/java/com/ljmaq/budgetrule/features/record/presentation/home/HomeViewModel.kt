@@ -72,29 +72,26 @@ class HomeViewModel @Inject constructor(
         when (event) {
             is HomeEvent.DeleteIncome -> {
                 viewModelScope.launch {
-                    event.incomes.forEach { income ->
-                        incomesUseCases.deleteIncome(income)
-                        recentlyDeletedIncome.add(income)
-                        val needs = income.id?.let { needsUseCases.getNeedsById(it) }
-                        val wants = income.id?.let { wantsUseCases.getWantsById(it) }
-                        val savings = income.id?.let { savingsUseCases.getSavingsById(it) }
-                        val investments =
-                            income.id?.let { investmentsUseCases.getInvestmentsById(it) }
+                    incomesUseCases.deleteIncome(event.income)
+                    recentlyDeletedIncome.add(event.income)
+                    /*val needs = record.id?.let { needsUseCases.getNeedsById(it) }
+                    val wants = record.id?.let { wantsUseCases.getWantsById(it) }
+                    val savings = record.id?.let { savingsUseCases.getSavingsById(it) }
+                    val investments =
+                        record.id?.let { investmentsUseCases.getInvestmentsById(it) }
 
-                        if (needs != null) {
-                            needsUseCases.deleteNeeds(needs)
-                        }
-                        if (wants != null) {
-                            wantsUseCases.deleteWants(wants)
-                        }
-                        if (savings != null) {
-                            savingsUseCases.deleteSavings(savings)
-                        }
-                        if (investments != null) {
-                            investmentsUseCases.deleteInvestments(investments)
-                        }
+                    if (needs != null) {
+                        needsUseCases.deleteNeeds(needs)
                     }
-
+                    if (wants != null) {
+                        wantsUseCases.deleteWants(wants)
+                    }
+                    if (savings != null) {
+                        savingsUseCases.deleteSavings(savings)
+                    }
+                    if (investments != null) {
+                        investmentsUseCases.deleteInvestments(investments)
+                    }*/
                 }
             }
 

@@ -87,7 +87,9 @@ fun DeleteWarningAlertDialog(
         confirmButton = {
             TextButton(onClick = {
                 onDismissRequest.invoke()
-                viewModel.onEvent(HomeEvent.DeleteIncome(selectedRecords))
+                selectedRecords.forEach { income ->
+                    viewModel.onEvent(HomeEvent.DeleteIncome(income))
+                }
                 scope.launch {
                     val result = snackbarHostState.showSnackbar(
                         message = "Record deleted",
