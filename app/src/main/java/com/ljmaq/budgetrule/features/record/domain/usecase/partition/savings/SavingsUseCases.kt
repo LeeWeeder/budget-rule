@@ -4,5 +4,6 @@ data class SavingsUseCases(
     val getSavings: GetSavings,
     val deleteSavings: DeleteSavings,
     val insertSavings: InsertSavings,
-    val getSavingsById: GetSavingsById
+    val getSavingsById: GetSavingsById,
+    val getSavingsDescending: GetSavingsDescending
 )

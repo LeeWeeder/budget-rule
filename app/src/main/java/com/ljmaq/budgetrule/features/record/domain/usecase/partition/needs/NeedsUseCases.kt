@@ -4,5 +4,6 @@ data class NeedsUseCases(
     val getNeeds: GetNeeds,
     val deleteNeeds: DeleteNeeds,
     val insertNeeds: InsertNeeds,
-    val getNeedsById: GetNeedsById
+    val getNeedsById: GetNeedsById,
+    val getNeedsDescending: GetNeedsDescending
 )

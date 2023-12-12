@@ -17,29 +17,33 @@ import com.ljmaq.budgetrule.features.record.domain.repository.partition.Investme
 import com.ljmaq.budgetrule.features.record.domain.repository.partition.NeedsRepository
 import com.ljmaq.budgetrule.features.record.domain.repository.partition.SavingsRepository
 import com.ljmaq.budgetrule.features.record.domain.repository.partition.WantsRepository
-import com.ljmaq.budgetrule.features.record.domain.usecase.income.InsertIncome
 import com.ljmaq.budgetrule.features.record.domain.usecase.income.DeleteIncome
 import com.ljmaq.budgetrule.features.record.domain.usecase.income.GetIncomeById
 import com.ljmaq.budgetrule.features.record.domain.usecase.income.GetIncomesDescending
 import com.ljmaq.budgetrule.features.record.domain.usecase.income.IncomesUseCases
+import com.ljmaq.budgetrule.features.record.domain.usecase.income.InsertIncome
 import com.ljmaq.budgetrule.features.record.domain.usecase.partition.investments.DeleteInvestments
 import com.ljmaq.budgetrule.features.record.domain.usecase.partition.investments.GetInvestments
 import com.ljmaq.budgetrule.features.record.domain.usecase.partition.investments.GetInvestmentsById
+import com.ljmaq.budgetrule.features.record.domain.usecase.partition.investments.GetInvestmentsDescending
 import com.ljmaq.budgetrule.features.record.domain.usecase.partition.investments.InsertInvestments
 import com.ljmaq.budgetrule.features.record.domain.usecase.partition.investments.InvestmentsUseCases
 import com.ljmaq.budgetrule.features.record.domain.usecase.partition.needs.DeleteNeeds
 import com.ljmaq.budgetrule.features.record.domain.usecase.partition.needs.GetNeeds
 import com.ljmaq.budgetrule.features.record.domain.usecase.partition.needs.GetNeedsById
+import com.ljmaq.budgetrule.features.record.domain.usecase.partition.needs.GetNeedsDescending
 import com.ljmaq.budgetrule.features.record.domain.usecase.partition.needs.InsertNeeds
 import com.ljmaq.budgetrule.features.record.domain.usecase.partition.needs.NeedsUseCases
 import com.ljmaq.budgetrule.features.record.domain.usecase.partition.savings.DeleteSavings
 import com.ljmaq.budgetrule.features.record.domain.usecase.partition.savings.GetSavings
 import com.ljmaq.budgetrule.features.record.domain.usecase.partition.savings.GetSavingsById
+import com.ljmaq.budgetrule.features.record.domain.usecase.partition.savings.GetSavingsDescending
 import com.ljmaq.budgetrule.features.record.domain.usecase.partition.savings.InsertSavings
 import com.ljmaq.budgetrule.features.record.domain.usecase.partition.savings.SavingsUseCases
 import com.ljmaq.budgetrule.features.record.domain.usecase.partition.wants.DeleteWants
 import com.ljmaq.budgetrule.features.record.domain.usecase.partition.wants.GetWants
 import com.ljmaq.budgetrule.features.record.domain.usecase.partition.wants.GetWantsById
+import com.ljmaq.budgetrule.features.record.domain.usecase.partition.wants.GetWantsDescending
 import com.ljmaq.budgetrule.features.record.domain.usecase.partition.wants.InsertWants
 import com.ljmaq.budgetrule.features.record.domain.usecase.partition.wants.WantsUseCases
 import dagger.Module
@@ -105,7 +109,8 @@ object AppModule {
             getNeeds = GetNeeds(repository),
             deleteNeeds = DeleteNeeds(repository),
             insertNeeds = InsertNeeds(repository),
-            getNeedsById = GetNeedsById(repository)
+            getNeedsById = GetNeedsById(repository),
+            getNeedsDescending = GetNeedsDescending(repository)
         )
     }
 
@@ -133,7 +138,8 @@ object AppModule {
             getWants = GetWants(repository),
             getWantsById = GetWantsById(repository),
             deleteWants = DeleteWants(repository),
-            insertWants = InsertWants(repository)
+            insertWants = InsertWants(repository),
+            getWantsDescending = GetWantsDescending(repository)
         )
     }
 
@@ -161,7 +167,8 @@ object AppModule {
             getSavings = GetSavings(repository),
             getSavingsById = GetSavingsById(repository),
             insertSavings = InsertSavings(repository),
-            deleteSavings = DeleteSavings(repository)
+            deleteSavings = DeleteSavings(repository),
+            getSavingsDescending = GetSavingsDescending(repository)
         )
     }
 
@@ -189,7 +196,8 @@ object AppModule {
             getInvestments = GetInvestments(repository),
             getInvestmentsById = GetInvestmentsById(repository),
             insertInvestments = InsertInvestments(repository),
-            deleteInvestments = DeleteInvestments(repository)
+            deleteInvestments = DeleteInvestments(repository),
+            getInvestmentsDescending = GetInvestmentsDescending(repository)
         )
     }
 }

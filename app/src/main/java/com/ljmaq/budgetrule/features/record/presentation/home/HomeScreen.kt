@@ -75,8 +75,12 @@ fun HomeScreen(
     viewModel: HomeViewModel = hiltViewModel(),
     createRecordViewModel: CreateRecordViewModel = hiltViewModel()
 ) {
-    val state = viewModel.state.value
-    val partitionState = viewModel.partitionState.value
+    val incomeState = viewModel.incomeState.value
+    val needsState = viewModel.needsState.value
+    val wantsState = viewModel.wantsState.value
+    val savingsState = viewModel.savingsState.value
+    val investmentsState = viewModel.investmentsState.value
+
     val isOnSelectionMode = viewModel.isOnSelectionMode.value
     val selectedRecords = viewModel.selectedRecords
     val dialogState = viewModel.dialogState.value
@@ -171,7 +175,7 @@ fun HomeScreen(
                             viewModel.onEvent(HomeEvent.RemoveAllFromSelection)
                             viewModel.onEvent(HomeEvent.ChangeSelectionMode)
                         },
-                        isAllRecordsSelected = state.incomes.size == selectedRecords.size,
+                        isAllRecordsSelected = incomeState.incomes.size == selectedRecords.size,
                         scrollBehavior = onSelectionModeTopAppBarScrollBehavior
                     )
                 } else {
@@ -391,23 +395,30 @@ fun HomeScreen(
                 item {
                     LazyRow {
                         item {
-                            val partitions = listOf(
-                                partitionState.needs,
-                                partitionState.wants,
-                                partitionState.savings,
-                                partitionState.investments
-                            )
-                            partitions.forEachIndexed { index, partition ->
-                                if (index == 0) {
-                                    Spacer(modifier = Modifier.width(12.dp))
-                                }
-                                CategoryItem(partition = partition, onClick = {
-                                    // TODO: Implement on click, navigate to category screen
-                                })
-                                if (index == partitions.lastIndex) {
-                                    Spacer(modifier = Modifier.width(12.dp))
-                                }
-                            }
+                            Spacer(modifier = Modifier.width(12.dp))
+                        }
+                        item {
+                            CategoryItem(partition = needsState.needs, onClick = {
+                                // TODO: Implement on click, navigate to category screen
+                            })
+                        }
+                        item {
+                            CategoryItem(partition = wantsState.wants, onClick = {
+                                // TODO: Implement on click, navigate to category screen
+                            })
+                        }
+                        item {
+                            CategoryItem(partition = savingsState.savings, onClick = {
+                                // TODO: Implement on click, navigate to category screen
+                            })
+                        }
+                        item {
+                            CategoryItem(partition = investmentsState.investments, onClick = {
+                                // TODO: Implement on click, navigate to category screen
+                            })
+                        }
+                        item {
+                            Spacer(modifier = Modifier.width(12.dp))
                         }
                     }
 
@@ -423,7 +434,7 @@ fun HomeScreen(
                     Spacer(modifier = Modifier.height(12.dp))
                 }
 
-                items(state.incomes) { income ->
+                items(incomeState.incomes) { income ->
                     IncomeItem(
                         income = income,
                         isSelected = selectedRecords.contains(income),
@@ -453,7 +464,7 @@ fun HomeScreen(
                                         viewModel.onEvent(HomeEvent.AddToSelection(income))
                                         var first = -1
                                         var last = -1
-                                        state.incomes.forEachIndexed { index, record ->
+                                        incomeState.incomes.forEachIndexed { index, record ->
                                             if (selectedRecords.contains(record)) {
                                                 if (first == -1 || index < first) {
                                                     first = index
@@ -466,7 +477,7 @@ fun HomeScreen(
 
                                         if (first < last) {
                                             val temp = mutableListOf(selectedRecords.first())
-                                            temp.addAll(state.incomes.subList(first, last))
+                                            temp.addAll(incomeState.incomes.subList(first, last))
                                             temp.forEach { record ->
                                                 viewModel.onEvent(
                                                     HomeEvent.AddToSelection(
@@ -476,7 +487,7 @@ fun HomeScreen(
                                             }
                                         } else {
                                             val temp = mutableListOf(selectedRecords.last())
-                                            temp.addAll(state.incomes.subList(last, first))
+                                            temp.addAll(incomeState.incomes.subList(last, first))
                                             temp.forEach { record ->
                                                 viewModel.onEvent(
                                                     HomeEvent.AddToSelection(

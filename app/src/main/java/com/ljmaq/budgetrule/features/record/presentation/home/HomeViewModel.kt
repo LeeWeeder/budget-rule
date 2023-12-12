@@ -32,11 +32,20 @@ class HomeViewModel @Inject constructor(
     private val investmentsUseCases: InvestmentsUseCases,
     private val savingsUseCases: SavingsUseCases
 ) : ViewModel() {
-    private val _state = mutableStateOf(IncomeState())
-    val state: State<IncomeState> = _state
+    private val _incomeState = mutableStateOf(IncomeState())
+    val incomeState: State<IncomeState> = _incomeState
 
-    private val _partitionState = mutableStateOf(PartitionState())
-    val partitionState: State<PartitionState> = _partitionState
+    private val _needsState = mutableStateOf(NeedsState())
+    val needsState: State<NeedsState> = _needsState
+
+    private val _wantsState = mutableStateOf(WantsState())
+    val wantsState: State<WantsState> = _wantsState
+
+    private val _savingsState = mutableStateOf(SavingsState())
+    val savingsState: State<SavingsState> = _savingsState
+
+    private val _investmentsState = mutableStateOf(InvestmentsState())
+    val investmentsState: State<InvestmentsState> = _investmentsState
 
     private val _dialogState = mutableStateOf(DialogState())
     val dialogState: State<DialogState> = _dialogState
@@ -165,7 +174,7 @@ class HomeViewModel @Inject constructor(
             }
 
             is HomeEvent.AddAllToSelection -> {
-                state.value.incomes.forEach { record ->
+                incomeState.value.incomes.forEach { record ->
                     if (!selectedRecords.contains(record)) {
                         _selectedRecords.add(record)
                     }
@@ -173,7 +182,7 @@ class HomeViewModel @Inject constructor(
             }
 
             is HomeEvent.RemoveAllFromSelection -> {
-                _selectedRecords.removeAll(state.value.incomes)
+                _selectedRecords.removeAll(incomeState.value.incomes)
             }
 
             is HomeEvent.EditIncome -> {
@@ -203,7 +212,7 @@ class HomeViewModel @Inject constructor(
         getIncomesJob?.cancel()
         getIncomesJob = incomesUseCases.getIncomesDescending()
             .onEach { incomes ->
-                _state.value = state.value.copy(
+                _incomeState.value = incomeState.value.copy(
                     incomes = incomes
                 )
             }
@@ -212,12 +221,13 @@ class HomeViewModel @Inject constructor(
 
     private fun getNeeds() {
         getNeedsJob?.cancel()
-        getNeedsJob = needsUseCases.getNeeds().onEach { needs ->
+        getNeedsJob = needsUseCases.getNeedsDescending().onEach { needs ->
             var sum = 0.0
             needs.forEach {
                 sum += it.amount.toDouble()
             }
-            _partitionState.value = partitionState.value.copy(
+            _needsState.value = needsState.value.copy(
+                needsList = needs,
                 needs = Partition.Needs(sum)
             )
         }
@@ -226,12 +236,13 @@ class HomeViewModel @Inject constructor(
 
     private fun getWants() {
         getWantsJob?.cancel()
-        getWantsJob = wantsUseCases.getWants().onEach { wants ->
+        getWantsJob = wantsUseCases.getWantsDescending().onEach { wants ->
             var sum = 0.0
             wants.forEach {
                 sum += it.amount.toDouble()
             }
-            _partitionState.value = partitionState.value.copy(
+            _wantsState.value = wantsState.value.copy(
+                wantsList = wants,
                 wants = Partition.Wants(sum)
             )
         }
@@ -245,7 +256,8 @@ class HomeViewModel @Inject constructor(
             savings.forEach {
                 sum += it.amount.toDouble()
             }
-            _partitionState.value = partitionState.value.copy(
+            _savingsState.value = savingsState.value.copy(
+                savingsList = savings,
                 savings = Partition.Savings(sum)
             )
         }
@@ -259,7 +271,8 @@ class HomeViewModel @Inject constructor(
             investments.forEach {
                 sum += it.amount.toDouble()
             }
-            _partitionState.value = partitionState.value.copy(
+            _investmentsState.value = investmentsState.value.copy(
+                investmentsList = investments,
                 investments = Partition.Investments(sum)
             )
         }
