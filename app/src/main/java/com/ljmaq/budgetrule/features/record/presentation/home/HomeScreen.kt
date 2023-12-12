@@ -433,21 +433,24 @@ fun HomeScreen(
                                 BudgetRuleFilterChip(
                                     selected = true,
                                     onClick = { /*TODO*/ },
-                                    text = "All"
+                                    text = "All",
+                                    withCheckIcon = false
                                 )
                             }
                             item {
                                 BudgetRuleFilterChip(
                                     selected = false,
                                     onClick = { /*TODO*/ },
-                                    text = "Income"
+                                    text = "Income",
+                                    withCheckIcon = false
                                 )
                             }
                             item {
                                 BudgetRuleFilterChip(
                                     selected = false,
                                     onClick = { /*TODO*/ },
-                                    text = "Partitions"
+                                    text = "Partitions",
+                                    withCheckIcon = false
                                 )
                             }
                         }
