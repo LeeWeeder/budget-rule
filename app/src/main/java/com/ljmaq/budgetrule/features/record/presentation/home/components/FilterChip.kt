@@ -20,7 +20,8 @@ import androidx.compose.ui.Modifier
 fun BudgetRuleFilterChip(
     selected: Boolean,
     onClick: () -> Unit,
-    text: String
+    text: String,
+    withCheckIcon: Boolean = true
 ) {
     FilterChip(
         selected = selected,
@@ -29,8 +30,17 @@ fun BudgetRuleFilterChip(
             Text(text = text)
         },
         leadingIcon = {
-            AnimatedVisibility(visible = selected, enter = fadeIn() + expandIn(expandFrom = Alignment.Center)) {
-                Icon(imageVector = Icons.Default.Done, contentDescription = "Check icon", Modifier.size(FilterChipDefaults.IconSize))
+            if (withCheckIcon) {
+                AnimatedVisibility(
+                    visible = selected,
+                    enter = fadeIn() + expandIn(expandFrom = Alignment.Center)
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Done,
+                        contentDescription = "Check icon",
+                        Modifier.size(FilterChipDefaults.IconSize)
+                    )
+                }
             }
         }
     )
