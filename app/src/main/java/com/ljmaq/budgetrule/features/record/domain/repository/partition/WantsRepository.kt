@@ -6,7 +6,7 @@ import kotlinx.coroutines.flow.Flow
 interface WantsRepository {
     fun getWants(): Flow<List<Wants>>
 
-    suspend fun getWantsById(id: Int): Wants?
+    suspend fun getWantsById(id: Long): Wants?
 
     suspend fun insertWants(wants: Wants)
 

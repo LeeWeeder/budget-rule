@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "243858f83ad6c580cca24b75ed7b1c14",
+    "identityHash": "d781843ca348c0182e0949bb15c7c247",
     "entities": [
       {
         "tableName": "Income",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`timestamp` INTEGER NOT NULL, `amount` TEXT NOT NULL, `id` INTEGER, PRIMARY KEY(`id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`timestamp` INTEGER NOT NULL, `amount` TEXT NOT NULL, PRIMARY KEY(`timestamp`))",
         "fields": [
           {
             "fieldPath": "timestamp",
@@ -19,18 +19,12 @@
             "columnName": "amount",
             "affinity": "TEXT",
             "notNull": true
-          },
-          {
-            "fieldPath": "id",
-            "columnName": "id",
-            "affinity": "INTEGER",
-            "notNull": false
           }
         ],
         "primaryKey": {
           "autoGenerate": false,
           "columnNames": [
-            "id"
+            "timestamp"
           ]
         },
         "indices": [],
@@ -40,7 +34,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '243858f83ad6c580cca24b75ed7b1c14')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'd781843ca348c0182e0949bb15c7c247')"
     ]
   }
 }

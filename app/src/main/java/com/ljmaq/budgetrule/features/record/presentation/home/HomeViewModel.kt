@@ -8,6 +8,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ljmaq.budgetrule.features.record.domain.model.Income
 import com.ljmaq.budgetrule.features.record.domain.model.Partition
+import com.ljmaq.budgetrule.features.record.domain.model.partition.Investments
+import com.ljmaq.budgetrule.features.record.domain.model.partition.Needs
+import com.ljmaq.budgetrule.features.record.domain.model.partition.Savings
+import com.ljmaq.budgetrule.features.record.domain.model.partition.Wants
 import com.ljmaq.budgetrule.features.record.domain.usecase.income.IncomesUseCases
 import com.ljmaq.budgetrule.features.record.domain.usecase.partition.investments.InvestmentsUseCases
 import com.ljmaq.budgetrule.features.record.domain.usecase.partition.needs.NeedsUseCases
@@ -47,6 +51,10 @@ class HomeViewModel @Inject constructor(
     val selectedRecords: SnapshotStateList<Income> = _selectedRecords
 
     private var recentlyDeletedIncome: SnapshotStateList<Income> = mutableStateListOf()
+    private var recentlyDeletedNeeds: SnapshotStateList<Needs> = mutableStateListOf()
+    private var recentlyDeletedWants: SnapshotStateList<Wants> = mutableStateListOf()
+    private var recentlyDeletedSavings: SnapshotStateList<Savings> = mutableStateListOf()
+    private var recentlyDeletedInvestments: SnapshotStateList<Investments> = mutableStateListOf()
 
     private var getIncomesJob: Job? = null
     private var getNeedsJob: Job? = null
@@ -65,8 +73,12 @@ class HomeViewModel @Inject constructor(
     }
 
     fun onEvent(event: HomeEvent) {
-        fun clearRecentlyDeletedIncomeList() {
+        fun clearRecentlyDeletedList() {
             recentlyDeletedIncome.clear()
+            recentlyDeletedNeeds.clear()
+            recentlyDeletedWants.clear()
+            recentlyDeletedSavings.clear()
+            recentlyDeletedInvestments.clear()
         }
 
         when (event) {
@@ -74,11 +86,11 @@ class HomeViewModel @Inject constructor(
                 viewModelScope.launch {
                     incomesUseCases.deleteIncome(event.income)
                     recentlyDeletedIncome.add(event.income)
-                    /*val needs = record.id?.let { needsUseCases.getNeedsById(it) }
-                    val wants = record.id?.let { wantsUseCases.getWantsById(it) }
-                    val savings = record.id?.let { savingsUseCases.getSavingsById(it) }
+                    val needs = event.income.timestamp.let { needsUseCases.getNeedsById(it) }
+                    val wants = event.income.timestamp.let { wantsUseCases.getWantsById(it) }
+                    val savings = event.income.timestamp.let { savingsUseCases.getSavingsById(it) }
                     val investments =
-                        record.id?.let { investmentsUseCases.getInvestmentsById(it) }
+                        event.income.timestamp.let { investmentsUseCases.getInvestmentsById(it) }
 
                     if (needs != null) {
                         needsUseCases.deleteNeeds(needs)
@@ -91,16 +103,28 @@ class HomeViewModel @Inject constructor(
                     }
                     if (investments != null) {
                         investmentsUseCases.deleteInvestments(investments)
-                    }*/
+                    }
                 }
             }
 
             is HomeEvent.RestoreIncome -> {
                 viewModelScope.launch {
-                    recentlyDeletedIncome.forEach { income ->
-                        incomesUseCases.insertIncome(income)
+                    recentlyDeletedIncome.forEach {
+                        incomesUseCases.insertIncome(it)
                     }
-                    clearRecentlyDeletedIncomeList()
+                    recentlyDeletedNeeds.forEach {
+                        needsUseCases.insertNeeds(it)
+                    }
+                    recentlyDeletedWants.forEach {
+                        wantsUseCases.insertWants(it)
+                    }
+                    recentlyDeletedSavings.forEach {
+                        savingsUseCases.insertSavings(it)
+                    }
+                    recentlyDeletedInvestments.forEach {
+                        investmentsUseCases.insertInvestments(it)
+                    }
+                    clearRecentlyDeletedList()
                 }
             }
 

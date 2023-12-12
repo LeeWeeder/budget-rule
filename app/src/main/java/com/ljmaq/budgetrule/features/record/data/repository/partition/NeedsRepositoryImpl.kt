@@ -12,7 +12,7 @@ class NeedsRepositoryImpl(
         return dao.getNeeds()
     }
 
-    override suspend fun getNeedsById(id: Int): Needs? {
+    override suspend fun getNeedsById(id: Long): Needs? {
         return dao.getNeedsById(id)
     }
 

@@ -45,24 +45,24 @@ class EditRecordViewModel @Inject constructor(
         savedStateHandle.get<Int>("recordId")?.let { recordId ->
             if (recordId != -1) {
                 viewModelScope.launch {
-                    recordsUseCases.getIncomeById(recordId)?.also { record ->
-                        currentRecord = record
-                        currentRecordId = record.id
-                        currentTimestamp = record.timestamp
-                        _recordAmount.value = recordAmount.value.copy(
-                            value = record.amount.removePrefix("-")
-                        )
-                        _tabState.value = if (true) {
-                            tabState.value.copy(
-                                index = 1
-                            )
-                        } else {
-                            tabState.value.copy(
-                                index = 0
-                            )
-                        }
-                        _typeIsExpenses.value = true
-                    }
+//                    recordsUseCases.getIncomeById(recordId)?.also { record ->
+//                        currentRecord = record
+//                        currentRecordId = record.id
+//                        currentTimestamp = record.timestamp
+//                        _recordAmount.value = recordAmount.value.copy(
+//                            value = record.amount.removePrefix("-")
+//                        )
+//                        _tabState.value = if (true) {
+//                            tabState.value.copy(
+//                                index = 1
+//                            )
+//                        } else {
+//                            tabState.value.copy(
+//                                index = 0
+//                            )
+//                        }
+//                        _typeIsExpenses.value = true
+//                    }
                 }
             }
         }
@@ -94,7 +94,7 @@ class EditRecordViewModel @Inject constructor(
                             Income(
                                 timestamp = it,
                                 amount = if (typeIsExpenses.value) "-${recordAmount.value.value}" else recordAmount.value.value,
-                                id = currentRecordId
+//                                id = currentRecordId
                             )
                         }?.let {
                             recordsUseCases.insertIncome(

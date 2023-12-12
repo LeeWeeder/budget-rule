@@ -12,7 +12,7 @@ class WantsRepositoryImpl(
         return dao.getWants()
     }
 
-    override suspend fun getWantsById(id: Int): Wants? {
+    override suspend fun getWantsById(id: Long): Wants? {
         return dao.getWantsById(id)
     }
 

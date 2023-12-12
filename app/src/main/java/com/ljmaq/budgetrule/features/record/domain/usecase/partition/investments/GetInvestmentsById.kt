@@ -6,7 +6,7 @@ import com.ljmaq.budgetrule.features.record.domain.repository.partition.Investme
 class GetInvestmentsById(
     private val repository: InvestmentsRepository
 ) {
-    suspend operator fun invoke(id: Int): Investments? {
+    suspend operator fun invoke(id: Long): Investments? {
         return repository.getInvestmentsById(id)
     }
 }

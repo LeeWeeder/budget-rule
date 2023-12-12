@@ -6,7 +6,7 @@ import com.ljmaq.budgetrule.features.record.domain.repository.partition.NeedsRep
 class GetNeedsById(
     private val repository: NeedsRepository
 ) {
-    suspend operator fun invoke(id: Int): Needs? {
+    suspend operator fun invoke(id: Long): Needs? {
         return repository.getNeedsById(id)
     }
 }

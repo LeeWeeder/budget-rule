@@ -76,7 +76,7 @@ class AddRecordViewModel @Inject constructor(
                             Income(
                                 timestamp = System.currentTimeMillis(),
                                 amount = if (typeIsExpenses.value) "-${amount.value.value}" else amount.value.value,
-                                id = currentRecordId
+//                                id = currentRecordId
                             )
                         )
                         _eventFlow.emit(UiEvent.SaveRecord)

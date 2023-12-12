@@ -157,7 +157,7 @@ fun HomeScreen(
                         },
                         onEditIconButtonClick = {
                             navController.navigate(
-                                Screen.SettingsScreen.route + "?recordId=${selectedRecords[0].id}"
+                                Screen.SettingsScreen.route + "?recordId=${selectedRecords[0].timestamp}"
                             )
                             viewModel.onEvent(HomeEvent.ChangeSelectionMode)
                         },

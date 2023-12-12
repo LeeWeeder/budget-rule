@@ -5,16 +5,16 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import kotlinx.coroutines.flow.Flow
 import com.ljmaq.budgetrule.features.record.domain.model.Income
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface IncomeDao {
     @Query("SELECT * FROM income")
     fun getIncomes(): Flow<List<Income>>
 
-    @Query("SELECT * FROM income WHERE id = :id")
-    suspend fun getIncomeById(id: Int): Income?
+    @Query("SELECT * FROM income WHERE timestamp = :id")
+    suspend fun getIncomeById(id: Long): Income?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertIncome(income: Income)

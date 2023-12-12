@@ -12,7 +12,7 @@ class IncomeRepositoryImpl(
         return dao.getIncomes()
     }
 
-    override suspend fun getIncomeById(id: Int): Income? {
+    override suspend fun getIncomeById(id: Long): Income? {
         return dao.getIncomeById(id)
     }
 

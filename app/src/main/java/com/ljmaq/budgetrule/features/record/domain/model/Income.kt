@@ -5,7 +5,6 @@ import androidx.room.PrimaryKey
 
 @Entity
 data class Income(
-    val timestamp: Long,
-    val amount: String,
-    @PrimaryKey val id: Int? = null
+    @PrimaryKey val timestamp: Long,
+    val amount: String
 )

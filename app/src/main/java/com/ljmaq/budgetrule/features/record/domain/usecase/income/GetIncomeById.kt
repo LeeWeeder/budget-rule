@@ -6,7 +6,7 @@ import com.ljmaq.budgetrule.features.record.domain.repository.IncomeRepository
 class GetIncomeById(
     private val repository: IncomeRepository
 ) {
-    suspend operator fun invoke(id: Int): Income? {
+    suspend operator fun invoke(id: Long): Income? {
         return repository.getIncomeById(id)
     }
 }

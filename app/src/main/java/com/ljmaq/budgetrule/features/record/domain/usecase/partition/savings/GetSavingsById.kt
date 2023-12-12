@@ -6,7 +6,7 @@ import com.ljmaq.budgetrule.features.record.domain.repository.partition.SavingsR
 class GetSavingsById(
     private val repository: SavingsRepository
 ) {
-    suspend operator fun invoke(id: Int): Savings? {
+    suspend operator fun invoke(id: Long): Savings? {
         return repository.getSavingsById(id)
     }
 }

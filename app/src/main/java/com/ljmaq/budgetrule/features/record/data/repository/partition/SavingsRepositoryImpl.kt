@@ -12,7 +12,7 @@ class SavingsRepositoryImpl(
         return dao.getSavings()
     }
 
-    override suspend fun getSavingsById(id: Int): Savings? {
+    override suspend fun getSavingsById(id: Long): Savings? {
         return dao.getSavingsById(id)
     }
 

@@ -5,17 +5,16 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import kotlinx.coroutines.flow.Flow
-import com.ljmaq.budgetrule.features.record.domain.model.partition.Needs
 import com.ljmaq.budgetrule.features.record.domain.model.partition.Wants
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface WantsDao {
     @Query("SELECT * FROM wants")
     fun getWants(): Flow<List<Wants>>
 
-    @Query("SELECT * FROM wants WHERE id = :id")
-    suspend fun getWantsById(id: Int): Wants?
+    @Query("SELECT * FROM wants WHERE timestamp = :id")
+    suspend fun getWantsById(id: Long): Wants?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertWants(wants: Wants)
