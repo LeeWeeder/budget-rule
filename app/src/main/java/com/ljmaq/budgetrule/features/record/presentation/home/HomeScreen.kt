@@ -425,13 +425,34 @@ fun HomeScreen(
                 }
 
                 item {
-                    Spacer(modifier = Modifier.height(24.dp))
-                    Text(
-                        text = "Income transactions",
-                        style = MaterialTheme.typography.titleMedium,
-                        modifier = Modifier.padding(horizontal = 16.dp)
-                    )
-                    Spacer(modifier = Modifier.height(12.dp))
+                    Column(modifier = Modifier.padding(horizontal = 16.dp)) {
+                        Spacer(modifier = Modifier.height(24.dp))
+                        Text(text = "Transactions", style = MaterialTheme.typography.labelLarge)
+                        LazyRow(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                            item {
+                                BudgetRuleFilterChip(
+                                    selected = true,
+                                    onClick = { /*TODO*/ },
+                                    text = "All"
+                                )
+                            }
+                            item {
+                                BudgetRuleFilterChip(
+                                    selected = false,
+                                    onClick = { /*TODO*/ },
+                                    text = "Income"
+                                )
+                            }
+                            item {
+                                BudgetRuleFilterChip(
+                                    selected = false,
+                                    onClick = { /*TODO*/ },
+                                    text = "Partitions"
+                                )
+                            }
+                        }
+                        Spacer(modifier = Modifier.height(12.dp))
+                    }
                 }
 
                 items(incomeState.incomes) { income ->
