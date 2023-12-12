@@ -350,6 +350,7 @@ fun HomeScreen(
                         Button(
                             onClick = {
                                 createRecordViewModel.onEvent(CreateRecordEvent.InsertRecord)
+                                createRecordViewModel.onEvent(CreateRecordEvent.ResetState)
                             },
                             leadingIcon = {
                                 Icon(
