@@ -19,7 +19,7 @@ sealed class Partition(
         name = "Wants",
         contentColor = Color(0xffffdbd1),
         amount = amount,
-        partitionValue = 0.3
+        partitionValue = 0.2
     )
 
     data class Savings(override val amount: Double = 0.0) : Partition(
