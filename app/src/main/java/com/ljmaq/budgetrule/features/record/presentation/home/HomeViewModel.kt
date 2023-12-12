@@ -97,8 +97,8 @@ class HomeViewModel @Inject constructor(
 
             is HomeEvent.RestoreIncome -> {
                 viewModelScope.launch {
-                    recentlyDeletedIncome.forEach { record ->
-                        incomesUseCases.insertIncome(record)
+                    recentlyDeletedIncome.forEach { income ->
+                        incomesUseCases.insertIncome(income)
                     }
                     clearRecentlyDeletedIncomeList()
                 }
