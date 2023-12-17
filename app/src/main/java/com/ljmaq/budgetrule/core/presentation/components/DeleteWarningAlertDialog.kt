@@ -1,5 +1,6 @@
 package com.ljmaq.budgetrule.core.presentation.components
 
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -21,6 +22,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.ljmaq.budgetrule.features.record.domain.model.Income
 import com.ljmaq.budgetrule.features.record.presentation.home.HomeEvent
@@ -85,6 +87,7 @@ fun DeleteWarningAlertDialog(
             }
         },
         confirmButton = {
+            val context = LocalContext.current
             TextButton(onClick = {
                 onDismissRequest.invoke()
                 selectedRecords.forEach { income ->
@@ -99,10 +102,7 @@ fun DeleteWarningAlertDialog(
 
                     if (result == SnackbarResult.ActionPerformed) {
                         viewModel.onEvent(HomeEvent.RestoreIncome)
-                        snackbarHostState.showSnackbar(
-                            message = "Record restored",
-                            withDismissAction = true
-                        )
+                        Toast.makeText(context, "Record restored", Toast.LENGTH_LONG).show()
                     }
                 }
                 viewModel.onEvent(HomeEvent.ChangeSelectionMode)
