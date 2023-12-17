@@ -429,7 +429,7 @@ fun HomeScreen(
                     Text(
                         text = "Transactions",
                         style = MaterialTheme.typography.labelLarge,
-                        modifier = Modifier.padding(top = 24.dp, start = 16.dp)
+                        modifier = Modifier.padding(top = 24.dp, start = 16.dp, bottom = 8.dp)
                     )
                 }
 
