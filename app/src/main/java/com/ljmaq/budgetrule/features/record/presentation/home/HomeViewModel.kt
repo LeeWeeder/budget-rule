@@ -60,10 +60,6 @@ class HomeViewModel @Inject constructor(
     val selectedRecords: SnapshotStateList<Income> = _selectedRecords
 
     private var recentlyDeletedIncome: SnapshotStateList<Income> = mutableStateListOf()
-    private var recentlyDeletedNeeds: SnapshotStateList<Needs> = mutableStateListOf()
-    private var recentlyDeletedWants: SnapshotStateList<Wants> = mutableStateListOf()
-    private var recentlyDeletedSavings: SnapshotStateList<Savings> = mutableStateListOf()
-    private var recentlyDeletedInvestments: SnapshotStateList<Investments> = mutableStateListOf()
 
     private var getIncomesJob: Job? = null
     private var getNeedsJob: Job? = null
@@ -82,14 +78,6 @@ class HomeViewModel @Inject constructor(
     }
 
     fun onEvent(event: HomeEvent) {
-        fun clearRecentlyDeletedList() {
-            recentlyDeletedIncome.clear()
-            recentlyDeletedNeeds.clear()
-            recentlyDeletedWants.clear()
-            recentlyDeletedSavings.clear()
-            recentlyDeletedInvestments.clear()
-        }
-
         when (event) {
             is HomeEvent.DeleteIncome -> {
                 viewModelScope.launch {
@@ -119,21 +107,16 @@ class HomeViewModel @Inject constructor(
             is HomeEvent.RestoreIncome -> {
                 viewModelScope.launch {
                     recentlyDeletedIncome.forEach {
+                        val timestamp = it.timestamp
+                        val amount = it.amount.toDouble()
                         incomesUseCases.insertIncome(it)
+                        needsUseCases.insertNeeds(Needs(timestamp, (amount * Partition.Needs().partitionValue).toString()))
+                        wantsUseCases.insertWants(Wants(timestamp, (amount * Partition.Wants().partitionValue).toString()))
+                        savingsUseCases.insertSavings(Savings(timestamp, (amount * Partition.Savings().partitionValue).toString()))
+                        investmentsUseCases.insertInvestments(Investments(timestamp, (amount * Partition.Investments().partitionValue).toString()))
                     }
-                    recentlyDeletedNeeds.forEach {
-                        needsUseCases.insertNeeds(it)
-                    }
-                    recentlyDeletedWants.forEach {
-                        wantsUseCases.insertWants(it)
-                    }
-                    recentlyDeletedSavings.forEach {
-                        savingsUseCases.insertSavings(it)
-                    }
-                    recentlyDeletedInvestments.forEach {
-                        investmentsUseCases.insertInvestments(it)
-                    }
-                    clearRecentlyDeletedList()
+
+                    recentlyDeletedIncome.clear()
                 }
             }
 

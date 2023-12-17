@@ -1,7 +1,6 @@
 plugins {
     id("com.android.application")
     id("kotlin-android")
-    kotlin("kapt")
     id("com.google.devtools.ksp")
     id("org.jetbrains.kotlin.android")
 }
@@ -79,9 +78,9 @@ dependencies {
 
     //DI (Dependency Injection - Hilt)
     implementation(libs.androidx.hilt.navigation.compose)
-    kapt(libs.hilt.ext.compiler)
+    ksp(libs.hilt.ext.compiler)
     implementation(libs.hilt.android)
-    kapt(libs.hilt.compiler)
+    ksp(libs.hilt.compiler)
 
     //Database powered by Room
     implementation(libs.room.runtime)
@@ -97,10 +96,6 @@ dependencies {
     //UI debugging library for Jetpack Compose
     debugImplementation(libs.androidx.compose.ui.tooling)
 
-}
-
-kapt {
-    correctErrorTypes = true
 }
 
 class RoomSchemaArgProvider(
