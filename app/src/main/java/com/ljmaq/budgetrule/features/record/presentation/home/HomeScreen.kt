@@ -1,5 +1,6 @@
 package com.ljmaq.budgetrule.features.record.presentation.home
 
+import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -43,6 +44,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
@@ -64,7 +66,6 @@ import com.ljmaq.budgetrule.features.record.presentation.home.components.Segment
 import com.ljmaq.budgetrule.features.record.presentation.home.components.SingleChoiceSegmentedButton
 import com.ljmaq.budgetrule.features.record.presentation.util.Screen
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.launch
 
 @OptIn(
     ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class
@@ -91,6 +92,8 @@ fun HomeScreen(
     }
     val scope = rememberCoroutineScope()
 
+    val context = LocalContext.current
+
     BackHandler(enabled = isOnSelectionMode) {
         viewModel.onEvent(HomeEvent.ChangeSelectionMode)
     }
@@ -100,12 +103,7 @@ fun HomeScreen(
             when (event) {
                 CreateRecordViewModel.UiEvent.SaveRecord -> {
                     viewModel.onEvent(HomeEvent.CloseCreateRecordModalBottomSheet)
-                    scope.launch {
-                        snackbarHostState.showSnackbar(
-                            message = "Record saved",
-                            withDismissAction = true
-                        )
-                    }
+                    Toast.makeText(context, "Record saved!", Toast.LENGTH_LONG).show()
                 }
 
                 is CreateRecordViewModel.UiEvent.ShowSnackbar -> {
