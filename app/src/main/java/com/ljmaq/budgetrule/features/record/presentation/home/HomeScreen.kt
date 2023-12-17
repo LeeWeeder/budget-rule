@@ -426,37 +426,11 @@ fun HomeScreen(
                 }
 
                 item {
-                    Column(modifier = Modifier.padding(horizontal = 16.dp)) {
-                        Spacer(modifier = Modifier.height(24.dp))
-                        Text(text = "Transactions", style = MaterialTheme.typography.labelLarge)
-                        LazyRow(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-                            item {
-                                BudgetRuleFilterChip(
-                                    selected = true,
-                                    onClick = { /*TODO*/ },
-                                    text = "All",
-                                    withCheckIcon = false
-                                )
-                            }
-                            item {
-                                BudgetRuleFilterChip(
-                                    selected = false,
-                                    onClick = { /*TODO*/ },
-                                    text = "Income",
-                                    withCheckIcon = false
-                                )
-                            }
-                            item {
-                                BudgetRuleFilterChip(
-                                    selected = false,
-                                    onClick = { /*TODO*/ },
-                                    text = "Partitions",
-                                    withCheckIcon = false
-                                )
-                            }
-                        }
-                        Spacer(modifier = Modifier.height(12.dp))
-                    }
+                    Text(
+                        text = "Transactions",
+                        style = MaterialTheme.typography.labelLarge,
+                        modifier = Modifier.padding(top = 24.dp, start = 16.dp)
+                    )
                 }
 
                 items(incomeState.incomes) { income ->
