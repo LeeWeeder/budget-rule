@@ -23,4 +23,5 @@ sealed class HomeEvent {
     data class DismissDialog(val dialog: Dialog): HomeEvent()
     data object RemoveAllFromSelection: HomeEvent()
     data object DeleteIconButtonClick: HomeEvent()
+    data object ClearRecentlyDeletedIncome: HomeEvent()
 }

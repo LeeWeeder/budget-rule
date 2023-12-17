@@ -116,7 +116,7 @@ class HomeViewModel @Inject constructor(
                         investmentsUseCases.insertInvestments(Investments(timestamp, (amount * Partition.Investments().partitionValue).toString()))
                     }
 
-                    recentlyDeletedIncome.clear()
+                    onEvent(HomeEvent.ClearRecentlyDeletedIncome)
                 }
             }
 
@@ -187,6 +187,10 @@ class HomeViewModel @Inject constructor(
                 _dialogState.value = dialogState.value.copy(
                     deleteWarningDialog = Dialog.DeleteWarningAlertDialog(state = true)
                 )
+            }
+
+            HomeEvent.ClearRecentlyDeletedIncome -> {
+                recentlyDeletedIncome.clear()
             }
         }
     }

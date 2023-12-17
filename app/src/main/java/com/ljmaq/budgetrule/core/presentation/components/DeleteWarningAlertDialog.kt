@@ -97,12 +97,16 @@ fun DeleteWarningAlertDialog(
                     val result = snackbarHostState.showSnackbar(
                         message = "Record deleted",
                         actionLabel = "Undo",
-                        duration = SnackbarDuration.Long
+                        duration = SnackbarDuration.Short
                     )
 
                     if (result == SnackbarResult.ActionPerformed) {
                         viewModel.onEvent(HomeEvent.RestoreIncome)
                         Toast.makeText(context, "Record restored", Toast.LENGTH_LONG).show()
+                    }
+
+                    if (result == SnackbarResult.Dismissed) {
+                        viewModel.onEvent(HomeEvent.ClearRecentlyDeletedIncome)
                     }
                 }
                 viewModel.onEvent(HomeEvent.ChangeSelectionMode)
