@@ -230,13 +230,6 @@ fun HomeScreen(
                             )
                         }
                     }
-                    /*AnimatedContent(targetState = incomeSelected, label = "Description") {
-                        if (it) {
-                            Text(text = "Income")
-                        } else {
-                            Text(text = "Expense")
-                        }
-                    }*/
                     AnimatedVisibility(visible = createRecordState.selectedRecordType == RecordType.Expense) {
                         Column {
                             DrawerSheetSubtitle(text = "Partition selection")
