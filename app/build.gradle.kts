@@ -87,6 +87,8 @@ dependencies {
     implementation(libs.room.ktx)
     ksp(libs.room.compiler)
 
+    implementation(libs.datastore)
+
     //Unit testing libraries
     testImplementation(libs.junit4)
     androidTestImplementation(libs.androidx.test.ext)

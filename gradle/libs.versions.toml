@@ -23,6 +23,7 @@ kotlin = "1.9.21"
 kotlinxCoroutines = "1.7.3"
 
 room = "2.6.1"
+datastore = "1.0.0"
 ksp = "1.9.21-1.0.15"
 
 [libraries]
@@ -65,6 +66,8 @@ kotlinx-coroutines-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-
 room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "room" }
 room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "room" }
 room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
+
+datastore = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "datastore" }
 
 [plugins]
 
