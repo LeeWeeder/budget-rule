@@ -14,7 +14,7 @@
         android:theme="@style/Theme.BudgetRule"
         tools:targetApi="s">
         <activity
-            android:name=".features.budget_rule.MainActivity"
+            android:name=".MainActivity"
             android:windowSoftInputMode="adjustResize"
             android:exported="true"
             android:theme="@style/Theme.BudgetRule">
