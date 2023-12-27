@@ -34,10 +34,27 @@ class Formatter {
             return "$month ${calendar.get(Calendar.DATE)}"
         }
 
-        fun formatCurrency(amount: String, isoCode: String): String {
+        /**
+         * Formats a given amount into a specific currency format.
+         *
+         * @param amount The amount to be formatted. This is of type Double.
+         * @param isoCode The ISO 4217 code of the currency. This is of type String.
+         * @param useSymbol A Boolean flag that determines whether to use the currency symbol or not. It is optional and defaults to true.
+         *
+         * @return A string representing the formatted currency. If 'useSymbol' is true, the currency symbol is used. Otherwise, the ISO code is used.
+         *
+         * Usage:
+         * formatCurrency(1234.56, "USD", true)  // Returns "$1,234.56"
+         * formatCurrency(1234.56, "USD", false) // Returns "USD 1,234.56"
+         */
+        fun formatCurrency(amount: Double, isoCode: String, useSymbol: Boolean = true): String {
             val currency = NumberFormat.getCurrencyInstance()
             currency.currency = Currency.getInstance(isoCode)
-            return currency.format(amount.toDouble())
+            val str = currency.format(amount)
+            if (useSymbol)
+                return str
+            return str.replace(currency.currency.symbol, currency.currency.currencyCode + " ")
         }
+
     }
 }

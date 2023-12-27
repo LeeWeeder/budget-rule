@@ -35,6 +35,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -60,6 +61,7 @@ import com.ljmaq.budgetrule.presentation.home.components.DrawerSheetSubtitle
 import com.ljmaq.budgetrule.presentation.home.components.PartitionItem
 import com.ljmaq.budgetrule.presentation.home.components.SegmentedButtonValues
 import com.ljmaq.budgetrule.presentation.home.components.SingleChoiceSegmentedButton
+import com.ljmaq.budgetrule.presentation.home.util.Formatter
 import com.ljmaq.budgetrule.util.Screen
 
 @OptIn(
@@ -74,6 +76,8 @@ fun HomeScreen(
     val createRecordSheetVisibilityState = viewModel.createRecordSheetState.value
     val dialogState = viewModel.dialogState.value
     val partitionState = viewModel.partitionState.value
+
+    val balanceState = viewModel.balanceState.collectAsState()
 
     Scaffold(
         floatingActionButton = {
@@ -431,7 +435,7 @@ fun HomeScreen(
                                 text = "Balance",
                                 style = MaterialTheme.typography.labelSmall
                             )
-                            Text(text = "PHP 100.00", style = MaterialTheme.typography.titleMedium)
+                            Text(text = Formatter.formatCurrency(amount = balanceState.value, isoCode = "PHP", useSymbol = false), style = MaterialTheme.typography.titleMedium)
                         }
                     }
                 }

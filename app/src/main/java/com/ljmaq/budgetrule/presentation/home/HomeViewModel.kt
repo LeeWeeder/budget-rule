@@ -5,19 +5,25 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ljmaq.budgetrule.domain.model.Partition
+import com.ljmaq.budgetrule.domain.usecase.DataStoreUseCases
 import com.ljmaq.budgetrule.domain.usecase.PartitionUseCases
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    private val partitionUseCases: PartitionUseCases
+    private val partitionUseCases: PartitionUseCases,
+    private val dataStoreUseCases: DataStoreUseCases
 ) : ViewModel() {
     private val _partitionState = mutableStateOf(PartitionState())
     val partitionState: State<PartitionState> = _partitionState
@@ -36,6 +42,9 @@ class HomeViewModel @Inject constructor(
     private val _currentPartition = mutableStateOf<Partition?>(null)
     val currentPartition: State<Partition?> = _currentPartition
 
+    private val _balanceState = MutableStateFlow(0.0)
+    val balanceState: StateFlow<Double> = _balanceState
+
     init {
         getPartition()
         /*getIncomes()
@@ -43,6 +52,9 @@ class HomeViewModel @Inject constructor(
         getWants()
         getSavings()
         getInvestments()*/
+        viewModelScope.launch(Dispatchers.IO) {
+            _balanceState.value = dataStoreUseCases.readBalanceState().stateIn(viewModelScope).value
+        }
     }
 
     fun onEvent(event: HomeEvent) {

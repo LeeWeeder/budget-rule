@@ -119,7 +119,7 @@ private fun PartitionItemContent(partition: Partition) {
         Column {
             Text(text = partition.name, style = MaterialTheme.typography.labelLarge)
             Text(
-                text = Formatter.formatCurrency(partition.amount.toString(), "PHP"),
+                text = Formatter.formatCurrency(partition.amount, "PHP"),
                 style = MaterialTheme.typography.titleLarge.copy(fontSize = 18.sp),
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,

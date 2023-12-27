@@ -1,17 +1,23 @@
 package com.ljmaq.budgetrule.di
 
 import android.app.Application
+import android.content.Context
 import androidx.room.Room
 import com.ljmaq.budgetrule.data.datasource.BudgetRuleDatabase
+import com.ljmaq.budgetrule.data.repository.DataStoreRepositoryImpl
 import com.ljmaq.budgetrule.data.repository.ExpenseRepositoryImpl
 import com.ljmaq.budgetrule.data.repository.IncomeRepositoryImpl
 import com.ljmaq.budgetrule.data.repository.PartitionRepositoryImpl
+import com.ljmaq.budgetrule.domain.repository.DataStoreRepository
 import com.ljmaq.budgetrule.domain.repository.ExpenseRepository
 import com.ljmaq.budgetrule.domain.repository.IncomeRepository
 import com.ljmaq.budgetrule.domain.repository.PartitionRepository
+import com.ljmaq.budgetrule.domain.usecase.DataStoreUseCases
 import com.ljmaq.budgetrule.domain.usecase.ExpenseUseCases
 import com.ljmaq.budgetrule.domain.usecase.IncomeUseCases
 import com.ljmaq.budgetrule.domain.usecase.PartitionUseCases
+import com.ljmaq.budgetrule.domain.usecase.dataStore.ReadBalanceState
+import com.ljmaq.budgetrule.domain.usecase.dataStore.SaveBalanceState
 import com.ljmaq.budgetrule.domain.usecase.expense.DeleteExpense
 import com.ljmaq.budgetrule.domain.usecase.expense.GetAllExpense
 import com.ljmaq.budgetrule.domain.usecase.expense.GetExpenseById
@@ -30,6 +36,7 @@ import com.ljmaq.budgetrule.domain.usecase.partition.UpdatePartition
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
@@ -97,6 +104,21 @@ object AppModule {
             getAllExpense = GetAllExpense(repository),
             insertExpense = InsertExpense(repository),
             updateExpense = UpdateExpense(repository)
+        )
+    }
+
+    @Provides
+    @Singleton
+    fun provideDataStoreRepository(
+        @ApplicationContext context: Context
+    ): DataStoreRepository = DataStoreRepositoryImpl(context)
+
+    @Provides
+    @Singleton
+    fun provideDataStoreUseCases(repository: DataStoreRepository): DataStoreUseCases {
+        return DataStoreUseCases(
+            saveBalanceState = SaveBalanceState(repository),
+            readBalanceState = ReadBalanceState(repository)
         )
     }
 }
