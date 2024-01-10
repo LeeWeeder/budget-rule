@@ -8,4 +8,7 @@ interface DataStoreRepository {
     suspend fun saveExcessPartitionState(partition: Partition)
     fun readBalanceState(): Flow<Double>
     fun readExcessPartitionState(): Flow<Partition>
+
+    suspend fun saveOnBoardingState(showOnBoarding: Boolean)
+    fun readOnBoardingState(): Flow<Boolean>
 }

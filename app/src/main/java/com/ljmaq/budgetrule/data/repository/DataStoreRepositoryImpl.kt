@@ -3,6 +3,7 @@ package com.ljmaq.budgetrule.data.repository
 import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.doublePreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.emptyPreferences
@@ -22,6 +23,7 @@ class DataStoreRepositoryImpl(context: Context) : DataStoreRepository {
         val balanceKey = doublePreferencesKey(name = "BALANCE")
         val excessPartitionAmountKey = doublePreferencesKey(name = "PARTITION_AMOUNT")
         val excessPartitionSharePercentKey = floatPreferencesKey(name = "PARTITION_SHARE_PERCENT")
+        val onBoardingKey = booleanPreferencesKey(name = "ONBOARDING")
     }
 
     private val dataStore = context.dataStore
@@ -64,6 +66,24 @@ class DataStoreRepositoryImpl(context: Context) : DataStoreRepository {
                     sharePercent = preferences[PreferencesKey.excessPartitionSharePercentKey] ?: 1f
                 )
                 leftOverPartitionState
+            }
+    }
+
+    override suspend fun saveOnBoardingState(showOnBoarding: Boolean) {
+        dataStore.edit { preferences ->
+            preferences[PreferencesKey.onBoardingKey] = showOnBoarding
+        }
+    }
+
+    override fun readOnBoardingState(): Flow<Boolean> {
+        return dataStore.data
+            .catch { exception ->
+                if (exception is IOException) emit(emptyPreferences())
+                else throw exception
+            }
+            .map { preferences ->
+                val onBoardingState = preferences[PreferencesKey.onBoardingKey] ?: true
+                onBoardingState
             }
     }
 }
