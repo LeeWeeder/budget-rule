@@ -102,6 +102,8 @@ dependencies {
     //UI debugging library for Jetpack Compose
     debugImplementation(libs.androidx.compose.ui.tooling)
 
+    // Lottie
+    implementation(libs.lottie)
 }
 
 class RoomSchemaArgProvider(
