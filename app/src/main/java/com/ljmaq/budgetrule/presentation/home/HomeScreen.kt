@@ -2,12 +2,12 @@ package com.ljmaq.budgetrule.presentation.home
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.consumeWindowInsets
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -26,6 +26,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
@@ -41,9 +42,12 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.input.pointer.pointerInteropFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.KeyboardType
@@ -53,7 +57,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.ljmaq.budgetrule.R
 import com.ljmaq.budgetrule.domain.model.Partition
-import com.ljmaq.budgetrule.presentation.home.components.BudgetRuleAppBar
+import com.ljmaq.budgetrule.presentation.components.BudgetRuleAppBar
 import com.ljmaq.budgetrule.presentation.home.components.BudgetRuleButton
 import com.ljmaq.budgetrule.presentation.home.components.BudgetRuleOutlinedButton
 import com.ljmaq.budgetrule.presentation.home.components.BudgetRuleSheet
@@ -62,22 +66,26 @@ import com.ljmaq.budgetrule.presentation.home.components.PartitionItem
 import com.ljmaq.budgetrule.presentation.home.components.SegmentedButtonValues
 import com.ljmaq.budgetrule.presentation.home.components.SingleChoiceSegmentedButton
 import com.ljmaq.budgetrule.presentation.home.util.Formatter
+import com.ljmaq.budgetrule.presentation.partition.PartitionViewModel
 import com.ljmaq.budgetrule.util.Screen
 
 @OptIn(
-    ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class
+    ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class,
+    ExperimentalComposeUiApi::class
 )
 @Composable
 fun HomeScreen(
     navController: NavController,
     viewModel: HomeViewModel = hiltViewModel(),
+    partitionViewModel: PartitionViewModel = hiltViewModel(),
     createRecordViewModel: CreateRecordViewModel = hiltViewModel()
 ) {
     val createRecordSheetVisibilityState = viewModel.createRecordSheetState.value
     val dialogState = viewModel.dialogState.value
-    val partitionState = viewModel.partitionState.value
+    val partitionState = partitionViewModel.partitionState.value
 
-    val balanceState = viewModel.balanceState.collectAsState()
+    val balanceState = viewModel.balanceState.value
+    val leftOverPartitionState = partitionViewModel.excessPartitionState.collectAsState()
 
     Scaffold(
         floatingActionButton = {
@@ -93,11 +101,23 @@ fun HomeScreen(
                 },
                 onClick = {
                     viewModel.onEvent(HomeEvent.CreateRecord)
-                })
+                }
+            )
         },
         topBar = {
-            BudgetRuleAppBar(onTuneIconClick = {
-                navController.navigate(Screen.TuneSharePercentageScreen.route)
+            BudgetRuleAppBar(title = {
+                Text(
+                    text = "Budget Rule"
+                )
+            }, actions = {
+                IconButton(onClick = {
+                    navController.navigate(Screen.TuneSharePercentageScreen.route)
+                }) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.tune),
+                        contentDescription = "Tune icon"
+                    )
+                }
             })
         }
     ) { paddingValues ->
@@ -387,11 +407,14 @@ fun HomeScreen(
                     Text(text = "Delete")
                 }
             }, text = {
-                      Text(text = "This will move all the amount of this partition to Excess partition. ")
+                Text(text = "This will move all the amount of this partition to Excess partition. ")
             }, title = {
                 Text(text = "Delete selected partition?")
             }, icon = {
-                Icon(painter = painterResource(id = R.drawable.warning), contentDescription = "Warning icon")
+                Icon(
+                    painter = painterResource(id = R.drawable.warning),
+                    contentDescription = "Warning icon"
+                )
             }, dismissButton = {
                 TextButton(onClick = {
                     viewModel.onEvent(HomeEvent.HideDeletePartitionDialog)
@@ -400,97 +423,115 @@ fun HomeScreen(
                 }
             })
         }
+        val horizontalPadding = 16.dp
         Column(
             modifier = Modifier
-                .fillMaxSize()
-                .consumeWindowInsets(paddingValues)
-                .padding(paddingValues),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
+                .padding(top = paddingValues.calculateTopPadding())
         ) {
-            val horizontalPadding = 16.dp
-            Column(
-                modifier = Modifier.padding(horizontal = horizontalPadding),
-                verticalArrangement = Arrangement.spacedBy(10.dp)
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 10.dp + horizontalPadding)
+                    .padding(top = 5.dp),
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.inversePrimary),
+                shape = MaterialTheme.shapes.extraLarge
             ) {
-                Card(
+                Row(
                     modifier = Modifier
+                        .padding(start = 2.dp, top = 16.dp, bottom = 18.dp)
+                        .padding(horizontal = 16.dp)
                         .fillMaxWidth(),
-                    colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.inversePrimary),
-                    shape = MaterialTheme.shapes.extraLarge
+                    horizontalArrangement = Arrangement.spacedBy(12.dp),
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Row(
-                        modifier = Modifier
-                            .padding(start = 2.dp)
-                            .padding(16.dp)
-                            .fillMaxWidth(),
-                        horizontalArrangement = Arrangement.spacedBy(12.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.balance),
-                            contentDescription = "Balance icon"
-                        )
-                        Column {
-                            Text(
-                                text = "Balance",
-                                style = MaterialTheme.typography.labelSmall
-                            )
-                            Text(text = Formatter.formatCurrency(amount = balanceState.value, isoCode = "PHP", useSymbol = false), style = MaterialTheme.typography.titleMedium)
-                        }
-                    }
-                }
-                BudgetRuleOutlinedButton(onClick = {
-                    navController.navigate(Screen.TransactionsScreen.route)
-                }, leadingIcon = {
                     Icon(
-                        painter = painterResource(id = R.drawable.list),
-                        contentDescription = "List icon",
-                        modifier = Modifier.size(ButtonDefaults.IconSize)
+                        painter = painterResource(id = R.drawable.balance),
+                        contentDescription = "Balance icon"
                     )
-                }, modifier = Modifier.align(Alignment.End)) {
-                    Text(text = "Transactions", style = MaterialTheme.typography.labelMedium)
+                    Column {
+                        Text(
+                            text = Formatter.formatCurrency(
+                                amount = balanceState,
+                                isoCode = "PHP"
+                            ), style = MaterialTheme.typography.headlineMedium
+                        )
+                        Spacer(modifier = Modifier.height(1.dp))
+                        Text(
+                            text = "Overall balance",
+                            style = MaterialTheme.typography.labelSmall
+                        )
+                    }
                 }
             }
-            HorizontalDivider(modifier = Modifier.padding(top = 10.dp))
-            LazyColumn(
-                verticalArrangement = Arrangement.spacedBy(8.dp),
+            Spacer(modifier = Modifier.height(20.dp))
+            HorizontalDivider()
+            Column(
                 modifier = Modifier.padding(horizontal = horizontalPadding)
             ) {
-                items(
-                    items = partitionState.partitionList,
-                    key = {
-                        it.id!!
-                    }
+                LazyColumn(
+                    contentPadding = PaddingValues(
+                        bottom = paddingValues.calculateBottomPadding(),
+                        top = 16.dp
+                    ),
+                    horizontalAlignment = Alignment.End
                 ) {
-                    var isMenuExpanded by remember {
-                        mutableStateOf(false)
+                    item {
+                        ElevatedButton(
+                            onClick = {
+                                viewModel.onEvent(HomeEvent.ShowNewPartitionDialog)
+                            }, modifier = Modifier,
+                            contentPadding = ButtonDefaults.ButtonWithIconContentPadding
+                        ) {
+                            Icon(
+                                painterResource(id = R.drawable.add),
+                                contentDescription = "Add icon",
+                                modifier = Modifier.size(ButtonDefaults.IconSize)
+                            )
+                            Spacer(modifier = Modifier.width(ButtonDefaults.IconSpacing))
+                            Text(text = "New partition")
+                        }
+                        Spacer(modifier = Modifier.height(12.dp))
                     }
-                    PartitionItem(
-                        partition = it,
-                        modifier = Modifier.animateItemPlacement(), isMenuExpanded = isMenuExpanded,
-                        viewModel = viewModel,
-                        onDismissRequest = {
-                            isMenuExpanded = false
-                        },
-                        onClick = { },
-                        onLongClick = { isMenuExpanded = true }
-                    )
-                }
+                    item {
+                        PartitionItem(
+                            partition = leftOverPartitionState.value
+                        )
+                        Spacer(modifier = Modifier.height(7.dp))
+                    }
 
-                item(key = -1) {
-                    ElevatedButton(
-                        onClick = {
-                            viewModel.onEvent(HomeEvent.ShowNewPartitionDialog)
-                        },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .animateItemPlacement()
-                        ,
-                        shape = CardDefaults.shape
-                    ) {
-                        Icon(painterResource(id = R.drawable.add), contentDescription = "Add icon")
-                        Spacer(modifier = Modifier.width(ButtonDefaults.IconSpacing))
-                        Text(text = "New partition")
+                    items(
+                        items = partitionState.partitionList,
+                        key = {
+                            it.id!!
+                        }
+                    ) { partition ->
+                        var isMenuExpanded by remember {
+                            mutableStateOf(false)
+                        }
+                        var offset by remember {
+                            mutableStateOf(Offset.Zero)
+                        }
+                        PartitionItem(
+                            partition = partition, isMenuExpanded = isMenuExpanded,
+                            viewModel = viewModel,
+                            onDismissRequest = {
+                                isMenuExpanded = false
+                            }, offset = offset,
+                            modifier = Modifier
+                                .pointerInteropFilter {
+                                    offset = Offset(x = it.x, y = it.y)
+                                    println(offset.x)
+                                    println(offset.y)
+                                    false
+                                }
+                                .combinedClickable(
+                                    onClick = { },
+                                    onLongClick = {
+                                        isMenuExpanded = true
+                                    }
+                                )
+                        )
+                        Spacer(modifier = Modifier.height(7.dp))
                     }
                 }
             }

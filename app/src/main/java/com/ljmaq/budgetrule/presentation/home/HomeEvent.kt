@@ -17,4 +17,5 @@ sealed class HomeEvent {
 
     data class DeletePartitionMenuItemClick(val partition: Partition): HomeEvent()
     data object HideDeletePartitionDialog: HomeEvent()
+    data object UpdateBalance: HomeEvent()
 }

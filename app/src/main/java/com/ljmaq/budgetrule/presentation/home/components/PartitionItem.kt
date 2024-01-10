@@ -1,105 +1,127 @@
 package com.ljmaq.budgetrule.presentation.home.components
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.background
-import androidx.compose.foundation.combinedClickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.lazy.LazyItemScope
+import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ElevatedCard
-import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.ListItem
+import androidx.compose.material3.ListItemColors
+import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MenuDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.input.pointer.pointerInteropFilter
+import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Popup
+import androidx.compose.ui.window.PopupProperties
+import com.ljmaq.budgetrule.R
 import com.ljmaq.budgetrule.domain.model.Partition
 import com.ljmaq.budgetrule.presentation.home.HomeEvent
 import com.ljmaq.budgetrule.presentation.home.HomeViewModel
 import com.ljmaq.budgetrule.presentation.home.util.Formatter
 import kotlin.math.roundToInt
 
-@OptIn(
-    ExperimentalFoundationApi::class, ExperimentalComposeUiApi::class,
-    ExperimentalMaterial3Api::class
-)
 @Composable
 fun PartitionItem(
-    partition: Partition,
-    modifier: Modifier = Modifier,
-    isMenuExpanded: Boolean,
-    viewModel: HomeViewModel,
-    onDismissRequest: () -> Unit,
-    onClick: () -> Unit,
-    onLongClick: () -> Unit
+    partition: Partition
 ) {
-    var offset by remember {
-        mutableStateOf(Offset.Zero)
+    Card {
+        PartitionItemContent(
+            partition = partition,
+            elevation = ListItemDefaults.Elevation
+        )
     }
+}
+
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+fun LazyItemScope.PartitionItem(
+    partition: Partition,
+    offset: Offset,
+    isMenuExpanded: Boolean,
+    modifier: Modifier = Modifier,
+    viewModel: HomeViewModel,
+    onDismissRequest: () -> Unit
+) {
     ElevatedCard(
-        modifier = modifier
-            .clip(CardDefaults.elevatedShape)
-            .pointerInteropFilter {
-                offset = Offset(x = it.x, y = it.y)
-                println(offset.x)
-                println(offset.y)
-                false
-            }
-            .combinedClickable(
-                onClick = onClick,
-                onLongClick = onLongClick
-            )
+        modifier = Modifier.animateItemPlacement()
     ) {
-        PartitionItemContent(partition = partition)
-        if (isMenuExpanded) {
-            Popup(
-                onDismissRequest = onDismissRequest,
-                offset = IntOffset(x = offset.x.roundToInt(), y = offset.y.roundToInt())
-            ) {
-                Column(
-                    modifier = Modifier
-                        .background(
-                            MaterialTheme.colorScheme.surfaceColorAtElevation(3.dp),
-                            shape = RoundedCornerShape(4.dp)
-                        )
-                        .width(112.dp)
-                        .padding(vertical = 8.dp)
+        Column(modifier = modifier) {
+            PartitionItemContent(
+                partition = partition,
+                colors = ListItemDefaults.colors(
+                    containerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(12.dp)
+                )
+            )
+            AnimatedVisibility(isMenuExpanded) {
+                Popup(
+                    alignment = Alignment.BottomCenter,
+                    onDismissRequest = onDismissRequest,
+                    offset = IntOffset(
+                        x = offset.x.roundToInt() + 100,
+                        y = offset.y.roundToInt() + 50
+                    ),
+                    properties = PopupProperties(focusable = true)
                 ) {
-                    DropdownMenuItem(
-                        text = { Text(text = "Edit") },
-                        onClick = {
-                            viewModel.onEvent(HomeEvent.EditPartitionMenuItemClick(partition))
-                            onDismissRequest()
-                        })
-                    DropdownMenuItem(
-                        text = { Text(text = "Delete") },
-                        onClick = {
-                            viewModel.onEvent(HomeEvent.DeletePartitionMenuItemClick(partition))
-                            onDismissRequest()
-                        })
+                    ElevatedCard(
+                        modifier = Modifier
+                            .width(150.dp),
+                        elevation = CardDefaults.elevatedCardElevation(defaultElevation = 3.dp),
+                        shape = MaterialTheme.shapes.extraSmall
+                    ) {
+                        Spacer(modifier = Modifier.height(8.dp))
+                        DropdownMenuItem(
+                            text = { Text(text = "Edit") },
+                            onClick = {
+                                viewModel.onEvent(HomeEvent.EditPartitionMenuItemClick(partition))
+                                onDismissRequest()
+                            },
+                            leadingIcon = {
+                                Icon(
+                                    painter = painterResource(id = R.drawable.edit),
+                                    contentDescription = "Edit icon"
+                                )
+                            }
+                        )
+                        DropdownMenuItem(
+                            text = { Text(text = "Delete") },
+                            onClick = {
+                                viewModel.onEvent(HomeEvent.DeletePartitionMenuItemClick(partition))
+                                onDismissRequest()
+                            },
+                            leadingIcon = {
+                                Icon(
+                                    painter = painterResource(id = R.drawable.delete),
+                                    contentDescription = "Delete icon"
+                                )
+                            },
+                            colors = MenuDefaults.itemColors(
+                                textColor = MaterialTheme.colorScheme.error,
+                                leadingIconColor = MaterialTheme.colorScheme.error
+                            )
+                        )
+                        Spacer(modifier = Modifier.height(8.dp))
+                    }
                 }
             }
         }
@@ -107,33 +129,38 @@ fun PartitionItem(
 }
 
 @Composable
-private fun PartitionItemContent(partition: Partition) {
-    val padding = 16.dp
-    Row(
-        modifier = Modifier
-            .padding(padding)
-            .fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Column {
-            Text(text = partition.name, style = MaterialTheme.typography.labelLarge)
+private fun PartitionItemContent(
+    partition: Partition,
+    colors: ListItemColors = ListItemDefaults.colors(containerColor = MaterialTheme.colorScheme.secondaryContainer),
+    elevation: Dp = 12.dp
+) {
+    ListItem(
+        headlineContent = {
             Text(
                 text = Formatter.formatCurrency(partition.amount, "PHP"),
-                style = MaterialTheme.typography.titleLarge.copy(fontSize = 18.sp),
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
                 textAlign = TextAlign.Right
             )
-        }
-        Box(contentAlignment = Alignment.Center) {
-            Text(
-                text = "${(partition.sharePercent * 100).toInt()}%",
-                style = MaterialTheme.typography.labelSmall
-            )
-            CircularProgressIndicator(
-                progress = partition.sharePercent
-            )
-        }
-    }
+        },
+        overlineContent = {
+            Text(text = partition.name)
+        },
+        trailingContent = {
+            Box(contentAlignment = Alignment.Center) {
+                Text(
+                    text = "${(partition.sharePercent * 100).toInt()}%",
+                    style = MaterialTheme.typography.labelSmall
+                )
+                CircularProgressIndicator(
+                    progress = partition.sharePercent,
+                    trackColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.1f),
+                    strokeCap = StrokeCap.Round
+                )
+            }
+        },
+        colors = colors,
+        shadowElevation = elevation,
+        tonalElevation = elevation
+    )
 }

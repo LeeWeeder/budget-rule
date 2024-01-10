@@ -6,7 +6,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.ljmaq.budgetrule.presentation.home.HomeScreen
 import com.ljmaq.budgetrule.presentation.settings.SettingsScreen
-import com.ljmaq.budgetrule.presentation.transaction.TransactionScreen
+import com.ljmaq.budgetrule.presentation.tune_share_percentage.TuneSharePercentageScreen
 import com.ljmaq.budgetrule.util.Screen
 
 @Composable
@@ -40,7 +40,7 @@ fun SetupNavHost(
         composable(
             route = Screen.TransactionsScreen.route
         ) {
-            TransactionScreen()
+            SettingsScreen(navController = navController)
         }
 
         composable(
@@ -52,7 +52,7 @@ fun SetupNavHost(
         composable(
             route = Screen.TuneSharePercentageScreen.route
         ) {
-            SettingsScreen(navController = navController)
+            TuneSharePercentageScreen(navController = navController)
         }
     }
 }

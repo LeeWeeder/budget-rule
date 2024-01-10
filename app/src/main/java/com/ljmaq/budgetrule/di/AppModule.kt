@@ -17,7 +17,9 @@ import com.ljmaq.budgetrule.domain.usecase.ExpenseUseCases
 import com.ljmaq.budgetrule.domain.usecase.IncomeUseCases
 import com.ljmaq.budgetrule.domain.usecase.PartitionUseCases
 import com.ljmaq.budgetrule.domain.usecase.dataStore.ReadBalanceState
+import com.ljmaq.budgetrule.domain.usecase.dataStore.ReadExcessPartitionState
 import com.ljmaq.budgetrule.domain.usecase.dataStore.SaveBalanceState
+import com.ljmaq.budgetrule.domain.usecase.dataStore.SaveExcessPartitionState
 import com.ljmaq.budgetrule.domain.usecase.expense.DeleteExpense
 import com.ljmaq.budgetrule.domain.usecase.expense.GetAllExpense
 import com.ljmaq.budgetrule.domain.usecase.expense.GetExpenseById
@@ -118,7 +120,9 @@ object AppModule {
     fun provideDataStoreUseCases(repository: DataStoreRepository): DataStoreUseCases {
         return DataStoreUseCases(
             saveBalanceState = SaveBalanceState(repository),
-            readBalanceState = ReadBalanceState(repository)
+            readBalanceState = ReadBalanceState(repository),
+            saveExcessPartitionState = SaveExcessPartitionState(repository),
+            readExcessPartitionState = ReadExcessPartitionState(repository)
         )
     }
 }

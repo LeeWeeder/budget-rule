@@ -1,6 +1,7 @@
 package com.ljmaq.budgetrule.presentation.home
 
 import androidx.compose.runtime.State
+import androidx.compose.runtime.mutableDoubleStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -9,14 +10,8 @@ import com.ljmaq.budgetrule.domain.usecase.DataStoreUseCases
 import com.ljmaq.budgetrule.domain.usecase.PartitionUseCases
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -25,16 +20,11 @@ class HomeViewModel @Inject constructor(
     private val partitionUseCases: PartitionUseCases,
     private val dataStoreUseCases: DataStoreUseCases
 ) : ViewModel() {
-    private val _partitionState = mutableStateOf(PartitionState())
-    val partitionState: State<PartitionState> = _partitionState
-
     private val _dialogState = mutableStateOf(DialogState())
     val dialogState: State<DialogState> = _dialogState
 
     private val _createRecordSheetState = mutableStateOf(false)
     val createRecordSheetState: State<Boolean> = _createRecordSheetState
-
-    private var getPartitionJob: Job? = null
 
     private val _eventFlow = MutableSharedFlow<CreateRecordViewModel.UiEvent>()
     val eventFlow = _eventFlow.asSharedFlow()
@@ -42,18 +32,19 @@ class HomeViewModel @Inject constructor(
     private val _currentPartition = mutableStateOf<Partition?>(null)
     val currentPartition: State<Partition?> = _currentPartition
 
-    private val _balanceState = MutableStateFlow(0.0)
-    val balanceState: StateFlow<Double> = _balanceState
+    private val _balanceState = mutableDoubleStateOf(0.0)
+    val balanceState: State<Double> = _balanceState
 
     init {
-        getPartition()
         /*getIncomes()
         getNeeds()
         getWants()
         getSavings()
         getInvestments()*/
-        viewModelScope.launch(Dispatchers.IO) {
-            _balanceState.value = dataStoreUseCases.readBalanceState().stateIn(viewModelScope).value
+        viewModelScope.launch {
+            dataStoreUseCases.readBalanceState().collect {
+                _balanceState.doubleValue = it
+            }
         }
     }
 
@@ -155,18 +146,13 @@ class HomeViewModel @Inject constructor(
                     deletePartitionWarningDialogShowing = true
                 )
             }
-        }
-    }
 
-    private fun getPartition() {
-        getPartitionJob?.cancel()
-        getPartitionJob = partitionUseCases.getAllPartition()
-            .onEach { partitions ->
-                _partitionState.value = partitionState.value.copy(
-                    partitionList = partitions
-                )
+            HomeEvent.UpdateBalance -> {
+                viewModelScope.launch(Dispatchers.IO) {
+                    dataStoreUseCases.saveBalanceState(25.0)
+                }
             }
-            .launchIn(viewModelScope)
+        }
     }
 
     /*private fun getIncomes() {

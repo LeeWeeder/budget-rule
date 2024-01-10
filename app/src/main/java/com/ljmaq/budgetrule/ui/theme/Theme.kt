@@ -14,6 +14,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
+import androidx.core.view.WindowInsetsControllerCompat
 
 private val LightColors = lightColorScheme(
     primary = md_theme_light_primary,
@@ -44,9 +45,8 @@ private val LightColors = lightColorScheme(
     inversePrimary = md_theme_light_inversePrimary,
     surfaceTint = md_theme_light_surfaceTint,
     outlineVariant = md_theme_light_outlineVariant,
-    scrim = md_theme_light_scrim,
+    scrim = md_theme_light_scrim
 )
-
 
 private val DarkColors = darkColorScheme(
     primary = md_theme_dark_primary,
@@ -87,7 +87,7 @@ fun BudgetRuleTheme(
     content: @Composable () -> Unit
 ) {
     val colorScheme = when {
-        dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S ->{
+        dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
             val context = LocalContext.current
             if (useDarkTheme)
                 dynamicDarkColorScheme(context)
@@ -102,12 +102,18 @@ fun BudgetRuleTheme(
                 LightColors
         }
     }
+
     val view = LocalView.current
-    if (!view.isInEditMode) {
-        SideEffect {
-            val window = (view.context as Activity).window
-            window.statusBarColor = Color.Transparent.toArgb()
-            window.navigationBarColor = Color.Transparent.toArgb()
+    SideEffect {
+        val window = (view.context as Activity).window
+        window.statusBarColor = Color.Transparent.toArgb()
+        window.navigationBarColor = Color(red = 0, blue = 0, green = 0, alpha = 1).toArgb()
+
+        if (!useDarkTheme) {
+            WindowInsetsControllerCompat(window, window.decorView).isAppearanceLightStatusBars =
+                true
+            WindowInsetsControllerCompat(window, window.decorView).isAppearanceLightNavigationBars =
+                true
         }
     }
     MaterialTheme(
