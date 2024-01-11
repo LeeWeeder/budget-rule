@@ -14,7 +14,7 @@ fun OnBoardingScreen() {
     })
     HorizontalPager(state = pagerState) { page ->
         when (page) {
-            1 -> IntroPage()
+            0 -> IntroPage()
         }
     }
 }
