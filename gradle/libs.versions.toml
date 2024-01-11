@@ -28,8 +28,6 @@ room = "2.6.1"
 datastore = "1.0.0"
 ksp = "1.9.21-1.0.15"
 
-lottie = "6.3.0"
-
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "androidxCore" }
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "androidxAppCompat" }
@@ -74,8 +72,6 @@ room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "room" }
 room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
 
 datastore = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "datastore" }
-
-lottie = { group = "com.airbnb.android", name = "lottie-compose", version.ref = "lottie" }
 
 [plugins]
 
