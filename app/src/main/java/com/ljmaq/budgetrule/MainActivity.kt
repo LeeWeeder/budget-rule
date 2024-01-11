@@ -22,7 +22,7 @@ import com.ljmaq.budgetrule.presentation.partition.MainActivityUiState.LOADING
 import com.ljmaq.budgetrule.presentation.partition.MainActivityUiState.SUCCESS
 import com.ljmaq.budgetrule.presentation.partition.PartitionViewModel
 import com.ljmaq.budgetrule.ui.theme.BudgetRuleTheme
-import com.ljmaq.budgetrule.util.Screen
+import com.ljmaq.budgetrule.util.Scene
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onEach
@@ -66,7 +66,7 @@ class MainActivity : ComponentActivity() {
                 ) {
                     SetupNavHost(
                         navController = navController,
-                        startDestination = Screen.HomeScreen.route
+                        startDestination = Scene.OnBoardingScene.route
                     )
                 }
             }
