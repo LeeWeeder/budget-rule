@@ -12,7 +12,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
@@ -25,9 +24,6 @@ class PartitionViewModel @Inject constructor(
 ) : ViewModel() {
     private val _partitionState = mutableStateOf(PartitionState())
     val partitionState: State<PartitionState> = _partitionState
-
-    private val _uiState = MutableStateFlow(MainActivityUiState.LOADING)
-    val uiState = _uiState.asStateFlow()
 
     private var getPartitionJob: Job? = null
 
@@ -51,13 +47,7 @@ class PartitionViewModel @Inject constructor(
                 _partitionState.value = partitionState.value.copy(
                     partitionList = partitions
                 )
-                _uiState.value = MainActivityUiState.SUCCESS
             }
             .launchIn(viewModelScope)
     }
-}
-
-enum class MainActivityUiState {
-    LOADING,
-    SUCCESS
 }

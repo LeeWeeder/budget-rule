@@ -11,4 +11,7 @@ interface DataStoreRepository {
 
     suspend fun saveOnBoardingState(showOnBoarding: Boolean)
     fun readOnBoardingState(): Flow<Boolean>
+
+    suspend fun saveCurrencyState(currencyCode: String)
+    fun readCurrencyState(): Flow<String>
 }

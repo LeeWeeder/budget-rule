@@ -8,6 +8,7 @@ import androidx.datastore.preferences.core.doublePreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.core.floatPreferencesKey
+import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import com.ljmaq.budgetrule.domain.model.Partition
 import com.ljmaq.budgetrule.domain.repository.DataStoreRepository
@@ -24,6 +25,7 @@ class DataStoreRepositoryImpl(context: Context) : DataStoreRepository {
         val excessPartitionAmountKey = doublePreferencesKey(name = "PARTITION_AMOUNT")
         val excessPartitionSharePercentKey = floatPreferencesKey(name = "PARTITION_SHARE_PERCENT")
         val onBoardingKey = booleanPreferencesKey(name = "ONBOARDING")
+        val currencyKey = stringPreferencesKey(name = "CURRENCY")
     }
 
     private val dataStore = context.dataStore
@@ -84,6 +86,24 @@ class DataStoreRepositoryImpl(context: Context) : DataStoreRepository {
             .map { preferences ->
                 val onBoardingState = preferences[PreferencesKey.onBoardingKey] ?: true
                 onBoardingState
+            }
+    }
+
+    override suspend fun saveCurrencyState(currencyCode: String) {
+        dataStore.edit { preferences ->
+            preferences[PreferencesKey.currencyKey] = currencyCode
+        }
+    }
+
+    override fun readCurrencyState(): Flow<String> {
+        return dataStore.data
+            .catch { exception ->
+                if (exception is IOException) emit(emptyPreferences())
+                else throw exception
+            }
+            .map { preferences ->
+                val currencyState = preferences[PreferencesKey.currencyKey] ?: ""
+                currencyState
             }
     }
 }

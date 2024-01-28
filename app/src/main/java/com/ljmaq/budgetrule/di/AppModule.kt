@@ -17,9 +17,11 @@ import com.ljmaq.budgetrule.domain.usecase.ExpenseUseCases
 import com.ljmaq.budgetrule.domain.usecase.IncomeUseCases
 import com.ljmaq.budgetrule.domain.usecase.PartitionUseCases
 import com.ljmaq.budgetrule.domain.usecase.dataStore.ReadBalanceState
+import com.ljmaq.budgetrule.domain.usecase.dataStore.ReadCurrencyState
 import com.ljmaq.budgetrule.domain.usecase.dataStore.ReadExcessPartitionState
 import com.ljmaq.budgetrule.domain.usecase.dataStore.ReadOnBoardingState
 import com.ljmaq.budgetrule.domain.usecase.dataStore.SaveBalanceState
+import com.ljmaq.budgetrule.domain.usecase.dataStore.SaveCurrencyState
 import com.ljmaq.budgetrule.domain.usecase.dataStore.SaveExcessPartitionState
 import com.ljmaq.budgetrule.domain.usecase.dataStore.SaveOnBoardingState
 import com.ljmaq.budgetrule.domain.usecase.expense.DeleteExpense
@@ -126,7 +128,9 @@ object AppModule {
             saveExcessPartitionState = SaveExcessPartitionState(repository),
             readExcessPartitionState = ReadExcessPartitionState(repository),
             saveOnBoardingState = SaveOnBoardingState(repository),
-            readOnBoardingState = ReadOnBoardingState(repository)
+            readOnBoardingState = ReadOnBoardingState(repository),
+            saveCurrencyState = SaveCurrencyState(repository),
+            readCurrencyState = ReadCurrencyState(repository)
         )
     }
 }

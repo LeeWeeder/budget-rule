@@ -7,9 +7,6 @@ import androidx.activity.viewModels
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.WindowCompat
@@ -17,10 +14,6 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.compose.rememberNavController
-import com.ljmaq.budgetrule.presentation.partition.MainActivityUiState
-import com.ljmaq.budgetrule.presentation.partition.MainActivityUiState.LOADING
-import com.ljmaq.budgetrule.presentation.partition.MainActivityUiState.SUCCESS
-import com.ljmaq.budgetrule.presentation.partition.PartitionViewModel
 import com.ljmaq.budgetrule.ui.theme.BudgetRuleTheme
 import com.ljmaq.budgetrule.util.Scene
 import dagger.hilt.android.AndroidEntryPoint
@@ -30,30 +23,26 @@ import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
-    private val partitionViewModel: PartitionViewModel by viewModels()
+    private val viewModel: MainActivityViewModel by viewModels()
     override fun onCreate(savedInstanceState: Bundle?) {
         val splashscreen = installSplashScreen()
         super.onCreate(savedInstanceState)
 
-        var uiState: MainActivityUiState by mutableStateOf(LOADING)
+        var isLoading = true
 
         lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                partitionViewModel.uiState
+                viewModel.isLoading
                     .onEach {
-                        uiState = it
+                        isLoading = it
                     }
                     .collect()
             }
         }
 
         splashscreen.setKeepOnScreenCondition {
-            when (uiState) {
-                LOADING -> true
-                SUCCESS -> false
-            }
+            isLoading
         }
-
 
         WindowCompat.setDecorFitsSystemWindows(window, false)
 
@@ -66,7 +55,8 @@ class MainActivity : ComponentActivity() {
                 ) {
                     SetupNavHost(
                         navController = navController,
-                        startDestination = Scene.OnBoardingScene.route
+                        startDestination = Scene.BudgetRuleScene.route,
+                        viewModel = viewModel
                     )
                 }
             }

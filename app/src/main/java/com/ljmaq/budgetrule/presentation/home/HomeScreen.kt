@@ -55,6 +55,7 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.ljmaq.budgetrule.MainActivityViewModel
 import com.ljmaq.budgetrule.R
 import com.ljmaq.budgetrule.domain.model.Partition
 import com.ljmaq.budgetrule.presentation.components.BudgetRuleAppBar
@@ -76,9 +77,13 @@ import com.ljmaq.budgetrule.util.Screen
 @Composable
 fun HomeScreen(
     navController: NavController,
+    onNavigateToOnBoardingScreen: () -> Unit,
+    onNotShowOnBoarding: () -> Unit,
+    fromOnBoarding: Boolean,
     viewModel: HomeViewModel = hiltViewModel(),
     partitionViewModel: PartitionViewModel = hiltViewModel(),
-    createRecordViewModel: CreateRecordViewModel = hiltViewModel()
+    createRecordViewModel: CreateRecordViewModel = hiltViewModel(),
+    mainActivityViewModel: MainActivityViewModel = hiltViewModel()
 ) {
     val createRecordSheetVisibilityState = viewModel.createRecordSheetState.value
     val dialogState = viewModel.dialogState.value
@@ -86,6 +91,33 @@ fun HomeScreen(
 
     val balanceState = viewModel.balanceState.value
     val leftOverPartitionState = partitionViewModel.excessPartitionState.collectAsState()
+
+    if (!fromOnBoarding) {
+        when (mainActivityViewModel.showOnBoarding.value) {
+            true -> {
+                LaunchedEffect(Unit) {
+                    onNavigateToOnBoardingScreen()
+                }
+            }
+
+            false -> {
+                LaunchedEffect(Unit) {
+                    onNotShowOnBoarding()
+                }
+            }
+
+            else -> {
+                Loading()
+            }
+        }
+    }
+
+// Disable for development purposes
+//    val activity = LocalContext.current as? Activity
+//
+//    BackHandler {
+//        activity?.finish()
+//    }
 
     Scaffold(
         floatingActionButton = {
@@ -537,4 +569,9 @@ fun HomeScreen(
             }
         }
     }
+}
+
+@Composable
+fun Loading() {
+    Text(text = "Loading")
 }
