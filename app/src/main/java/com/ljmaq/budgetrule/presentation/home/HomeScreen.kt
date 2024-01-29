@@ -50,6 +50,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.input.pointer.pointerInteropFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextRange
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
@@ -487,7 +488,7 @@ fun HomeScreen(
                             text = Formatter.formatCurrency(
                                 amount = balanceState,
                                 isoCode = currencyCode
-                            ), style = MaterialTheme.typography.headlineMedium
+                            ), style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Bold
                         )
                         Spacer(modifier = Modifier.height(1.dp))
                         Text(
