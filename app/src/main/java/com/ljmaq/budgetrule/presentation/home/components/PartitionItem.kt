@@ -43,12 +43,14 @@ import kotlin.math.roundToInt
 
 @Composable
 fun PartitionItem(
-    partition: Partition
+    partition: Partition,
+    currencyCode: String
 ) {
     Card {
         PartitionItemContent(
             partition = partition,
-            elevation = ListItemDefaults.Elevation
+            elevation = ListItemDefaults.Elevation,
+            currencyCode = currencyCode
         )
     }
 }
@@ -61,6 +63,7 @@ fun LazyItemScope.PartitionItem(
     isMenuExpanded: Boolean,
     modifier: Modifier = Modifier,
     viewModel: HomeViewModel,
+    currencyCode: String,
     onDismissRequest: () -> Unit
 ) {
     ElevatedCard(
@@ -71,7 +74,7 @@ fun LazyItemScope.PartitionItem(
                 partition = partition,
                 colors = ListItemDefaults.colors(
                     containerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(12.dp)
-                )
+                ), currencyCode = currencyCode
             )
             AnimatedVisibility(isMenuExpanded) {
                 Popup(
@@ -132,12 +135,13 @@ fun LazyItemScope.PartitionItem(
 private fun PartitionItemContent(
     partition: Partition,
     colors: ListItemColors = ListItemDefaults.colors(containerColor = MaterialTheme.colorScheme.secondaryContainer),
-    elevation: Dp = 12.dp
+    elevation: Dp = 12.dp,
+    currencyCode: String
 ) {
     ListItem(
         headlineContent = {
             Text(
-                text = Formatter.formatCurrency(partition.amount, "PHP"),
+                text = Formatter.formatCurrency(partition.amount, currencyCode),
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
                 textAlign = TextAlign.Right

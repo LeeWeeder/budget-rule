@@ -35,6 +35,9 @@ class HomeViewModel @Inject constructor(
     private val _balanceState = mutableDoubleStateOf(0.0)
     val balanceState: State<Double> = _balanceState
 
+    private val _currencyCode = mutableStateOf("PHP")
+    val currencyCode: State<String> = _currencyCode
+
     init {
         /*getIncomes()
         getNeeds()
@@ -44,6 +47,11 @@ class HomeViewModel @Inject constructor(
         viewModelScope.launch {
             dataStoreUseCases.readBalanceState().collect {
                 _balanceState.doubleValue = it
+            }
+        }
+        viewModelScope.launch {
+            dataStoreUseCases.readCurrencyState().collect {
+                _currencyCode.value = it
             }
         }
     }

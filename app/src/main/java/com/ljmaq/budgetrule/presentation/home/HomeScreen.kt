@@ -90,7 +90,9 @@ fun HomeScreen(
     val partitionState = partitionViewModel.partitionState.value
 
     val balanceState = viewModel.balanceState.value
-    val leftOverPartitionState = partitionViewModel.excessPartitionState.collectAsState()
+    val currencyCode = viewModel.currencyCode.value
+
+    val excessPartitionState = partitionViewModel.excessPartitionState.collectAsState()
 
     if (!fromOnBoarding) {
         when (mainActivityViewModel.showOnBoarding.value) {
@@ -484,7 +486,7 @@ fun HomeScreen(
                         Text(
                             text = Formatter.formatCurrency(
                                 amount = balanceState,
-                                isoCode = "PHP"
+                                isoCode = currencyCode
                             ), style = MaterialTheme.typography.headlineMedium
                         )
                         Spacer(modifier = Modifier.height(1.dp))
@@ -526,7 +528,7 @@ fun HomeScreen(
                     }
                     item {
                         PartitionItem(
-                            partition = leftOverPartitionState.value
+                            partition = excessPartitionState.value, currencyCode = currencyCode
                         )
                         Spacer(modifier = Modifier.height(7.dp))
                     }
@@ -549,6 +551,7 @@ fun HomeScreen(
                             onDismissRequest = {
                                 isMenuExpanded = false
                             }, offset = offset,
+                            currencyCode = currencyCode,
                             modifier = Modifier
                                 .pointerInteropFilter {
                                     offset = Offset(x = it.x, y = it.y)

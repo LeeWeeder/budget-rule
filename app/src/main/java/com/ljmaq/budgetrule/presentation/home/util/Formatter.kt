@@ -49,7 +49,11 @@ class Formatter {
          */
         fun formatCurrency(amount: Double, isoCode: String, useSymbol: Boolean = true): String {
             val currency = NumberFormat.getCurrencyInstance()
-            currency.currency = Currency.getInstance(isoCode)
+            try {
+                currency.currency = Currency.getInstance(isoCode)
+            } catch (e: IllegalArgumentException) {
+                println(isoCode)
+            }
             val str = currency.format(amount)
             if (useSymbol)
                 return str
