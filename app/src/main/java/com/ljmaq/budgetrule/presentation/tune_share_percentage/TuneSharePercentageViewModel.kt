@@ -75,12 +75,8 @@ class TuneSharePercentageViewModel @Inject constructor(
                 viewModelScope.launch(Dispatchers.IO) {
                     val leftOverPartition = leftOverPartitionState.value
                     dataStoreUseCases.saveExcessPartitionState(
-                        Partition(
-                            name = leftOverPartition.name,
-                            amount = leftOverPartition.amount,
-                            sharePercent = leftOverPartition.sharePercent,
-                            id = leftOverPartition.id
-                        )
+                        amount = leftOverPartition.amount,
+                        sharePercent = leftOverPartition.sharePercent
                     )
                 }
             }

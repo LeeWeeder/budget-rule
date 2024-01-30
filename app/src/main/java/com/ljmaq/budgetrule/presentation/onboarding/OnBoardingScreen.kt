@@ -230,6 +230,7 @@ fun OnBoardingScreen(
                         )
                     )
                     navController.navigate(Screen.HomeScreen.route + "?fromOnBoarding=true")
+
                 }) {
                     Text(text = "Finish")
                 }

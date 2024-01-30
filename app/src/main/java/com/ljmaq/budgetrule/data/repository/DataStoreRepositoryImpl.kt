@@ -1,6 +1,7 @@
 package com.ljmaq.budgetrule.data.repository
 
 import android.content.Context
+import androidx.annotation.FloatRange
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
@@ -36,10 +37,10 @@ class DataStoreRepositoryImpl(context: Context) : DataStoreRepository {
         }
     }
 
-    override suspend fun saveExcessPartitionState(partition: Partition) {
+    override suspend fun saveExcessPartitionState(amount: Double, @FloatRange(from = 0.0, to = 1.0) sharePercent: Float) {
         dataStore.edit { preferences ->
-            preferences[PreferencesKey.excessPartitionAmountKey] = partition.amount
-            preferences[PreferencesKey.excessPartitionSharePercentKey] = partition.sharePercent
+            preferences[PreferencesKey.excessPartitionAmountKey] = amount
+            preferences[PreferencesKey.excessPartitionSharePercentKey] = sharePercent
         }
     }
 

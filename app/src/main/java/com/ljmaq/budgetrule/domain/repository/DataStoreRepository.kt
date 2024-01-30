@@ -1,11 +1,12 @@
 package com.ljmaq.budgetrule.domain.repository
 
+import androidx.annotation.FloatRange
 import com.ljmaq.budgetrule.domain.model.Partition
 import kotlinx.coroutines.flow.Flow
 
 interface DataStoreRepository {
     suspend fun saveBalanceState(balance: Double)
-    suspend fun saveExcessPartitionState(partition: Partition)
+    suspend fun saveExcessPartitionState(amount: Double, @FloatRange(from = 0.0, to = 1.0) sharePercent: Float)
     fun readBalanceState(): Flow<Double>
     fun readExcessPartitionState(): Flow<Partition>
 
