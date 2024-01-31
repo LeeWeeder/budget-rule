@@ -51,6 +51,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.input.pointer.pointerInteropFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextRange
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.Dp
@@ -509,21 +510,22 @@ fun HomeScreen(
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
                         modifier = Modifier
-                            .padding(5.dp)
-                            .padding(start = 10.dp)
+                            .padding(8.dp)
+                            .padding(start = 14.dp)
                             .fillMaxWidth(),
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
-                        Column(verticalArrangement = Arrangement.SpaceBetween) {
+                        Column {
                             Text(
                                 text = excessPartitionState.value.name,
-                                style = MaterialTheme.typography.labelSmall
+                                style = MaterialTheme.typography.labelSmall.copy(fontSize = 10.sp)
                             )
                             Text(
                                 text = Formatter.formatCurrency(
                                     excessPartitionState.value.amount,
                                     isoCode = currencyCode
-                                )
+                                ),
+                                fontWeight = FontWeight.Bold
                             )
                         }
                         SharePercentIndicator(sharePercent = excessPartitionState.value.sharePercent)
