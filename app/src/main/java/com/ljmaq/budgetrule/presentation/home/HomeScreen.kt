@@ -12,21 +12,21 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
@@ -53,6 +53,7 @@ import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
@@ -66,6 +67,7 @@ import com.ljmaq.budgetrule.presentation.home.components.BudgetRuleSheet
 import com.ljmaq.budgetrule.presentation.home.components.DrawerSheetSubtitle
 import com.ljmaq.budgetrule.presentation.home.components.PartitionItem
 import com.ljmaq.budgetrule.presentation.home.components.SegmentedButtonValues
+import com.ljmaq.budgetrule.presentation.home.components.SharePercentIndicator
 import com.ljmaq.budgetrule.presentation.home.components.SingleChoiceSegmentedButton
 import com.ljmaq.budgetrule.presentation.home.util.Formatter
 import com.ljmaq.budgetrule.presentation.partition.PartitionViewModel
@@ -144,15 +146,6 @@ fun HomeScreen(
                 Text(
                     text = "Budget Rule"
                 )
-            }, actions = {
-                IconButton(onClick = {
-                    navController.navigate(Screen.TuneSharePercentageScreen.route)
-                }) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.tune),
-                        contentDescription = "Tune icon"
-                    )
-                }
             })
         }
     ) { paddingValues ->
@@ -488,7 +481,9 @@ fun HomeScreen(
                             text = Formatter.formatCurrency(
                                 amount = balanceState,
                                 isoCode = currencyCode
-                            ), style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Bold
+                            ),
+                            style = MaterialTheme.typography.headlineSmall,
+                            fontWeight = FontWeight.Bold
                         )
                         Spacer(modifier = Modifier.height(1.dp))
                         Text(
@@ -499,76 +494,110 @@ fun HomeScreen(
                 }
             }
             Spacer(modifier = Modifier.height(20.dp))
-            HorizontalDivider()
-            Column(
-                modifier = Modifier.padding(horizontal = horizontalPadding)
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = horizontalPadding)
             ) {
-                LazyColumn(
-                    contentPadding = PaddingValues(
-                        bottom = paddingValues.calculateBottomPadding(),
-                        top = 16.dp
-                    ),
-                    horizontalAlignment = Alignment.End
+                Card(
+                    shape = CircleShape,
+                    modifier = Modifier
+                        .weight(1f),
+                    colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.3f))
                 ) {
-                    item {
-                        ElevatedButton(
-                            onClick = {
-                                viewModel.onEvent(HomeEvent.ShowNewPartitionDialog)
-                            }, modifier = Modifier,
-                            contentPadding = ButtonDefaults.ButtonWithIconContentPadding
-                        ) {
-                            Icon(
-                                painterResource(id = R.drawable.add),
-                                contentDescription = "Add icon",
-                                modifier = Modifier.size(ButtonDefaults.IconSize)
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier
+                            .padding(5.dp)
+                            .padding(start = 10.dp)
+                            .fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Column(verticalArrangement = Arrangement.SpaceBetween) {
+                            Text(
+                                text = excessPartitionState.value.name,
+                                style = MaterialTheme.typography.labelSmall
                             )
-                            Spacer(modifier = Modifier.width(ButtonDefaults.IconSpacing))
-                            Text(text = "New partition")
-                        }
-                        Spacer(modifier = Modifier.height(12.dp))
-                    }
-                    item {
-                        PartitionItem(
-                            partition = excessPartitionState.value, currencyCode = currencyCode
-                        )
-                        Spacer(modifier = Modifier.height(7.dp))
-                    }
-
-                    items(
-                        items = partitionState.partitionList,
-                        key = {
-                            it.id!!
-                        }
-                    ) { partition ->
-                        var isMenuExpanded by remember {
-                            mutableStateOf(false)
-                        }
-                        var offset by remember {
-                            mutableStateOf(Offset.Zero)
-                        }
-                        PartitionItem(
-                            partition = partition, isMenuExpanded = isMenuExpanded,
-                            viewModel = viewModel,
-                            onDismissRequest = {
-                                isMenuExpanded = false
-                            }, offset = offset,
-                            currencyCode = currencyCode,
-                            modifier = Modifier
-                                .pointerInteropFilter {
-                                    offset = Offset(x = it.x, y = it.y)
-                                    println(offset.x)
-                                    println(offset.y)
-                                    false
-                                }
-                                .combinedClickable(
-                                    onClick = { },
-                                    onLongClick = {
-                                        isMenuExpanded = true
-                                    }
+                            Text(
+                                text = Formatter.formatCurrency(
+                                    excessPartitionState.value.amount,
+                                    isoCode = currencyCode
                                 )
-                        )
-                        Spacer(modifier = Modifier.height(7.dp))
+                            )
+                        }
+                        SharePercentIndicator(sharePercent = excessPartitionState.value.sharePercent)
                     }
+                }
+                IconButton(
+                    onClick = {
+                        navController.navigate(Screen.TuneSharePercentageScreen.route)
+                    },
+                    colors = IconButtonDefaults.outlinedIconButtonColors(
+                        contentColor = MaterialTheme.colorScheme.secondary
+                    )
+                ) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.tune),
+                        contentDescription = "Tune icon"
+                    )
+                }
+                IconButton(
+                    onClick = {
+                        viewModel.onEvent(HomeEvent.ShowNewPartitionDialog)
+                    },
+                    colors = IconButtonDefaults.filledIconButtonColors(containerColor = MaterialTheme.colorScheme.secondaryContainer)
+                ) {
+                    Icon(
+                        painterResource(id = R.drawable.add),
+                        contentDescription = "Add icon"
+                    )
+                }
+            }
+            Spacer(modifier = Modifier.height(12.dp))
+            HorizontalDivider(thickness = Dp.Hairline)
+            LazyColumn(
+                contentPadding = PaddingValues(
+                    bottom = paddingValues.calculateBottomPadding(),
+                    top = 16.dp,
+                    start = horizontalPadding,
+                    end = horizontalPadding
+                )
+            ) {
+                items(
+                    items = partitionState.partitionList,
+                    key = {
+                        it.id!!
+                    }
+                ) { partition ->
+                    var isMenuExpanded by remember {
+                        mutableStateOf(false)
+                    }
+                    var offset by remember {
+                        mutableStateOf(Offset.Zero)
+                    }
+                    PartitionItem(
+                        partition = partition, isMenuExpanded = isMenuExpanded,
+                        viewModel = viewModel,
+                        onDismissRequest = {
+                            isMenuExpanded = false
+                        }, offset = offset,
+                        currencyCode = currencyCode,
+                        modifier = Modifier
+                            .pointerInteropFilter {
+                                offset = Offset(x = it.x, y = it.y)
+                                println(offset.x)
+                                println(offset.y)
+                                false
+                            }
+                            .combinedClickable(
+                                onClick = { },
+                                onLongClick = {
+                                    isMenuExpanded = true
+                                }
+                            )
+                    )
+                    Spacer(modifier = Modifier.height(7.dp))
                 }
             }
         }

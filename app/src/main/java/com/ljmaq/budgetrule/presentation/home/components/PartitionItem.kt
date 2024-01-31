@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyItemScope
-import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenuItem
@@ -40,20 +39,6 @@ import com.ljmaq.budgetrule.presentation.home.HomeEvent
 import com.ljmaq.budgetrule.presentation.home.HomeViewModel
 import com.ljmaq.budgetrule.presentation.home.util.Formatter
 import kotlin.math.roundToInt
-
-@Composable
-fun PartitionItem(
-    partition: Partition,
-    currencyCode: String
-) {
-    Card {
-        PartitionItemContent(
-            partition = partition,
-            elevation = ListItemDefaults.Elevation,
-            currencyCode = currencyCode
-        )
-    }
-}
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -151,20 +136,25 @@ private fun PartitionItemContent(
             Text(text = partition.name)
         },
         trailingContent = {
-            Box(contentAlignment = Alignment.Center) {
-                Text(
-                    text = "${(partition.sharePercent * 100).toInt()}%",
-                    style = MaterialTheme.typography.labelSmall
-                )
-                CircularProgressIndicator(
-                    progress = partition.sharePercent,
-                    trackColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.1f),
-                    strokeCap = StrokeCap.Round
-                )
-            }
+            SharePercentIndicator(partition.sharePercent)
         },
         colors = colors,
         shadowElevation = elevation,
         tonalElevation = elevation
     )
+}
+
+@Composable
+fun SharePercentIndicator(sharePercent: Float) {
+    Box(contentAlignment = Alignment.Center) {
+        Text(
+            text = "${(sharePercent * 100).toInt()}%",
+            style = MaterialTheme.typography.labelSmall
+        )
+        CircularProgressIndicator(
+            progress = sharePercent,
+            trackColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.1f),
+            strokeCap = StrokeCap.Round
+        )
+    }
 }
