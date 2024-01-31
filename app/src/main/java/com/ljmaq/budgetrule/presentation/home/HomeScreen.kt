@@ -21,6 +21,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.HorizontalDivider
@@ -50,11 +51,11 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.input.pointer.pointerInteropFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextRange
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.ljmaq.budgetrule.MainActivityViewModel
@@ -456,17 +457,17 @@ fun HomeScreen(
             modifier = Modifier
                 .padding(top = paddingValues.calculateTopPadding())
         ) {
-            Card(
+            ElevatedCard(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 10.dp + horizontalPadding)
+                    .padding(horizontal = horizontalPadding)
                     .padding(top = 5.dp),
-                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.inversePrimary),
-                shape = MaterialTheme.shapes.extraLarge
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondaryContainer),
+                shape = CircleShape
             ) {
                 Row(
                     modifier = Modifier
-                        .padding(start = 2.dp, top = 16.dp, bottom = 18.dp)
+                        .padding(start = 2.dp, top = 14.dp, bottom = 16.dp)
                         .padding(horizontal = 16.dp)
                         .fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(12.dp),
@@ -482,8 +483,7 @@ fun HomeScreen(
                                 amount = balanceState,
                                 isoCode = currencyCode
                             ),
-                            style = MaterialTheme.typography.headlineSmall,
-                            fontWeight = FontWeight.Bold
+                            style = MaterialTheme.typography.labelLarge.copy(fontSize = 18.sp)
                         )
                         Spacer(modifier = Modifier.height(1.dp))
                         Text(
