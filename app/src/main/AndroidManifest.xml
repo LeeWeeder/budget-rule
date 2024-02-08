@@ -16,7 +16,9 @@
             android:name=".MainActivity"
             android:windowSoftInputMode="adjustResize"
             android:exported="true"
-            android:theme="@style/Theme.BudgetRule.Starting">
+            android:theme="@style/Theme.BudgetRule.Starting"
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

@@ -71,7 +71,7 @@ dependencies {
     implementation(libs.androidx.lifecycle.runtimeCompose)
     implementation(libs.androidx.lifecycle.viewModelCompose)
 
-    //Material UI, Accompanist...
+    //Material UI
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.bundles.androidxCompose)
 
@@ -92,6 +92,9 @@ dependencies {
 
     // Splashscreen
     implementation(libs.androidx.core.splashscreen)
+
+    // Color picker
+    implementation(libs.colorpicker )
 
     //Unit testing libraries
     testImplementation(libs.junit4)

@@ -33,22 +33,30 @@ class OnBoardingViewModel @Inject constructor(
                     Partition(
                         name = "Needs",
                         amount = initialBalance * 0.4,
-                        sharePercent = 0.4f
+                        sharePercent = 0.4f,
+                        avatar = "🏠",
+                        color = 0xFFFFABF3
                     ),
                     Partition(
                         name = "Wants",
                         amount = initialBalance * 0.2,
-                        sharePercent = 0.2f
+                        sharePercent = 0.2f,
+                        avatar = "🛍️",
+                        color = 0xFFFFB3B3
                     ),
                     Partition(
                         name = "Savings",
                         amount = initialBalance * 0.2,
-                        sharePercent = 0.2f
+                        sharePercent = 0.2f,
+                        avatar = "🏦",
+                        color = 0xFF3ADCCC
                     ),
                     Partition(
                         name = "Investment",
                         amount = initialBalance * 0.2,
-                        sharePercent = 0.2f
+                        sharePercent = 0.2f,
+                        avatar = "📈",
+                        color = 0xFFBFC2FF
                     )
                 )
                 viewModelScope.launch {

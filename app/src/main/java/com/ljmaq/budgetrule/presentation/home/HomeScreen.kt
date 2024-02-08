@@ -3,7 +3,9 @@ package com.ljmaq.budgetrule.presentation.home
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -16,6 +18,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -24,7 +27,6 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExtendedFloatingActionButton
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
@@ -33,12 +35,13 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SingleChoiceSegmentedButtonRow
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -48,13 +51,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInteropFilter
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -63,6 +68,7 @@ import com.ljmaq.budgetrule.MainActivityViewModel
 import com.ljmaq.budgetrule.R
 import com.ljmaq.budgetrule.domain.model.Partition
 import com.ljmaq.budgetrule.presentation.components.BudgetRuleAppBar
+import com.ljmaq.budgetrule.presentation.components.DeletePartitionWarningDialog
 import com.ljmaq.budgetrule.presentation.home.components.BudgetRuleButton
 import com.ljmaq.budgetrule.presentation.home.components.BudgetRuleOutlinedButton
 import com.ljmaq.budgetrule.presentation.home.components.BudgetRuleSheet
@@ -76,8 +82,8 @@ import com.ljmaq.budgetrule.presentation.partition.PartitionViewModel
 import com.ljmaq.budgetrule.util.Screen
 
 @OptIn(
-    ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class,
-    ExperimentalComposeUiApi::class
+    ExperimentalMaterial3Api::class,
+    ExperimentalFoundationApi::class, ExperimentalComposeUiApi::class
 )
 @Composable
 fun HomeScreen(
@@ -98,6 +104,13 @@ fun HomeScreen(
     val currencyCode = viewModel.currencyCode.value
 
     val excessPartitionState = partitionViewModel.excessPartitionState.collectAsState()
+
+    var fabHeight by remember {
+        mutableIntStateOf(0)
+    }
+    val fabHeightInDp = with(LocalDensity.current) {
+        fabHeight.toDp()
+    }
 
     if (!fromOnBoarding) {
         when (mainActivityViewModel.showOnBoarding.value) {
@@ -140,6 +153,9 @@ fun HomeScreen(
                 },
                 onClick = {
                     viewModel.onEvent(HomeEvent.CreateRecord)
+                },
+                modifier = Modifier.onGloballyPositioned {
+                    fabHeight = it.size.height
                 }
             )
         },
@@ -328,6 +344,9 @@ fun HomeScreen(
             }
         }
         val partition = viewModel.currentPartition.value
+        var deletionIsCancelled by remember {
+            mutableStateOf(false)
+        }
         if (dialogState.newPartitionDialogShowing) {
             val focusRequester = remember {
                 FocusRequester()
@@ -341,24 +360,43 @@ fun HomeScreen(
             var isError by remember {
                 mutableStateOf(false)
             }
+            val color by remember {
+                mutableLongStateOf(0xff00ff00)
+            }
             AlertDialog(onDismissRequest = {
                 viewModel.onEvent(HomeEvent.HideNewPartitionDialog)
             }, confirmButton = {
                 Button(onClick = {
                     isError = partitionName.isEmpty()
-                    if (!isError)
+                    if (!isError) {
                         viewModel.onEvent(
                             HomeEvent.InsertPartition(
                                 Partition(name = partitionName, amount = 0.0, sharePercent = 0f)
                             )
                         )
-                    navController.navigate(Screen.TuneSharePercentageScreen.route)
-                    viewModel.onEvent(HomeEvent.HideNewPartitionDialog)
+                        navController.navigate(Screen.TuneSharePercentageScreen.route)
+                        viewModel.onEvent(HomeEvent.HideNewPartitionDialog)
+                    }
                 }, modifier = Modifier.fillMaxWidth()) {
                     Text(text = "Next")
                 }
             }, text = {
                 Column {
+                    Column {
+                        Text(
+                            text = "Color",
+                            style = MaterialTheme.typography.labelSmall,
+                            color = MaterialTheme.colorScheme.primary
+                        )
+                        Button(
+                            onClick = { /*TODO*/ },
+                            colors = ButtonDefaults.buttonColors(containerColor = Color(color)),
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+
+                        }
+
+                    }
                     OutlinedTextField(value = partitionName, onValueChange = {
                         partitionName = it
                         isError = false
@@ -425,35 +463,17 @@ fun HomeScreen(
                 Text(text = "Edit partition")
             })
         }
-        if (dialogState.deletePartitionWarningDialogShowing) {
-            AlertDialog(onDismissRequest = {
+        DeletePartitionWarningDialog(
+            isShowing = dialogState.deletePartitionWarningDialogShowing,
+            onDismissRequest = {
                 viewModel.onEvent(HomeEvent.HideDeletePartitionDialog)
-            }, confirmButton = {
-                TextButton(
-                    onClick = {
-                        viewModel.onEvent(HomeEvent.DeletePartition(partition!!))
-                        viewModel.onEvent(HomeEvent.HideDeletePartitionDialog)
-                    }) {
-                    Text(text = "Delete")
-                }
-            }, text = {
-                Text(text = "This will move all the amount of this partition to Excess partition. ")
-            }, title = {
-                Text(text = "Delete selected partition?")
-            }, icon = {
-                Icon(
-                    painter = painterResource(id = R.drawable.warning),
-                    contentDescription = "Warning icon"
-                )
-            }, dismissButton = {
-                TextButton(onClick = {
-                    viewModel.onEvent(HomeEvent.HideDeletePartitionDialog)
-                }) {
-                    Text(text = "Cancel")
-                }
-            })
-        }
-        val horizontalPadding = 16.dp
+            },
+            onConfirm = {
+                viewModel.onEvent(HomeEvent.DeletePartition(partition!!))
+                viewModel.onEvent(HomeEvent.HideDeletePartitionDialog)
+            }
+        )
+        val horizontalPadding = 10.dp
         Column(
             modifier = Modifier
                 .padding(top = paddingValues.calculateTopPadding())
@@ -495,77 +515,79 @@ fun HomeScreen(
                 }
             }
             Spacer(modifier = Modifier.height(20.dp))
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = horizontalPadding)
+            LazyColumn(
+                contentPadding = PaddingValues(
+                    bottom = paddingValues.calculateBottomPadding() + fabHeightInDp + 18.dp
+                )
             ) {
-                Card(
-                    shape = CircleShape,
-                    modifier = Modifier
-                        .weight(1f),
-                    colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.3f))
-                ) {
+                item {
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
                         modifier = Modifier
-                            .padding(8.dp)
-                            .padding(start = 14.dp)
-                            .fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween
+                            .fillMaxWidth()
+                            .padding(horizontal = horizontalPadding)
+                            .padding(bottom = 10.dp)
                     ) {
-                        Column {
-                            Text(
-                                text = excessPartitionState.value.name,
-                                style = MaterialTheme.typography.labelSmall.copy(fontSize = 10.sp)
+                        Card(
+                            shape = CircleShape,
+                            modifier = Modifier
+                                .weight(1f),
+                            colors = CardDefaults.cardColors(
+                                containerColor = MaterialTheme.colorScheme.secondaryContainer.copy(
+                                    alpha = 0.3f
+                                )
                             )
-                            Text(
-                                text = Formatter.formatCurrency(
-                                    excessPartitionState.value.amount,
-                                    isoCode = currencyCode
-                                ),
-                                fontWeight = FontWeight.Bold
+                        ) {
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                modifier = Modifier
+                                    .padding(8.dp)
+                                    .padding(start = 14.dp)
+                                    .fillMaxWidth(),
+                                horizontalArrangement = Arrangement.SpaceBetween
+                            ) {
+                                Column {
+                                    Text(
+                                        text = excessPartitionState.value.name,
+                                        style = MaterialTheme.typography.labelSmall.copy(fontSize = 10.sp)
+                                    )
+                                    Text(
+                                        text = Formatter.formatCurrency(
+                                            excessPartitionState.value.amount,
+                                            isoCode = currencyCode
+                                        ),
+                                        fontWeight = FontWeight.Bold
+                                    )
+                                }
+                                SharePercentIndicator(sharePercent = excessPartitionState.value.sharePercent)
+                            }
+                        }
+                        IconButton(
+                            onClick = {
+                                navController.navigate(Screen.TuneSharePercentageScreen.route)
+                            },
+                            colors = IconButtonDefaults.outlinedIconButtonColors(
+                                contentColor = MaterialTheme.colorScheme.secondary
+                            )
+                        ) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.tune),
+                                contentDescription = "Tune icon"
                             )
                         }
-                        SharePercentIndicator(sharePercent = excessPartitionState.value.sharePercent)
+                        IconButton(
+                            onClick = {
+                                viewModel.onEvent(HomeEvent.ShowNewPartitionDialog)
+                            },
+                            colors = IconButtonDefaults.filledIconButtonColors(containerColor = MaterialTheme.colorScheme.secondaryContainer)
+                        ) {
+                            Icon(
+                                painterResource(id = R.drawable.add),
+                                contentDescription = "Add icon"
+                            )
+                        }
                     }
                 }
-                IconButton(
-                    onClick = {
-                        navController.navigate(Screen.TuneSharePercentageScreen.route)
-                    },
-                    colors = IconButtonDefaults.outlinedIconButtonColors(
-                        contentColor = MaterialTheme.colorScheme.secondary
-                    )
-                ) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.tune),
-                        contentDescription = "Tune icon"
-                    )
-                }
-                IconButton(
-                    onClick = {
-                        viewModel.onEvent(HomeEvent.ShowNewPartitionDialog)
-                    },
-                    colors = IconButtonDefaults.filledIconButtonColors(containerColor = MaterialTheme.colorScheme.secondaryContainer)
-                ) {
-                    Icon(
-                        painterResource(id = R.drawable.add),
-                        contentDescription = "Add icon"
-                    )
-                }
-            }
-            Spacer(modifier = Modifier.height(12.dp))
-            HorizontalDivider(thickness = Dp.Hairline)
-            LazyColumn(
-                contentPadding = PaddingValues(
-                    bottom = paddingValues.calculateBottomPadding(),
-                    top = 16.dp,
-                    start = horizontalPadding,
-                    end = horizontalPadding
-                )
-            ) {
                 items(
                     items = partitionState.partitionList,
                     key = {
@@ -575,31 +597,41 @@ fun HomeScreen(
                     var isMenuExpanded by remember {
                         mutableStateOf(false)
                     }
-                    var offset by remember {
-                        mutableStateOf(Offset.Zero)
-                    }
-                    PartitionItem(
-                        partition = partition, isMenuExpanded = isMenuExpanded,
-                        viewModel = viewModel,
-                        onDismissRequest = {
-                            isMenuExpanded = false
-                        }, offset = offset,
-                        currencyCode = currencyCode,
-                        modifier = Modifier
-                            .pointerInteropFilter {
-                                offset = Offset(x = it.x, y = it.y)
-                                println(offset.x)
-                                println(offset.y)
-                                false
-                            }
-                            .combinedClickable(
-                                onClick = { },
-                                onLongClick = {
-                                    isMenuExpanded = true
+
+                    Box(modifier = Modifier.padding(horizontal = horizontalPadding)) {
+                        var offset by remember {
+                            mutableStateOf(Offset.Zero)
+                        }
+                        PartitionItem(
+                            partition = partition, isMenuExpanded = isMenuExpanded,
+                            viewModel = viewModel,
+                            onDismissRequest = {
+                                isMenuExpanded = false
+                            },
+                            currencyCode = currencyCode,
+                            modifier = Modifier
+                                .pointerInteropFilter {
+                                    offset = Offset(x = it.x, y = it.y)
+                                    println(offset.x)
+                                    println(offset.y)
+                                    false
                                 }
-                            )
-                    )
-                    Spacer(modifier = Modifier.height(7.dp))
+                                .combinedClickable(
+                                    interactionSource = remember {
+                                        MutableInteractionSource()
+                                    },
+                                    indication = rememberRipple(color = Color(partition.color!!)),
+                                    onLongClick = {
+                                        isMenuExpanded = true
+                                    },
+                                    onClick = {
+
+                                    }
+                                ),
+                            offset = offset
+                        )
+                    }
+                    Spacer(modifier = Modifier.height(5.dp))
                 }
             }
         }

@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "c83f785fa74ec01bd7d68c5c39c852d0",
+    "identityHash": "f7652b970c22ed805bc4f61adc3bd7c0",
     "entities": [
       {
         "tableName": "Partition",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER, `name` TEXT NOT NULL, `amount` REAL NOT NULL, `sharePercent` REAL NOT NULL, PRIMARY KEY(`id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER, `name` TEXT NOT NULL, `amount` REAL NOT NULL, `avatar` TEXT, `color` INTEGER, `sharePercent` REAL NOT NULL, PRIMARY KEY(`id`))",
         "fields": [
           {
             "fieldPath": "id",
@@ -25,6 +25,18 @@
             "columnName": "amount",
             "affinity": "REAL",
             "notNull": true
+          },
+          {
+            "fieldPath": "avatar",
+            "columnName": "avatar",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "color",
+            "columnName": "color",
+            "affinity": "INTEGER",
+            "notNull": false
           },
           {
             "fieldPath": "sharePercent",
@@ -116,7 +128,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'c83f785fa74ec01bd7d68c5c39c852d0')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'f7652b970c22ed805bc4f61adc3bd7c0')"
     ]
   }
 }
