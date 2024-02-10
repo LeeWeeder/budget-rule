@@ -60,10 +60,12 @@ class TuneSharePercentageViewModel @Inject constructor(
                         val partitionTemp = partitionUseCases.getPartitionById(id = it.id)
                         partitionTemp?.let { part ->
                             Partition(
-                                id = partitionTemp.id,
+                                id = part.id,
                                 amount = part.amount,
-                                name = partitionTemp.name,
-                                sharePercent = it.sharePercent
+                                name = part.name,
+                                sharePercent = it.sharePercent,
+                                color = part.color,
+                                avatar = part.avatar
                             )
                         }
                     }.forEach { partition ->
